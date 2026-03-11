@@ -8,7 +8,7 @@ const DOWNLOAD_URL =
   "https://github.com/Stratora-Platforms/stratora/releases/download/v2.1.0/Stratora-Server-2.1.0.msi";
 
 const PRO_LINKS = {
-  monthly: "https://buy.stripe.com/test_fZu8wI7ada6NcEa50db7y02",
+  monthly: "https://buy.stripe.com/test_fZu8wI7ada6NcEa90db7y02",
   annually: "https://buy.stripe.com/test_14AaEQ5250wd5bI0tHb7y03",
 } as const;
 
