@@ -1,11 +1,25 @@
+import { useState } from "react";
 import { Check, Zap } from "lucide-react";
 import { motion } from "motion/react";
 
+type BillingInterval = "monthly" | "annually";
+
+const DOWNLOAD_URL =
+  "https://github.com/Stratora-Platforms/stratora/releases/download/v2.1.0/Stratora-Server-2.1.0.msi";
+
+const PRO_LINKS = {
+  monthly: "https://buy.stripe.com/test_fZu8wI7ada6NcEa50db7y02",
+  annually: "https://buy.stripe.com/test_14AaEQ5250wd5bI0tHb7y03",
+} as const;
+
 export function Pricing() {
+  const [billing, setBilling] = useState<BillingInterval>("monthly");
+
   const plans = [
     {
       name: "Community Edition",
       price: "Free",
+      priceSuffix: "",
       period: "forever",
       description: "Full-featured monitoring for labs and small environments",
       features: [
@@ -17,13 +31,15 @@ export function Pricing() {
         "Email, Slack & Teams alerting",
         "Community support",
       ],
-      cta: "Get Started Free",
+      cta: "Download Free",
+      href: DOWNLOAD_URL,
       highlighted: false,
     },
     {
       name: "Pro",
-      price: "$250",
-      period: "annual subscription",
+      price: billing === "monthly" ? "$250" : "$3,000",
+      priceSuffix: billing === "monthly" ? "/ mo" : "/ yr",
+      period: billing === "monthly" ? "billed monthly" : "billed annually",
       description: "Production-ready monitoring for real environments",
       features: [
         "250 nodes included",
@@ -31,12 +47,14 @@ export function Pricing() {
         "Everything in Community",
         "Priority email support",
       ],
-      cta: "Start Free Trial",
+      cta: "Get Started with Pro",
+      href: PRO_LINKS[billing],
       highlighted: true,
     },
     {
       name: "Enterprise",
       price: "Custom",
+      priceSuffix: "",
       period: "contact us",
       description: "Monitoring at any scale with dedicated support",
       features: [
@@ -47,6 +65,7 @@ export function Pricing() {
         "Volume pricing",
       ],
       cta: "Contact Sales",
+      href: "mailto:sales@stratora.io",
       highlighted: false,
     },
   ];
@@ -65,9 +84,33 @@ export function Pricing() {
           <h2 className="text-3xl md:text-5xl mb-4">
             Simple, Transparent Pricing
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
             Same platform. Same features. Scale by node count.
           </p>
+
+          {/* Billing toggle */}
+          <div className="inline-flex rounded-full border border-border/50 bg-secondary/30 p-1">
+            <button
+              onClick={() => setBilling("monthly")}
+              className={`rounded-full px-5 py-1.5 text-sm transition-all ${
+                billing === "monthly"
+                  ? "bg-purple-600 text-white shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setBilling("annually")}
+              className={`rounded-full px-5 py-1.5 text-sm transition-all ${
+                billing === "annually"
+                  ? "bg-purple-600 text-white shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Annually
+            </button>
+          </div>
         </motion.div>
 
         {/* Pricing Cards */}
@@ -92,24 +135,26 @@ export function Pricing() {
 interface PricingCardProps {
   name: string;
   price: string;
+  priceSuffix: string;
   period: string;
   description: string;
   features: string[];
   cta: string;
+  href: string;
   highlighted: boolean;
 }
 
 function PricingCard({
   name,
   price,
+  priceSuffix,
   period,
   description,
   features,
   cta,
+  href,
   highlighted,
 }: PricingCardProps) {
-  const isMonthly = price !== "Custom" && price !== "Free";
-
   return (
     <div
       className={`relative rounded-2xl border p-8 transition-all h-full flex flex-col ${
@@ -145,8 +190,8 @@ function PricingCard({
           <span className="text-4xl md:text-5xl bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">
             {price}
           </span>
-          {isMonthly && (
-            <span className="text-muted-foreground text-sm">/ month</span>
+          {priceSuffix && (
+            <span className="text-muted-foreground text-sm">{priceSuffix}</span>
           )}
         </div>
         <div className="text-xs text-muted-foreground mt-1">{period}</div>
@@ -163,15 +208,18 @@ function PricingCard({
       </ul>
 
       {/* CTA Button */}
-      <button
-        className={`w-full rounded-full py-3 transition-all ${
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`w-full rounded-full py-3 transition-all text-center block ${
           highlighted
             ? "bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:from-purple-700 hover:to-purple-800 shadow-lg shadow-purple-500/30"
             : "border border-border text-foreground hover:bg-secondary"
         }`}
       >
         {cta}
-      </button>
+      </a>
     </div>
   );
 }

@@ -67,9 +67,9 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <button className="rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-8 py-3 text-white hover:from-purple-700 hover:to-purple-800 transition-all shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50">
+            <a href="https://github.com/Stratora-Platforms/stratora/releases/download/v2.1.0/Stratora-Server-2.1.0.msi" target="_blank" rel="noopener noreferrer" className="rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-8 py-3 text-white hover:from-purple-700 hover:to-purple-800 transition-all shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50">
               Download Free
-            </button>
+            </a>
             <a href="https://docs.stratora.io" target="_blank" rel="noopener noreferrer" className="rounded-full border border-border px-8 py-3 text-foreground hover:bg-secondary transition-all flex items-center gap-2">
               <ExternalLink className="h-4 w-4" />
               View Documentation

@@ -4,6 +4,7 @@ import { DashboardPreview } from "./components/dashboard-preview";
 import { Stats } from "./components/stats";
 import { Features } from "./components/features";
 import { Pricing } from "./components/pricing";
+import { Downloads } from "./components/downloads";
 import { About } from "./components/about";
 import { Footer } from "./components/footer";
 
@@ -17,6 +18,7 @@ export default function App() {
         <Stats />
         <Features />
         <Pricing />
+        <Downloads />
         <About />
       </main>
       <Footer />

@@ -8,6 +8,7 @@ export function Navigation() {
     { label: "Home", href: "#" },
     { label: "Features", href: "#features" },
     { label: "Pricing", href: "#pricing" },
+    { label: "Downloads", href: "#downloads" },
     { label: "About", href: "#about" },
     { label: "Contact", href: "#" },
   ];
