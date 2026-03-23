@@ -24,7 +24,10 @@ function LandingPage() {
 }
 
 export default function App() {
-  const isBilling = window.location.pathname === "/billing";
+  const path = window.location.pathname === "/"
+    ? decodeURIComponent(new URLSearchParams(window.location.search).get("p") || "/")
+    : window.location.pathname;
+  const isBilling = path === "/billing";
 
   return (
     <div className="dark min-h-screen bg-background text-foreground">
