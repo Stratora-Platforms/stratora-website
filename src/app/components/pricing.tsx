@@ -1,20 +1,13 @@
-import { useState } from "react";
 import { Check, Zap } from "lucide-react";
 import { motion } from "motion/react";
-
-type BillingInterval = "monthly" | "annually";
 
 const DOWNLOAD_URL =
   "https://github.com/Stratora-Platforms/stratora/releases/download/v2.1.0/Stratora-Server-2.1.0.msi";
 
-const PRO_LINKS = {
-  monthly: "https://buy.stripe.com/test_fZu8wI7ada6NcEa90db7y02",
-  annually: "https://buy.stripe.com/test_14AaEQ5250wd5bI0tHb7y03",
-} as const;
+const PRO_ANNUAL_LINK =
+  "https://buy.stripe.com/4gM3cx0jTe28gyC2OYefC04";
 
 export function Pricing() {
-  const [billing, setBilling] = useState<BillingInterval>("monthly");
-
   const plans = [
     {
       name: "Community Edition",
@@ -37,9 +30,9 @@ export function Pricing() {
     },
     {
       name: "Pro",
-      price: billing === "monthly" ? "$250" : "$3,000",
-      priceSuffix: billing === "monthly" ? "/ mo" : "/ yr",
-      period: billing === "monthly" ? "billed monthly" : "billed annually",
+      price: "$3,000",
+      priceSuffix: "/ yr",
+      period: "billed annually",
       description: "Production-ready monitoring for real environments",
       features: [
         "250 nodes included",
@@ -48,7 +41,7 @@ export function Pricing() {
         "Priority email support",
       ],
       cta: "Get Started with Pro",
-      href: PRO_LINKS[billing],
+      href: PRO_ANNUAL_LINK,
       highlighted: true,
     },
     {
@@ -84,33 +77,9 @@ export function Pricing() {
           <h2 className="text-3xl md:text-5xl mb-4">
             Simple, Transparent Pricing
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Same platform. Same features. Scale by node count.
           </p>
-
-          {/* Billing toggle */}
-          <div className="inline-flex rounded-full border border-border/50 bg-secondary/30 p-1">
-            <button
-              onClick={() => setBilling("monthly")}
-              className={`rounded-full px-5 py-1.5 text-sm transition-all ${
-                billing === "monthly"
-                  ? "bg-purple-600 text-white shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setBilling("annually")}
-              className={`rounded-full px-5 py-1.5 text-sm transition-all ${
-                billing === "annually"
-                  ? "bg-purple-600 text-white shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Annually
-            </button>
-          </div>
         </motion.div>
 
         {/* Pricing Cards */}
