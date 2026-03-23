@@ -199,6 +199,11 @@ function PricingCard({
           via the{" "}
           <a
             href="/billing"
+            onClick={(e) => {
+              e.preventDefault();
+              window.history.pushState(null, "", "/billing");
+              window.dispatchEvent(new PopStateEvent("popstate"));
+            }}
             className="text-purple-400 hover:text-purple-300 transition-colors"
           >
             billing portal

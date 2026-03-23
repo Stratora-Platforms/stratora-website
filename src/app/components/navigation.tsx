@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
+function navigate(href: string) {
+  window.history.pushState(null, "", href);
+  window.dispatchEvent(new PopStateEvent("popstate"));
+}
+
 export function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const links = [
-    { label: "Home", href: "#" },
+    { label: "Home", href: "/" },
     { label: "Features", href: "#features" },
     { label: "Pricing", href: "#pricing" },
     { label: "Downloads", href: "#downloads" },
@@ -14,17 +19,30 @@ export function Navigation() {
     { label: "Contact", href: "#" },
   ];
 
+  function handleClick(e: React.MouseEvent, href: string) {
+    if (href.startsWith("/")) {
+      e.preventDefault();
+      navigate(href);
+    }
+    setMobileOpen(false);
+  }
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-lg">
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <img
-              src="/stratora-logo-transparent.png"
-              alt="Stratora logo"
-              className="h-10 md:h-12 w-auto"
-            />
+            <a
+              href="/"
+              onClick={(e) => handleClick(e, "/")}
+            >
+              <img
+                src="/stratora-logo-transparent.png"
+                alt="Stratora logo"
+                className="h-10 md:h-12 w-auto"
+              />
+            </a>
           </div>
 
           {/* Center Navigation (desktop) */}
@@ -33,6 +51,7 @@ export function Navigation() {
               <a
                 key={link.label}
                 href={link.href}
+                onClick={(e) => handleClick(e, link.href)}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 {link.label}
@@ -73,7 +92,7 @@ export function Navigation() {
               <a
                 key={link.label}
                 href={link.href}
-                onClick={() => setMobileOpen(false)}
+                onClick={(e) => handleClick(e, link.href)}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
               >
                 {link.label}

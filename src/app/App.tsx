@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Navigation } from "./components/navigation";
 import { Hero } from "./components/hero";
 import { DashboardPreview } from "./components/dashboard-preview";
@@ -8,6 +9,16 @@ import { Downloads } from "./components/downloads";
 import { About } from "./components/about";
 import { Footer } from "./components/footer";
 import { Billing } from "./components/billing";
+
+function getInitialPath(): string {
+  const redirect = sessionStorage.getItem("redirect");
+  if (redirect) {
+    sessionStorage.removeItem("redirect");
+    window.history.replaceState(null, "", redirect);
+    return redirect;
+  }
+  return window.location.pathname;
+}
 
 function LandingPage() {
   return (
@@ -24,16 +35,19 @@ function LandingPage() {
 }
 
 export default function App() {
-  const path = window.location.pathname === "/"
-    ? decodeURIComponent(new URLSearchParams(window.location.search).get("p") || "/")
-    : window.location.pathname;
-  const isBilling = path === "/billing";
+  const [path, setPath] = useState(getInitialPath);
+
+  useEffect(() => {
+    const onPopState = () => setPath(window.location.pathname);
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   return (
     <div className="dark min-h-screen bg-background text-foreground">
       <Navigation />
       <main>
-        {isBilling ? <Billing /> : <LandingPage />}
+        {path === "/billing" ? <Billing /> : <LandingPage />}
       </main>
       <Footer />
     </div>
