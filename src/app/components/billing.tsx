@@ -3,7 +3,7 @@ import { Loader2 } from "lucide-react";
 import { motion } from "motion/react";
 
 const PORTAL_ENDPOINT =
-  "https://stratora-licensing.stratora.workers.dev/api/v1/portal";
+  "https://stratora-licensing-production.stratora.workers.dev/api/v1/portal";
 
 export function Billing() {
   const [email, setEmail] = useState("");
