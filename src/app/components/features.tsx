@@ -38,7 +38,7 @@ export function Features() {
       icon: Bell,
       title: "Alerting + maintenance mode",
       description:
-        "Automated alerting with scheduled escalation teams and on-call routing. Notify the right people via email, Microsoft Teams, and Slack — with acknowledge, mute, and maintenance-aware suppression.",
+        "Notify the right people via email, Microsoft Teams, Slack, SMS, and phone call — with two-way acknowledgment, escalation, mute, and maintenance-aware suppression.",
     },
     {
       icon: ShieldCheck,

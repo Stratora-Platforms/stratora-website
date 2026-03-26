@@ -56,6 +56,16 @@ export function Downloads() {
                 href={RELEASE_NOTES_URL}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm text-foreground hover:bg-secondary transition-all"
+              >
+                <Download className="h-4 w-4" />
+                Download for Linux (.deb / .rpm)
+              </a>
+
+              <a
+                href={RELEASE_NOTES_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-sm text-purple-400 hover:text-purple-300 transition-colors"
               >
                 View release notes on GitHub

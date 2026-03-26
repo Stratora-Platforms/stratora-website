@@ -1,42 +1,35 @@
-import { Github, Twitter, Linkedin, Mail } from "lucide-react";
+import { Github, Mail } from "lucide-react";
+
+function navigate(href: string) {
+  window.history.pushState(null, "", href);
+  window.dispatchEvent(new PopStateEvent("popstate"));
+}
 
 export function Footer() {
   const footerLinks = {
     Product: [
-      { name: "Features", href: "#features" },
-      { name: "Pricing", href: "#pricing" },
-      { name: "Security", href: "#" },
-      { name: "Roadmap", href: "#" },
-      { name: "Changelog", href: "#" },
+      { name: "Features", href: "/#features" },
+      { name: "Pricing", href: "/#pricing" },
+      { name: "Downloads", href: "/#downloads" },
+      { name: "Changelog", href: "https://github.com/Stratora-Platforms/stratora/releases", external: true },
     ],
     Company: [
-      { name: "About", href: "#" },
-      { name: "Blog", href: "#" },
-      { name: "Careers", href: "#" },
-      { name: "Press", href: "#" },
-      { name: "Partners", href: "#" },
+      { name: "About", href: "/#about" },
+      { name: "GitHub", href: "https://github.com/Stratora-Platforms/stratora", external: true },
     ],
     Resources: [
-      { name: "Documentation", href: "#" },
-      { name: "API Reference", href: "#" },
-      { name: "Community", href: "#" },
-      { name: "Support", href: "#" },
-      { name: "Status", href: "#" },
+      { name: "Documentation", href: "https://docs.stratora.io", external: true },
+      { name: "Release Notes", href: "https://github.com/Stratora-Platforms/stratora/releases", external: true },
     ],
     Legal: [
-      { name: "Privacy Policy", href: "#" },
-      { name: "Terms of Service", href: "#" },
-      { name: "Cookie Policy", href: "#" },
-      { name: "GDPR", href: "#" },
-      { name: "Compliance", href: "#" },
+      { name: "Privacy Policy", href: "/privacy-policy", internal: true },
+      { name: "Terms of Service", href: "/terms", internal: true },
     ],
   };
 
   const socialLinks = [
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Github, href: "#", label: "GitHub" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Mail, href: "#", label: "Email" },
+    { icon: Github, href: "https://github.com/Stratora-Platforms/stratora", label: "GitHub" },
+    { icon: Mail, href: "mailto:support@stratora.io", label: "Email" },
   ];
 
   return (
@@ -55,8 +48,8 @@ export function Footer() {
             </div>
 
             <p className="text-sm text-muted-foreground mb-6 max-w-xs">
-              Next-generation observability & infrastructure monitoring platform
-              for modern cloud-native applications.
+              On-premises network and infrastructure monitoring built for IT and
+              OT environments. No cloud dependency required.
             </p>
 
             {/* Social Links */}
@@ -81,12 +74,34 @@ export function Footer() {
               <ul className="space-y-3">
                 {links.map((link, index) => (
                   <li key={index}>
-                    <a
-                      href={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      {link.name}
-                    </a>
+                    {"internal" in link && link.internal ? (
+                      <a
+                        href={link.href}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigate(link.href);
+                        }}
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {link.name}
+                      </a>
+                    ) : "external" in link && link.external ? (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {link.name}
+                      </a>
+                    ) : (
+                      <a
+                        href={link.href}
+                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {link.name}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -101,22 +116,24 @@ export function Footer() {
           </p>
           <div className="flex items-center gap-6">
             <a
-              href="#"
+              href="/privacy-policy"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/privacy-policy");
+              }}
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               Privacy
             </a>
             <a
-              href="#"
+              href="/terms"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/terms");
+              }}
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               Terms
-            </a>
-            <a
-              href="#"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Cookies
             </a>
           </div>
         </div>

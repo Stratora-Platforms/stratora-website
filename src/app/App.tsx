@@ -9,6 +9,9 @@ import { Downloads } from "./components/downloads";
 import { About } from "./components/about";
 import { Footer } from "./components/footer";
 import { Billing } from "./components/billing";
+import { PrivacyPolicyPage } from "./pages/PrivacyPolicyPage";
+import { TermsPage } from "./pages/TermsPage";
+import { NotFoundPage } from "./pages/NotFoundPage";
 
 function getInitialPath(): string {
   const redirect = sessionStorage.getItem("redirect");
@@ -47,7 +50,11 @@ export default function App() {
     <div className="dark min-h-screen bg-background text-foreground">
       <Navigation />
       <main>
-        {path === "/billing" ? <Billing /> : <LandingPage />}
+        {path === "/billing" ? <Billing /> :
+         path === "/privacy-policy" ? <PrivacyPolicyPage /> :
+         path === "/terms" ? <TermsPage /> :
+         path === "/" ? <LandingPage /> :
+         <NotFoundPage />}
       </main>
       <Footer />
     </div>

@@ -16,7 +16,7 @@ export function Navigation() {
     { label: "Downloads", href: "#downloads" },
     { label: "About", href: "#about" },
     { label: "Billing", href: "/billing" },
-    { label: "Contact", href: "#" },
+    { label: "Contact", href: "mailto:support@stratora.io" },
   ];
 
   function handleClick(e: React.MouseEvent, href: string) {
@@ -61,10 +61,12 @@ export function Navigation() {
 
           {/* Right Side */}
           <div className="flex items-center gap-4">
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Sign In
-            </a>
-            <button className="hidden md:block rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-2 text-sm text-white hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg shadow-purple-500/20">
+            <button
+              onClick={() => {
+                document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="hidden md:block rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-2 text-sm text-white hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg shadow-purple-500/20"
+            >
               Get Started
             </button>
 
@@ -99,7 +101,10 @@ export function Navigation() {
               </a>
             ))}
             <button
-              onClick={() => setMobileOpen(false)}
+              onClick={() => {
+                setMobileOpen(false);
+                document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+              }}
               className="rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-2 text-sm text-white hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg shadow-purple-500/20 mt-2"
             >
               Get Started
