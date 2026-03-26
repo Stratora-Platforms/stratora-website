@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 
 const RELEASE_VERSION = "2.1.0";
 const MSI_URL = `https://github.com/Stratora-Platforms/stratora/releases/download/v${RELEASE_VERSION}/Stratora-Server-${RELEASE_VERSION}.msi`;
-const RELEASE_NOTES_URL = `https://github.com/Stratora-Platforms/stratora/releases/tag/v${RELEASE_VERSION}`;
+const RELEASE_NOTES_URL = "https://github.com/Stratora-Platforms/stratora/releases";
 
 export function Downloads() {
   return (
@@ -50,16 +50,6 @@ export function Downloads() {
               >
                 <Download className="h-4 w-4" />
                 Download for Windows (.msi)
-              </a>
-
-              <a
-                href={RELEASE_NOTES_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm text-foreground hover:bg-secondary transition-all"
-              >
-                <Download className="h-4 w-4" />
-                Download for Linux (.deb / .rpm)
               </a>
 
               <a
