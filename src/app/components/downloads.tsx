@@ -1,7 +1,7 @@
 import { Download, ExternalLink } from "lucide-react";
 import { motion } from "motion/react";
 import { RELEASE_VERSION, MSI_DOWNLOAD_URL } from "../constants";
-const RELEASE_NOTES_URL = "https://github.com/Stratora-Platforms/stratora/releases";
+const RELEASE_NOTES_URL = "https://docs.stratora.io/blog";
 
 export function Downloads() {
   return (
