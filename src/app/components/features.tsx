@@ -20,7 +20,7 @@ export function Features() {
       icon: Radar,
       title: "Template-driven monitoring",
       description:
-        "Deploy consistent monitoring fast with device templates for switches, firewalls, APs, servers, SAN/NAS, Power/UPS/Environmental Monitoring, PING, and web services & HTTP endpoints, and more.",
+        "Deploy consistent monitoring fast with device templates for switches, firewalls, APs, servers, NAS, ping checks, and web services / HTTP endpoints. Add custom templates for anything we don't ship out of the box.",
     },
     {
       icon: Network,
@@ -38,7 +38,7 @@ export function Features() {
       icon: Bell,
       title: "Alerting + maintenance mode",
       description:
-        "Notify the right people via email, Microsoft Teams, Slack, SMS, and phone call — with two-way acknowledgment, escalation, mute, and maintenance-aware suppression.",
+        "Notify the right people via email, Microsoft Teams, Slack, SMS, and phone call. Two-way acknowledgment on email, Teams, and SMS; voice calls deliver spoken alert details. Add escalation chains, mute, and maintenance-aware suppression.",
     },
     {
       icon: ShieldCheck,

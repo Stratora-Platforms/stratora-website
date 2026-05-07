@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 export function Stats() {
   const stats = [
     { value: "IT & OT Ready", label: "Full-Stack Infrastructure Observability" },
-    { value: "50+", label: "Vendors/Device types supported and counting" },
+    { value: "30+", label: "Device templates and growing" },
     { value: "Template-driven", label: "Automated dashboards & config creation" },
     { value: "Agent/Collector", label: "Distributed agent & collector-based monitoring" },
   ];

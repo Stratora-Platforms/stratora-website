@@ -11,7 +11,7 @@ export function Footer() {
       { name: "Features", href: "/#features" },
       { name: "Pricing", href: "/#pricing" },
       { name: "Downloads", href: "/#downloads" },
-      { name: "Changelog", href: "/#downloads" },
+      { name: "Changelog", href: "https://docs.stratora.io/docs/changelog", external: true },
     ],
     Company: [
       { name: "About", href: "/#about" },

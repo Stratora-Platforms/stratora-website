@@ -1,4 +1,3 @@
-import { ExternalLink } from "lucide-react";
 import { motion } from "motion/react";
 import { MSI_DOWNLOAD_URL } from "../constants";
 
@@ -67,21 +66,13 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <a 
+            <a
               href={MSI_DOWNLOAD_URL}
-              target="_blank" 
-              rel="noopener noreferrer" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-8 py-3 text-white hover:from-purple-700 hover:to-purple-800 transition-all shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50"
             >
               Download & Try in 5 Minutes
-            </a>
-
-            <a 
-              href="#demo" 
-              className="rounded-full border border-border px-8 py-3 text-foreground hover:bg-secondary transition-all flex items-center gap-2"
-            >
-              Watch 5-Minute Demo
-              <ExternalLink className="h-4 w-4" />
             </a>
           </motion.div>
 

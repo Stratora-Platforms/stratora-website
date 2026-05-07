@@ -19,7 +19,8 @@ export function Pricing() {
         "RBAC with local accounts",
         "LDAP / Active Directory authentication",
         "OIDC / Microsoft Entra ID SSO",
-        "Email, Slack & Teams alerting",
+        "Email, Slack, Teams, and webhook alerting",
+        "SMS and Voice alerting via your own Twilio account (US-cell SMS requires A2P 10DLC registration)",
         "Community support",
       ],
       cta: "Download Free",
@@ -34,7 +35,7 @@ export function Pricing() {
       description: "Production-ready monitoring for real environments",
       features: [
         "250 nodes included",
-        "Expandable in 250-node packs",
+        "Add 250 nodes at a time, as many as you need",
         "Everything in Community",
         "Priority email support",
       ],
@@ -181,8 +182,7 @@ function PricingCard({
       <div className="mt-auto">
         {helperText && (
           <p className="text-xs text-muted-foreground text-center mb-3">
-            Need more nodes? Add 250-node expansion packs at checkout or anytime
-            via the{" "}
+            Need more nodes? Add 250 at a time at checkout or anytime via the{" "}
             <a
               href="/billing"
               onClick={(e) => {
