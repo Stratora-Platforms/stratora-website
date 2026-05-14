@@ -23,11 +23,11 @@ export function About() {
             </p>
 
             <p>
-              Modern infrastructure moves fast — faster than legacy tools were ever designed to handle. Metrics, logs, traces, and events shouldn't live in silos, and neither should the teams responsible for uptime.
+              Modern infrastructure moves fast — faster than legacy tools were ever designed to handle. Metrics, alerts, topology, and inventory shouldn't live in silos, and neither should the teams responsible for uptime.
             </p>
 
             <p>
-              Stratora brings observability together into a single, cohesive platform. One place to see what's happening, understand why it's happening, and act before users ever notice.
+              Stratora brings infrastructure monitoring together into a single, cohesive platform. One place to see what's happening, understand why it's happening, and act before users ever notice.
             </p>
 
             <p>
