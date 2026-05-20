@@ -84,7 +84,7 @@ export function Hero() {
             className="border-t border-border/30 pt-12 mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto text-center"
           >
             {[
-              { label: '5-minute deployment', desc: 'Windows Server 2022, no prerequisites' },
+              { label: '5-minute deployment', desc: 'Windows Server 2016 or later, no prerequisites' },
               { label: 'Auto-discovery — no config', desc: 'SNMP, agents, and ping' },
               { label: 'Dashboards instantly generated', desc: 'Built automatically from live data' },
               { label: 'Alerting from day one', desc: 'Email, Teams, Slack, SMS, and voice' },
