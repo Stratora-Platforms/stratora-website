@@ -5,6 +5,7 @@ import {
   Cpu,
   Bell,
   ShieldCheck,
+  Send,
 } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -45,6 +46,12 @@ export function Features() {
       title: "RBAC + LDAP/OIDC SSO authentication",
       description:
         "Built-in role-based access control with local accounts and identity provider pass-through (Active Directory, LDAP, Entra ID, and any OIDC-compliant provider), including group-to-role mapping. No credentials stored.",
+    },
+    {
+      icon: Send,
+      title: "Syslog Destinations",
+      description:
+        "Stream every audit event to your SIEM in real time. SOC 2, HIPAA, and PCI-DSS aligned. Supports Splunk, Elastic, Graylog, and any RFC-compliant syslog receiver.",
     },
   ];
 
