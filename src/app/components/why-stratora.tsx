@@ -2,8 +2,8 @@ import {
   Boxes,
   Server,
   KeyRound,
-  BellRing,
-  ScrollText,
+  AlarmClock,
+  ClipboardCheck,
 } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -25,14 +25,14 @@ export function WhyStratora() {
       body: "The Ed25519-signed license file is verified against a public key embedded in the binary — no internet connection, no version-check, no telemetry.",
     },
     {
-      icon: BellRing,
-      lead: "Alerting with on-call rotation built in.",
-      body: "Reach the right person on the right channel — email, Microsoft Teams, Slack, SMS, or voice — with escalation, active-hours scheduling, and maintenance suppression.",
+      icon: AlarmClock,
+      lead: "Built for the person on call at 2AM — not the person presenting dashboards in a meeting.",
+      body: "Clarity over clutter, signal over noise, speed over complexity.",
     },
     {
-      icon: ScrollText,
-      lead: "Every audit event streamed to your SIEM in real time",
-      body: "over UDP, TCP, or TLS — multi-destination fan-out with per-destination health monitoring. Compatible with Splunk, Elastic, Graylog, and any RFC-compliant receiver.",
+      icon: ClipboardCheck,
+      lead: "Procurement-ready out of the box.",
+      body: "Full audit trail, real-time SIEM forwarding for every audit event, RBAC with LDAP/AD and OIDC SSO — without a separate compliance project.",
     },
   ];
 
