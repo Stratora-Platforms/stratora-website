@@ -53,7 +53,7 @@ export function Features() {
       icon: Send,
       title: "Syslog Destinations",
       description:
-        "Stream every audit event to your SIEM in real time. SOC 2, HIPAA, and PCI-DSS aligned. Supports Splunk, Elastic, Graylog, and any RFC-compliant syslog receiver.",
+        "Stream every audit event to your SIEM in real time. Supports Splunk, Elastic, Graylog, and any RFC-compliant syslog receiver.",
     },
     {
       icon: Map,
