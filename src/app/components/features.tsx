@@ -6,6 +6,8 @@ import {
   Bell,
   ShieldCheck,
   Send,
+  Map,
+  Globe,
 } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -52,6 +54,18 @@ export function Features() {
       title: "Syslog Destinations",
       description:
         "Stream every audit event to your SIEM in real time. SOC 2, HIPAA, and PCI-DSS aligned. Supports Splunk, Elastic, Graylog, and any RFC-compliant syslog receiver.",
+    },
+    {
+      icon: Map,
+      title: "Network diagrams",
+      description:
+        "Topology maps, rack diagrams, and geographic site maps with live health overlays. Drag devices onto a canvas, draw connections with live interface utilization, place equipment into rack U positions, or pin sites onto a world map. All three update in real-time as your environment changes.",
+    },
+    {
+      icon: Globe,
+      title: "IPAM",
+      description:
+        "Track IP address space across supernets, subnets, and individual addresses. VLAN tags, gateway IPs, DHCP flags, and site-binding per subnet. Live utilization bars flag subnets approaching capacity. Address records sync from discovery scans and link to monitored nodes.",
     },
   ];
 

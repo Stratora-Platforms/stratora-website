@@ -4,7 +4,6 @@ import { Hero } from "./components/hero";
 import { DashboardPreview } from "./components/dashboard-preview";
 import { Stats } from "./components/stats";
 import { Features } from "./components/features";
-import { Integrations } from "./components/integrations";
 import { Pricing } from "./components/pricing";
 import { Downloads } from "./components/downloads";
 import { About } from "./components/about";
@@ -69,7 +68,6 @@ function LandingPage() {
 
       <Stats />
       <Features />
-      <Integrations />
       <Pricing />
       <Downloads />
       <About />
