@@ -56,7 +56,7 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
             className="mb-10 text-sm md:text-base text-muted-foreground"
           >
-            ⚡ From install → discovery → full visibility in ~5 minutes. No consultants. No tuning.
+            ⚡ One platform for monitoring, alerting, and audit — deployed on your network, not in someone else's cloud.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -72,7 +72,7 @@ export function Hero() {
               rel="noopener noreferrer"
               className="rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-8 py-3 text-white hover:from-purple-700 hover:to-purple-800 transition-all shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50"
             >
-              Download & Try in 5 Minutes
+              Download & Try in 10 Minutes
             </a>
           </motion.div>
 
@@ -84,7 +84,7 @@ export function Hero() {
             className="border-t border-border/30 pt-12 mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto text-center"
           >
             {[
-              { label: '5-minute deployment', desc: 'Windows Server 2016 or later, no prerequisites' },
+              { label: '10-minute deployment', desc: 'Windows Server 2016 or later, no prerequisites' },
               { label: 'Auto-discovery — no config', desc: 'SNMP, agents, and ping' },
               { label: 'Dashboards instantly generated', desc: 'Built automatically from live data' },
               { label: 'Alerting from day one', desc: 'Email, Teams, Slack, SMS, and voice' },
