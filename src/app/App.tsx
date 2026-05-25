@@ -5,6 +5,7 @@ import { DashboardPreview } from "./components/dashboard-preview";
 import { WhyStratora } from "./components/why-stratora";
 import { Stats } from "./components/stats";
 import { Features } from "./components/features";
+import { SecurityCompliance } from "./components/security-compliance";
 import { Pricing } from "./components/pricing";
 import { Downloads } from "./components/downloads";
 import { About } from "./components/about";
@@ -70,6 +71,7 @@ function LandingPage() {
 
       <Stats />
       <Features />
+      <SecurityCompliance />
       <Pricing />
       <Downloads />
       <About />
