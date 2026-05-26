@@ -1,3 +1,4 @@
+import { Play } from "lucide-react";
 import { motion } from "motion/react";
 import { MSI_DOWNLOAD_URL } from "../constants";
 
@@ -73,6 +74,15 @@ export function Hero() {
               className="rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-8 py-3 text-white hover:from-purple-700 hover:to-purple-800 transition-all shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50"
             >
               Download & Try in 10 Minutes
+            </a>
+            <a
+              href="https://www.youtube.com/watch?v=cazUCci05Is"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-purple-500/40 px-8 py-3 text-foreground hover:bg-purple-500/10 hover:border-purple-500/60 transition-all"
+            >
+              <Play className="h-4 w-4 text-purple-400" />
+              Watch Getting Started
             </a>
           </motion.div>
 
