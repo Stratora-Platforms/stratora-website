@@ -1,9 +1,5 @@
 import { Mail } from "lucide-react";
-
-function navigate(href: string) {
-  window.history.pushState(null, "", href);
-  window.dispatchEvent(new PopStateEvent("popstate"));
-}
+import { navigate } from "../lib/navigate";
 
 export function Footer() {
   const footerLinks = {

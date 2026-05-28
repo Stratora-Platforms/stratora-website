@@ -1,7 +1,4 @@
-function navigate(path: string) {
-  window.history.pushState({}, "", path);
-  window.dispatchEvent(new PopStateEvent("popstate"));
-}
+import { navigate } from "../lib/navigate";
 
 function ExtLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (

@@ -83,9 +83,13 @@ export default function App() {
   const [path, setPath] = useState(getInitialPath);
 
   useEffect(() => {
-    const onPopState = () => setPath(window.location.pathname);
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
+    const sync = () => setPath(window.location.pathname);
+    window.addEventListener("popstate", sync);
+    window.addEventListener("app:navigate", sync);
+    return () => {
+      window.removeEventListener("popstate", sync);
+      window.removeEventListener("app:navigate", sync);
+    };
   }, []);
 
   return (

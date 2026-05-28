@@ -1,6 +1,7 @@
 import { Check, Zap } from "lucide-react";
 import { motion } from "motion/react";
 import { MSI_DOWNLOAD_URL } from "../constants";
+import { navigate } from "../lib/navigate";
 
 const PRO_ANNUAL_LINK =
   "https://buy.stripe.com/4gM3cx0jTe28gyC2OYefC04";
@@ -187,8 +188,7 @@ function PricingCard({
               href="/billing"
               onClick={(e) => {
                 e.preventDefault();
-                window.history.pushState(null, "", "/billing");
-                window.dispatchEvent(new PopStateEvent("popstate"));
+                navigate("/billing");
               }}
               className="text-purple-400 hover:text-purple-300 transition-colors"
             >

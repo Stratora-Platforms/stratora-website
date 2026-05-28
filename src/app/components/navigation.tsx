@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-
-function navigate(href: string) {
-  window.history.pushState(null, "", href);
-  window.dispatchEvent(new PopStateEvent("popstate"));
-}
+import { navigate } from "../lib/navigate";
 
 export function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -21,10 +17,33 @@ export function Navigation() {
   ];
 
   function handleClick(e: React.MouseEvent, href: string) {
+    // In-app route links (e.g. "/", "/billing") — SPA navigate.
     if (href.startsWith("/")) {
       e.preventDefault();
       navigate(href);
+      setMobileOpen(false);
+      return;
     }
+
+    // Section links (e.g. "#features") target elements that only exist on the
+    // landing page. From a sub-route, SPA-navigate home first, then scroll once
+    // the landing page has rendered; on the landing page, scroll directly.
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      const id = href.slice(1);
+      const scrollToSection = () =>
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      if (window.location.pathname !== "/") {
+        navigate("/");
+        requestAnimationFrame(scrollToSection);
+      } else {
+        scrollToSection();
+      }
+      setMobileOpen(false);
+      return;
+    }
+
+    // External / mailto / other — let the browser handle it.
     setMobileOpen(false);
   }
 
