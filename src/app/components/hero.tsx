@@ -76,7 +76,7 @@ export function Hero() {
               Download & Try in 10 Minutes
             </a>
             <a
-              href="https://www.youtube.com/watch?v=cazUCci05Is"
+              href="https://www.youtube.com/watch?v=JpRbNZXpu2o"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-purple-500/40 px-8 py-3 text-foreground hover:bg-purple-500/10 hover:border-purple-500/60 transition-all"
