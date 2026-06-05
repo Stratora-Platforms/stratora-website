@@ -7,6 +7,7 @@ export function Navigation() {
 
   const links = [
     { label: "Home", href: "/" },
+    { label: "Screenshots", href: "#screenshots" },
     { label: "Features", href: "#features" },
     { label: "Pricing", href: "#pricing" },
     { label: "Downloads", href: "#downloads" },

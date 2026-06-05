@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Navigation } from "./components/navigation";
 import { Hero } from "./components/hero";
 import { DashboardPreview } from "./components/dashboard-preview";
+import { ScreenshotGallery } from "./components/screenshot-gallery";
 import { WhyStratora } from "./components/why-stratora";
 import { Stats } from "./components/stats";
 import { Features } from "./components/features";
@@ -30,6 +31,7 @@ function LandingPage() {
     <>
       <Hero />
       <DashboardPreview />
+      <ScreenshotGallery />
       <WhyStratora />
 
       {/* How It Works */}
