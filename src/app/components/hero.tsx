@@ -79,9 +79,9 @@ export function Hero() {
               href="https://www.youtube.com/watch?v=JpRbNZXpu2o"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-purple-500/40 px-8 py-3 text-foreground hover:bg-purple-500/10 hover:border-purple-500/60 transition-all"
+              className="inline-flex items-center gap-2 rounded-full border border-orange-accent/40 px-8 py-3 text-foreground hover:bg-orange-accent/10 hover:border-orange-bright/60 transition-all"
             >
-              <Play className="h-4 w-4 text-purple-400" />
+              <Play className="h-4 w-4 text-orange-accent" />
               Watch Getting Started
             </a>
           </motion.div>

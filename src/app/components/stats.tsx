@@ -21,7 +21,7 @@ export function Stats() {
               transition={{ duration: 0.5, delay: i * 0.05 }}
               className="space-y-2"
             >
-              <div className="text-3xl md:text-5xl bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">
+              <div className="text-3xl md:text-5xl bg-gradient-to-r from-orange-bright to-orange-accent bg-clip-text text-transparent">
                 {stat.value}
               </div>
               <div className="text-sm text-muted-foreground">{stat.label}</div>

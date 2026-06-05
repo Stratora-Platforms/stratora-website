@@ -60,7 +60,7 @@ export function WhyStratora() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="max-w-3xl mx-auto mb-16 border-l-2 border-purple-500/60 pl-6 text-base md:text-lg italic text-muted-foreground"
+          className="max-w-3xl mx-auto mb-16 border-l-2 border-orange-accent/60 pl-6 text-base md:text-lg italic text-muted-foreground"
         >
           If your monitoring stack is a thing that polls switches, another
           thing that watches servers, a separate alerting layer that's never
@@ -76,7 +76,7 @@ export function WhyStratora() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="flex gap-4 rounded-2xl border border-border/50 bg-card/50 p-6 hover:border-purple-500/30 transition-all"
+              className="flex gap-4 rounded-2xl border border-border/50 bg-card/50 p-6 hover:border-orange-accent/30 transition-all"
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-500/10">
                 <b.icon className="h-5 w-5 text-purple-400" />

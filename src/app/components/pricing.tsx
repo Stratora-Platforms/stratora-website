@@ -1,10 +1,22 @@
-import { Check, Zap } from "lucide-react";
+import { Check, Zap, ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
 import { MSI_DOWNLOAD_URL } from "../constants";
 import { navigate } from "../lib/navigate";
+import { cn } from "./ui/utils";
 
 const PRO_ANNUAL_LINK =
   "https://buy.stripe.com/4gM3cx0jTe28gyC2OYefC04";
+
+// Shared platform features — identical on all three tiers (green checks). Proves
+// "Same platform. Same features. Scale by node count."
+const PLATFORM_FEATURES = [
+  "Full platform — dashboards, alerting, collectors & agents",
+  "RBAC with local accounts",
+  "LDAP / Active Directory authentication",
+  "OIDC / Microsoft Entra ID SSO",
+  "Email, Slack, Teams & webhook alerting",
+  "SMS & Voice alerting via your own Twilio account (US-cell SMS requires A2P 10DLC registration)",
+];
 
 export function Pricing() {
   const plans = [
@@ -14,16 +26,7 @@ export function Pricing() {
       priceSuffix: "",
       period: "forever",
       description: "Full-featured monitoring for labs and small environments",
-      features: [
-        "Up to 100 monitored nodes",
-        "Full platform — dashboards, alerting, collectors & agents",
-        "RBAC with local accounts",
-        "LDAP / Active Directory authentication",
-        "OIDC / Microsoft Entra ID SSO",
-        "Email, Slack, Teams, and webhook alerting",
-        "SMS and Voice alerting via your own Twilio account (US-cell SMS requires A2P 10DLC registration)",
-        "Community support",
-      ],
+      deltas: ["Up to 100 nodes", "Community support"],
       cta: "Download Free",
       href: MSI_DOWNLOAD_URL,
       highlighted: false,
@@ -34,10 +37,9 @@ export function Pricing() {
       priceSuffix: "/ year",
       period: "billed annually",
       description: "Production-ready monitoring for real environments",
-      features: [
+      deltas: [
         "250 nodes included",
-        "Add 250 nodes at a time, as many as you need",
-        "Everything in Community",
+        "Add 250-node packs for $3,000/yr each",
         "Priority email support",
       ],
       cta: "Get Started with Pro",
@@ -51,9 +53,8 @@ export function Pricing() {
       priceSuffix: "",
       period: "Volume discounts available",
       description: "Monitoring at any scale with dedicated support",
-      features: [
+      deltas: [
         "Unlimited nodes",
-        "Everything in Pro",
         "Dedicated onboarding",
         "SLA-backed support",
         "Volume pricing",
@@ -102,13 +103,37 @@ export function Pricing() {
   );
 }
 
+// A single feature row. Delta rows (per-tier value) get a purple icon + emphasized
+// foreground text; base rows get a green check + muted text.
+function FeatureRow({ label, isDelta }: { label: string; isDelta: boolean }) {
+  const Icon = isDelta ? ArrowUpRight : Check;
+  return (
+    <li className="flex items-start gap-3">
+      <Icon
+        className={cn(
+          "h-5 w-5 flex-shrink-0 mt-0.5",
+          isDelta ? "text-purple-400" : "text-emerald-400",
+        )}
+      />
+      <span
+        className={cn(
+          "text-sm",
+          isDelta ? "font-semibold text-foreground" : "text-muted-foreground",
+        )}
+      >
+        {label}
+      </span>
+    </li>
+  );
+}
+
 interface PricingCardProps {
   name: string;
   price: string;
   priceSuffix: string;
   period: string;
   description: string;
-  features: string[];
+  deltas: string[];
   cta: string;
   href: string;
   highlighted: boolean;
@@ -121,7 +146,7 @@ function PricingCard({
   priceSuffix,
   period,
   description,
-  features,
+  deltas,
   cta,
   href,
   highlighted,
@@ -138,7 +163,7 @@ function PricingCard({
       {/* Popular badge */}
       {highlighted && (
         <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-          <div className="flex items-center gap-1 rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-4 py-1 text-xs text-white shadow-lg">
+          <div className="flex items-center gap-1 rounded-full bg-gradient-to-r from-orange-accent to-orange-deep px-4 py-1 text-xs text-white shadow-lg">
             <Zap className="h-3 w-3" />
             Most Popular
           </div>
@@ -169,18 +194,19 @@ function PricingCard({
         <div className="text-xs text-muted-foreground mt-1">{period}</div>
       </div>
 
-      {/* Features */}
-      <ul className="space-y-3 flex-grow">
-        {features.map((feature, i) => (
-          <li key={i} className="flex items-start gap-3">
-            <Check className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
-            <span className="text-sm text-muted-foreground">{feature}</span>
-          </li>
+      {/* Features — shared platform list first (aligns across columns), then the
+          per-tier deltas (emphasized) at the bottom, near the CTA */}
+      <ul className="space-y-3">
+        {PLATFORM_FEATURES.map((feature, i) => (
+          <FeatureRow key={`feature-${i}`} label={feature} isDelta={false} />
+        ))}
+        {deltas.map((delta, i) => (
+          <FeatureRow key={`delta-${i}`} label={delta} isDelta />
         ))}
       </ul>
 
       {/* CTA Button */}
-      <div className="mt-auto">
+      <div className="mt-auto pt-6">
         {helperText && (
           <p className="text-xs text-muted-foreground text-center mb-3">
             Need more nodes? Add 250 at a time at checkout or anytime via the{" "}
@@ -190,7 +216,7 @@ function PricingCard({
                 e.preventDefault();
                 navigate("/billing");
               }}
-              className="text-purple-400 hover:text-purple-300 transition-colors"
+              className="text-orange-accent hover:text-orange-bright transition-colors"
             >
               billing portal
             </a>

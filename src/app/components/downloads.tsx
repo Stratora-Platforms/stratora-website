@@ -28,7 +28,7 @@ export function Downloads() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="max-w-2xl mx-auto"
         >
-          <div className="rounded-2xl border border-border/50 bg-card/50 p-8 hover:border-purple-500/30 transition-all">
+          <div className="rounded-2xl border border-border/50 bg-card/50 p-8 hover:border-orange-accent/30 transition-all">
             <h3 className="text-xl mb-3">
               Stratora Server v{RELEASE_VERSION}
             </h3>
@@ -53,7 +53,7 @@ export function Downloads() {
                 href={RELEASE_NOTES_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-sm text-purple-400 hover:text-purple-300 transition-colors"
+                className="inline-flex items-center gap-1 text-sm text-orange-accent hover:text-orange-bright transition-colors"
               >
                 View release notes on GitHub
                 <ExternalLink className="h-3.5 w-3.5" />

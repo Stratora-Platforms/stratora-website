@@ -150,8 +150,8 @@ export function ScreenshotGallery() {
                 ))}
               </CarouselContent>
 
-              <CarouselPrevious className="left-4 bg-background/60 backdrop-blur-sm border-purple-500/30 text-foreground hover:bg-purple-500/20" />
-              <CarouselNext className="right-4 bg-background/60 backdrop-blur-sm border-purple-500/30 text-foreground hover:bg-purple-500/20" />
+              <CarouselPrevious className="left-4 bg-background/60 backdrop-blur-sm border-purple-500/30 text-foreground hover:bg-orange-accent/20" />
+              <CarouselNext className="right-4 bg-background/60 backdrop-blur-sm border-purple-500/30 text-foreground hover:bg-orange-accent/20" />
             </div>
 
             {/* Active title + caption */}
@@ -172,8 +172,8 @@ export function ScreenshotGallery() {
                   className={cn(
                     "relative rounded-lg overflow-hidden border transition-all",
                     i === selected
-                      ? "border-purple-500/60 opacity-100"
-                      : "border-border/50 opacity-50 hover:opacity-100",
+                      ? "border-orange-accent opacity-100"
+                      : "border-border/50 opacity-50 hover:opacity-100 hover:border-orange-bright",
                   )}
                 >
                   <img
@@ -198,7 +198,7 @@ export function ScreenshotGallery() {
                   aria-current={i === selected}
                   className={cn(
                     "h-2 rounded-full transition-all",
-                    i === selected ? "w-6 bg-purple-500" : "w-2 bg-muted-foreground/40",
+                    i === selected ? "w-6 bg-orange-accent" : "w-2 bg-muted-foreground/40",
                   )}
                 />
               ))}
