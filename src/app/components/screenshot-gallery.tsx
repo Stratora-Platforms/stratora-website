@@ -121,7 +121,7 @@ export function ScreenshotGallery() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
-          className="max-w-5xl mx-auto"
+          className="max-w-6xl mx-auto"
         >
           <Carousel setApi={setApi} opts={{ loop: true }}>
             {/* Main viewer — framed to match dashboard-preview.tsx */}
