@@ -5,7 +5,9 @@ export function Stats() {
     { value: "IT + OT Zones", label: "Remote collectors, on-prem, no cloud dependency" },
     { value: "30+", label: "Device templates and growing" },
     { value: "Template-driven", label: "Automated dashboards & config creation" },
-    { value: "Agent/Collector", label: "Distributed agent & collector-based monitoring" },
+    // <wbr/> adds a wrap opportunity after the slash so the long token doesn't
+    // overflow its narrow column on mobile (desktop still renders on one line).
+    { value: <>Agent/<wbr />Collector</>, label: "Distributed agent & collector-based monitoring" },
   ];
 
   return (

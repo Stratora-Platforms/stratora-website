@@ -150,8 +150,8 @@ export function ScreenshotGallery() {
                 ))}
               </CarouselContent>
 
-              <CarouselPrevious className="left-4 bg-background/60 backdrop-blur-sm border-orange-accent/40 text-foreground shadow-[0_0_12px_rgba(255,152,24,0.25)] hover:bg-orange-accent/20" />
-              <CarouselNext className="right-4 bg-background/60 backdrop-blur-sm border-orange-accent/40 text-foreground shadow-[0_0_12px_rgba(255,152,24,0.25)] hover:bg-orange-accent/20" />
+              <CarouselPrevious className="left-4 bg-background/60 backdrop-blur-sm border-orange-accent/40 dark:border-orange-accent/60 dark:bg-background/60 text-foreground shadow-[0_0_14px_rgba(255,152,24,0.35)] hover:bg-orange-accent/20" />
+              <CarouselNext className="right-4 bg-background/60 backdrop-blur-sm border-orange-accent/40 dark:border-orange-accent/60 dark:bg-background/60 text-foreground shadow-[0_0_14px_rgba(255,152,24,0.35)] hover:bg-orange-accent/20" />
             </div>
 
             {/* Active title + caption */}
