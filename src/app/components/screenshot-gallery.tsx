@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "motion/react";
 import {
   Carousel,
@@ -81,6 +81,23 @@ export function ScreenshotGallery() {
 
   const scrollTo = useCallback((index: number) => api?.scrollTo(index), [api]);
 
+  // Embla lays all slides in one flex track, so the viewport is as tall as the
+  // tallest screenshot. Drive the frame height from the active image instead, so
+  // the bordered frame hugs whichever screenshot is showing.
+  const imgRefs = useRef<(HTMLImageElement | null)[]>([]);
+  const [frameHeight, setFrameHeight] = useState<number>();
+
+  const measure = useCallback(() => {
+    const height = imgRefs.current[selected]?.clientHeight;
+    if (height) setFrameHeight(height);
+  }, [selected]);
+
+  useEffect(() => {
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [measure]);
+
   const active = SCREENSHOTS[selected];
 
   return (
@@ -108,16 +125,25 @@ export function ScreenshotGallery() {
         >
           <Carousel setApi={setApi} opts={{ loop: true }}>
             {/* Main viewer — framed to match dashboard-preview.tsx */}
-            <div className="relative rounded-2xl border border-purple-500/20 overflow-hidden shadow-2xl shadow-purple-900/20">
+            <div
+              className="relative rounded-2xl border border-purple-500/20 overflow-hidden shadow-2xl shadow-purple-900/20 transition-[height] duration-300"
+              style={frameHeight ? { height: frameHeight } : undefined}
+            >
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-purple-800/20 rounded-2xl blur-xl -z-10" />
               <CarouselContent className="ml-0">
-                {SCREENSHOTS.map((shot) => (
+                {SCREENSHOTS.map((shot, i) => (
                   <CarouselItem key={shot.file} className="pl-0">
                     <img
+                      ref={(el) => {
+                        imgRefs.current[i] = el;
+                      }}
                       src={`/screenshots/${shot.file}`}
                       alt={`Stratora — ${shot.title}: ${shot.caption}`}
                       className="w-full h-auto block"
                       loading="lazy"
+                      onLoad={() => {
+                        if (i === selected) measure();
+                      }}
                       onError={hideOnError}
                     />
                   </CarouselItem>
