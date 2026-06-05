@@ -49,7 +49,7 @@ export function Pricing() {
     },
     {
       name: "Enterprise",
-      price: "Enterprise Pricing",
+      price: "Custom",
       priceSuffix: "",
       period: "Volume discounts available",
       description: "Monitoring at any scale with dedicated support",
