@@ -4,7 +4,7 @@ import { MSI_DOWNLOAD_URL } from "../constants";
 
 export function Hero() {
   return (
-    <section className="relative pt-32 pb-20 px-6 overflow-hidden">
+    <section className="relative pt-32 pb-0 px-6 overflow-hidden">
       {/* Background grid pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(139,92,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
       
@@ -25,7 +25,7 @@ export function Hero() {
       </div>
 
       <div className="container mx-auto relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
           
           {/* Headline */}
           <motion.h1
@@ -45,7 +45,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="mb-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto"
+            className="mb-6 text-lg md:text-xl text-muted-foreground max-w-4xl mx-auto"
           >
             Automatically discover your environment, generate dashboards, and start monitoring immediately — with built-in alerting, topology maps, and documentation for IT and OT systems.
           </motion.p>
