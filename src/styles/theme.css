@@ -141,6 +141,10 @@
 
   html {
     scroll-behavior: smooth;
+    /* Guard: the 3D-warped dashboard card (.hero-3d-card) can extend past the
+       viewport edge. `clip` prevents a horizontal scrollbar WITHOUT creating a
+       scroll container (unlike `hidden`, which would). */
+    overflow-x: clip;
   }
 
   body {
@@ -196,5 +200,159 @@
     font-size: var(--text-base);
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
+  }
+}
+
+/* ============================================================
+   Standalone perspective-warp dashboard band — 3D card + glow
+   (feat/hero-3d-treatment)
+   ------------------------------------------------------------
+   The dashboard is its own band below the hero (no overlap). The
+   card foreshortens into a trapezoid — narrow/receding at the TOP,
+   full-width sharp front edge at the BOTTOM — via rotateX from a
+   bottom transform-origin under a tight perspective. The important
+   bottom rows stay crisp; only the far top edge softens (depth).
+   CSS-only.
+
+   The rotateX angle lives in --hx so responsive overrides only swap
+   the angle; the float @keyframes animates ONLY translateY on top of
+   the static rotate (resolved per-element, never interpolated — no
+   jump, no @property needed). transform-origin stays bottom center
+   across all keyframes so the front edge never shifts.
+
+   Perspective lives on the .hero-3d-scene wrapper (the card's parent)
+   in dashboard-preview.tsx so it can vary per breakpoint; the card
+   owns transform + preserve-3d + float + drop-shadow.
+   backface-visibility + will-change keep it GPU-composited. */
+.hero-3d-scene {
+  perspective: 600px; /* tight = strong trapezoid */
+  perspective-origin: 50% 0%; /* 50% horizontally = symmetric warp, no shift */
+  /* Flex-center the over-wide card so it bleeds EQUALLY both sides. `margin:
+     auto` can't center a child wider than its container (spec resolves the
+     autos to 0 → pinned left); justify-content:center distributes the overflow
+     symmetrically. */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.hero-3d-card {
+  --hx: 22deg;
+
+  position: relative;
+  z-index: 1; /* above the glow blobs (z-index: 0) */
+  width: 140%; /* strong bleed but recovers some left nav vs 160%; fluid (% of
+                  container), side bleed clipped by the section + html guard */
+  max-width: 2000px;
+  flex-shrink: 0; /* keep the 160% — don't let flex shrink it to fit */
+  transform: rotateX(var(--hx)) translateY(0);
+  transform-origin: bottom center;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform;
+  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.6));
+  animation: hero3dFloat 8s ease-in-out infinite;
+}
+
+@keyframes hero3dFloat {
+  0%,
+  100% {
+    transform: rotateX(var(--hx)) translateY(0);
+  }
+  50% {
+    transform: rotateX(var(--hx)) translateY(-10px);
+  }
+}
+
+/* Two-blob morphing glow — each blob drifts + scales independently
+   (different durations) so the combined shape morphs over time rather
+   than just pulsing. Purple only — NO orange. Behind the card. */
+.hero-glow-a,
+.hero-glow-b {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 0;
+  /* Promote to their own compositing layer so the static blur is rasterized
+     ONCE and cached; the keyframes then only composite transform — the blur is
+     never recomputed per frame. */
+  will-change: transform, opacity;
+}
+.hero-glow-a {
+  width: 680px;
+  height: 680px;
+  left: 14%;
+  bottom: -6%; /* anchored LOW — behind the wide bottom front edge */
+  background: radial-gradient(closest-side, rgba(139, 92, 246, 0.5), transparent 72%);
+  filter: blur(80px);
+  animation: heroGlowA 9s ease-in-out infinite;
+}
+.hero-glow-b {
+  width: 600px;
+  height: 600px;
+  left: 46%;
+  bottom: 4%;
+  background: radial-gradient(closest-side, rgba(124, 58, 237, 0.42), transparent 72%);
+  filter: blur(80px);
+  animation: heroGlowB 11s ease-in-out infinite;
+}
+@keyframes heroGlowA {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(46px, -34px) scale(1.16);
+  }
+}
+@keyframes heroGlowB {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1.08);
+  }
+  50% {
+    transform: translate(-52px, 22px) scale(0.92);
+  }
+}
+
+/* Tablet — gentler warp (lower angle + looser perspective), narrower card. */
+@media (max-width: 1024px) {
+  .hero-3d-scene {
+    perspective: 800px;
+  }
+  .hero-3d-card {
+    --hx: 16deg;
+    width: 120%;
+  }
+}
+
+/* Mobile — gentle trapezoid (reduced 12° vs desktop's 22°). Because perspective
+   is an ABSOLUTE length, its foreshortening scales with element-size ÷
+   distance: the mobile card is small (~356px), so it needs a TIGHTER
+   perspective than desktop to show any tilt — 900px on a small card reads
+   nearly flat (was the bug). 220px gives a gentle but visible warp.
+   width:100% (not over-wide) so the card centers on every engine — an
+   over-wide flex item pins LEFT in iOS/Safari even with justify-content:center
+   (the real-phone left-shift). transform-origin / preserve-3d / flex-shrink /
+   perspective-origin / float all inherit from the base rules. */
+@media (max-width: 640px) {
+  .hero-3d-scene {
+    perspective: 220px; /* tight enough that 12° foreshortens on a small card */
+  }
+  .hero-3d-card {
+    --hx: 12deg;
+    width: 100%; /* exactly fills container — no over-wide centering ambiguity */
+  }
+  .hero-glow-a,
+  .hero-glow-b {
+    opacity: 0.6;
+  }
+}
+
+/* Accessibility — freeze the float + glow drift (static composition stays). */
+@media (prefers-reduced-motion: reduce) {
+  .hero-3d-card,
+  .hero-glow-a,
+  .hero-glow-b {
+    animation: none;
   }
 }
