@@ -8,6 +8,7 @@ import {
   Send,
   Map,
   Globe,
+  Boxes,
 } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -17,13 +18,19 @@ export function Features() {
       icon: LayoutGrid,
       title: "Visualization-first dashboards",
       description:
-        "Interactive port grids, gauges, charts, tables, and status heatmaps — all driven by live metrics. Automatically generated dashboards provide consistent site-wide and infrastructure-specific views out of the box.",
+        "Interactive port grids, gauges, charts, tables, and status heatmaps — all driven by live metrics. Automatically generated dashboards provide consistent site-wide and infrastructure-specific views out of the box — now including your virtualization layer, so each site's dashboard folds in its hosts, VMs, and datastores alongside the physical infrastructure.",
     },
     {
       icon: Radar,
       title: "Template-driven monitoring",
       description:
-        "Deploy consistent monitoring fast with device templates for switches, firewalls, APs, servers, NAS, ping checks, and web services / HTTP endpoints. Add custom templates for anything we don't ship out of the box.",
+        "Deploy consistent monitoring fast with device templates for switches, firewalls, APs, servers, NAS, hypervisors, ping checks, and web services / HTTP endpoints. Add custom templates for anything we don't ship out of the box.",
+    },
+    {
+      icon: Boxes,
+      title: "Virtualization inventory & visibility",
+      description:
+        "See your entire virtualized footprint — VMware vSphere / vCenter, Hyper-V, and Proxmox VE — discovered and monitored as first-class infrastructure across every site. Hosts, VMs with run-state, datastores, and capacity roll up into per-platform dashboards and each site's inventory, so you know what you're running and where — automatically.",
     },
     {
       icon: Network,
