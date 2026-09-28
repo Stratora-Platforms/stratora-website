@@ -1,0 +1,1021 @@
+/* ============================================================================
+   Live dashboard — the animated hero preview that replaced the static,
+   perspective-tilted dashboard screenshot.
+
+   Scope: every rule here is namespaced `.sd-*` and every colour is local. The
+   `--sd-accent` brand purple is declared on `.sd-root` ONLY, so this component
+   never participates in the site-wide #a855f7 / #8b5cf6 unification.
+
+   Layout: the frame is authored at a fixed 1240px design width (SD_DESIGN_WIDTH
+   in live-dashboard-data.ts). Down to 768px it is transform-scaled to fit its
+   container by live-dashboard.tsx, which also sets the wrapper's height so the
+   scaled box leaves no gap. Below 768px scaling would put body text under 8px,
+   so the frame switches to a fluid single-column layout at native text sizes
+   instead — see the compact block at the bottom.
+   ========================================================================== */
+
+.sd-root {
+  --sd-accent: #8b5cf6;
+  --sd-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+}
+
+.sd-mono {
+  font-family: var(--sd-mono);
+}
+
+/* -- fit wrapper ----------------------------------------------------------
+   .sd-fit gets an explicit height from JS (scaled content height). The inner
+   box keeps its 1240px layout width and scales from its top-left corner, so a
+   scale of s makes it paint exactly s * 1240 wide — flush with the container,
+   no centring maths. `margin: 0 auto` only bites in the one case where it can:
+   a container WIDER than 1240, where the scale is 1. */
+.sd-fit {
+  position: relative;
+}
+
+.sd-fit-inner {
+  margin: 0 auto;
+  transform-origin: 0 0;
+}
+
+/* -- frame ---------------------------------------------------------------- */
+.sd-frame {
+  position: relative;
+  border-radius: 16px;
+  border: 1px solid #25253b;
+  background: #0b0b12;
+  overflow: hidden;
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(139, 92, 246, 0.08);
+  color: #ececf3;
+  font-size: 14px;
+  line-height: normal;
+  text-align: left;
+}
+
+/* -- top bar -------------------------------------------------------------- */
+.sd-topbar {
+  height: 52px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 18px;
+  border-bottom: 1px solid #1c1c2e;
+  background: #0d0d15;
+}
+
+.sd-wordmark {
+  width: 158px;
+  flex-shrink: 0;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+}
+
+.sd-grow {
+  flex-grow: 1;
+}
+
+.sd-pills {
+  display: flex;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.sd-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 13px;
+  white-space: nowrap;
+}
+
+.sd-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sd-search {
+  width: 220px;
+  height: 32px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: #13131d;
+  border: 1px solid #22223a;
+  color: #7e7e98;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.sd-org {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  flex-shrink: 0;
+}
+
+.sd-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #1f6f5c;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* -- body / sidebar ------------------------------------------------------- */
+.sd-body {
+  display: flex;
+}
+
+.sd-sidebar {
+  width: 176px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 14px 10px;
+  border-right: 1px solid #1c1c2e;
+  background: #0d0d15;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+  color: #a1a1b8;
+}
+
+.sd-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  padding: 0 10px;
+  flex-shrink: 0;
+}
+
+.sd-nav-active {
+  border-radius: 8px;
+  background: rgba(139, 92, 246, 0.14);
+  color: #ffffff;
+  box-shadow: inset 2px 0 0 var(--sd-accent);
+}
+
+.sd-nav-badge {
+  margin-left: auto;
+  font-size: 11px;
+  padding: 1px 7px;
+  border-radius: 9px;
+  background: rgba(249, 115, 22, 0.16);
+  color: #fb923c;
+}
+
+.sd-sidebar-foot {
+  padding: 12px 10px;
+  border-top: 1px solid #1c1c2e;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.sd-sidebar-foot-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sd-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* -- map ------------------------------------------------------------------ */
+.sd-map {
+  position: relative;
+  height: 340px;
+  background: #0a0a11;
+  border-bottom: 1px solid #1c1c2e;
+  overflow: hidden;
+}
+
+/* The box the map artwork and its overlay share. Absolute here so the
+   callout, region chips and health card can sit over it; in compact mode it
+   becomes a normal aspect-locked block and the health card drops below. */
+.sd-map-viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* Gives the scan line a `cqw` to travel, so one keyframe rule works at both
+     the 1064px desktop map and the fluid compact one. */
+  container-type: inline-size;
+}
+
+/* The dotted world map. A stretched background rather than an <img> so it
+   lands on exactly the same box as the preserveAspectRatio="none" overlay at
+   every width — no sub-pixel drift between continents and pins. */
+.sd-map-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url("/worldmap.svg");
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 100% 100%;
+}
+
+.sd-map-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.sd-sweep {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  background: linear-gradient(
+    90deg,
+    rgba(139, 92, 246, 0),
+    rgba(139, 92, 246, 0.1),
+    rgba(139, 92, 246, 0)
+  );
+}
+
+.sd-map-labels {
+  font-family: var(--sd-mono);
+  letter-spacing: 0.06em;
+}
+
+.sd-callout {
+  position: absolute;
+  left: 640px;
+  top: 18px;
+  width: 262px;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(19, 19, 29, 0.94);
+  border: 1px solid rgba(249, 115, 22, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sd-callout-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.sd-callout-body {
+  font-size: 12px;
+  line-height: 1.45;
+  color: #b4b4c8;
+}
+
+/* DEVIATION FROM THE REFERENCE, deliberate. The reference puts these at
+   top: 14px, which collides with the Frankfurt callout: at the frame's own
+   1240px width the callout spans x 640-902 and the chips start at x 721, so
+   the opaque chips clip "Frankfurt DC" and its incident badge every time the
+   callout fades in.
+   The chips move rather than the callout because the callout's position is
+   pin-optimal — at top: 18px it covers no site pin, whereas every alternative
+   placement for it buries one (DXB at 693,131 below, TYO at 941,104 right).
+   The chips are free-floating chrome, and bottom-right is empty ocean that
+   clears the SYD pin at (975,283) by 12px, balancing the health card at
+   bottom-left. */
+.sd-regions {
+  position: absolute;
+  right: 16px;
+  bottom: 18px;
+  display: flex;
+  gap: 6px;
+  font-size: 11.5px;
+}
+
+.sd-region {
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: rgba(19, 19, 29, 0.9);
+  border: 1px solid #25253b;
+  white-space: nowrap;
+}
+
+.sd-health {
+  position: absolute;
+  left: 20px;
+  bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 18px 12px 12px;
+  border-radius: 12px;
+  background: rgba(13, 13, 21, 0.92);
+  border: 1px solid #25253b;
+}
+
+.sd-ring {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  flex-shrink: 0;
+}
+
+.sd-ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.sd-health-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+
+/* -- content -------------------------------------------------------------- */
+.sd-content {
+  padding: 16px 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sd-card {
+  border-radius: 12px;
+  background: #11111a;
+  border: 1px solid #1f1f33;
+  /* The faint purple top-edge highlight every card shares. */
+  box-shadow: inset 0 1px 0 rgba(139, 92, 246, 0.35);
+  overflow: hidden;
+}
+
+.sd-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 14px;
+  border-bottom: 1px solid #1c1c2e;
+}
+
+.sd-card-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* "View all" affordances are rendered as plain text — the frame is
+   illustrative and nothing inside it is focusable. */
+.sd-pseudolink {
+  margin-left: auto;
+  font-size: 12px;
+  color: #c4b5fd;
+}
+
+/* -- KPI row -------------------------------------------------------------- */
+.sd-kpis {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.sd-kpi {
+  height: 92px;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sd-kpi-top {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.sd-kpi-value {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.sd-kpi-sub {
+  font-size: 11px;
+  color: #8f8fa8;
+}
+
+.sd-kpi-label {
+  font-size: 12.5px;
+  color: #c9c9d9;
+}
+
+.sd-kpi-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  color: #8f8fa8;
+}
+
+/* The trend note must stay on one line. The reference's sans is Geist; on the
+   site's system stack the widest note ("BLR patch window") is a few px wider
+   and would otherwise wrap and blow the card's fixed 92px height. Pinning the
+   text lets the sparkline give up those few px instead. */
+.sd-kpi-foot > span {
+  white-space: nowrap;
+}
+
+/* -- two-up rows ---------------------------------------------------------- */
+.sd-two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.sd-bottom {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr;
+  gap: 12px;
+}
+
+/* -- needs attention ------------------------------------------------------ */
+.sd-alerts {
+  display: flex;
+  flex-direction: column;
+  font-size: 12.5px;
+}
+
+.sd-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 14px;
+  border-bottom: 1px solid #17172a;
+}
+
+.sd-alert:last-child {
+  border-bottom: 0;
+}
+
+.sd-dot8 {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.sd-alert-node {
+  width: 118px;
+  flex-shrink: 0;
+}
+
+.sd-alert-msg {
+  flex-grow: 1;
+  color: #c9c9d9;
+  min-width: 0;
+}
+
+.sd-alert-site {
+  color: #8f8fa8;
+  width: 92px;
+  flex-shrink: 0;
+}
+
+.sd-alert-ago {
+  color: #8f8fa8;
+  width: 40px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* -- incident context ----------------------------------------------------- */
+.sd-incident {
+  /* Same card shape, warmed to critical orange. */
+  border-color: rgba(249, 115, 22, 0.35);
+  box-shadow: inset 0 1px 0 rgba(249, 115, 22, 0.45);
+  display: flex;
+  flex-direction: column;
+}
+
+.sd-sev {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 9px;
+  background: rgba(249, 115, 22, 0.14);
+  color: #fb923c;
+  white-space: nowrap;
+}
+
+.sd-correlation {
+  margin-left: auto;
+  font-size: 11.5px;
+  color: #9f9fb6;
+  white-space: nowrap;
+}
+
+.sd-incident-title {
+  padding: 12px 14px 4px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sd-steps {
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sd-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 8px;
+  border-radius: 8px;
+  background: transparent;
+  transition: background 0.4s;
+}
+
+.sd-step.is-on {
+  background: rgba(139, 92, 246, 0.12);
+}
+
+.sd-step-time {
+  font-size: 11px;
+  color: #8f8fa8;
+  width: 58px;
+  flex-shrink: 0;
+}
+
+/* --sd-c is the step's status colour, --sd-glow the same colour at 20%. */
+.sd-step-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--sd-c);
+  box-shadow: none;
+  transition: box-shadow 0.4s;
+}
+
+.sd-step.is-on .sd-step-dot {
+  box-shadow: 0 0 0 4px var(--sd-glow);
+}
+
+.sd-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex-grow: 1;
+}
+
+.sd-step-text {
+  font-size: 12.5px;
+}
+
+.sd-step-layer {
+  font-size: 10.5px;
+  color: #9f9fb6;
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid #2a2a42;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.sd-cause {
+  margin: auto 14px 12px 14px;
+  padding: 9px 11px;
+  border-radius: 9px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  font-size: 12px;
+  line-height: 1.45;
+  color: #d4d4e2;
+}
+
+/* -- sites table ---------------------------------------------------------- */
+.sd-sites-head,
+.sd-site {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 0.6fr 1.3fr 0.5fr 0.5fr 0.8fr;
+  gap: 8px;
+  align-items: center;
+  padding: 0 14px;
+  border-bottom: 1px solid #17172a;
+}
+
+.sd-sites-head {
+  height: 30px;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7e7e98;
+}
+
+.sd-site {
+  height: 38px;
+  font-size: 12.5px;
+}
+
+.sd-site:last-child {
+  border-bottom: 0;
+}
+
+.sd-site-health {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sd-bar-track {
+  width: 90px;
+  height: 5px;
+  border-radius: 3px;
+  background: #23233a;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* --sd-w is the animated fill width in px, --sd-c the band colour. */
+.sd-bar-fill {
+  display: block;
+  height: 5px;
+  width: var(--sd-w);
+  background: var(--sd-c);
+}
+
+.sd-site-pct {
+  font-size: 11.5px;
+  color: #b4b4c8;
+}
+
+.sd-site-chip {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 9px;
+  white-space: nowrap;
+}
+
+/* -- live activity -------------------------------------------------------- */
+.sd-feed-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 14px;
+  border-bottom: 1px solid #17172a;
+}
+
+.sd-feed-row:last-child {
+  border-bottom: 0;
+}
+
+.sd-feed-row.is-new {
+  background: rgba(139, 92, 246, 0.07);
+}
+
+.sd-feed-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--sd-c);
+}
+
+.sd-feed-row.is-new .sd-feed-dot {
+  box-shadow: 0 0 0 4px var(--sd-glow);
+}
+
+.sd-feed-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex-grow: 1;
+}
+
+.sd-feed-text {
+  font-size: 12.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sd-feed-site {
+  font-size: 11px;
+  color: #8f8fa8;
+}
+
+.sd-feed-ago {
+  font-size: 11px;
+  color: #8f8fa8;
+  flex-shrink: 0;
+}
+
+/* -- animation ------------------------------------------------------------
+   Continuous, compositor-friendly loops. Everything here is decorative; the
+   reduced-motion block at the very bottom turns all of it off. */
+.sd-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sd-pulse 2.6s ease-out infinite;
+}
+
+@keyframes sd-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(4.6);
+    opacity: 0;
+  }
+}
+
+.sd-flow {
+  stroke-dasharray: 3 15;
+  animation: sd-flow 2.4s linear infinite;
+}
+
+@keyframes sd-flow {
+  to {
+    stroke-dashoffset: -54;
+  }
+}
+
+.sd-sweep {
+  animation: sd-sweep 7s linear infinite;
+}
+
+@keyframes sd-sweep {
+  from {
+    transform: translateX(-40px);
+  }
+  to {
+    transform: translateX(100cqw);
+  }
+}
+
+.sd-live {
+  animation: sd-live 1.6s ease-in-out infinite;
+}
+
+@keyframes sd-live {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.sd-callout {
+  animation: sd-callout 5.2s ease-in-out infinite;
+}
+
+@keyframes sd-callout {
+  0%,
+  8% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  16%,
+  86% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   Compact layout — below 768px.
+
+   Scaling the 1240px frame to a phone would put its 12.5px body text under
+   8px, so below the md breakpoint the frame stops scaling and reflows: the
+   sidebar, the sites table and the live activity feed drop out, and the map,
+   KPIs, needs-attention and incident-context stack in one column at native
+   text sizes. The map keeps its 1064:340 aspect so the arcs and pins stay
+   registered to the continents; its labels, region chips and callout are hung
+   at map scale and become illegible, so they go, and the health ring moves
+   out from over the map into its own row beneath it.
+   ========================================================================== */
+@media (max-width: 767.98px) {
+  .sd-fit-inner {
+    width: 100% !important;
+    transform: none !important;
+  }
+
+  .sd-frame {
+    border-radius: 12px;
+  }
+
+  /* Top bar: keep the wordmark, the status pills and the avatar — the search
+     field and the org name are the two things a phone can lose without
+     changing what the bar says. */
+  .sd-topbar {
+    gap: 10px;
+    padding: 0 12px;
+  }
+
+  .sd-wordmark {
+    width: auto;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+  }
+
+  .sd-search,
+  .sd-org-name {
+    display: none;
+  }
+
+  .sd-pills {
+    gap: 4px;
+    font-size: 11px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .sd-pill {
+    height: 22px;
+    padding: 0 7px;
+    gap: 4px;
+  }
+
+  .sd-avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
+
+  .sd-sidebar,
+  .sd-bottom {
+    display: none;
+  }
+
+  /* Map: fluid, aspect-locked, with the overlaid chrome removed. */
+  .sd-map {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sd-map-viewport {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1064 / 340;
+  }
+
+  .sd-map-labels,
+  .sd-regions,
+  .sd-callout {
+    display: none;
+  }
+
+  .sd-health {
+    position: static;
+    margin: 10px 12px 12px 12px;
+    padding: 10px 12px;
+    gap: 12px;
+  }
+
+  .sd-content {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .sd-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  /* Labels like "Active alerts, correlated" need two lines in a half-width
+     card, which would push the trend row out of the fixed 92px box. */
+  .sd-kpi {
+    height: auto;
+    min-height: 92px;
+    gap: 6px;
+  }
+
+  /* Five cards in a two-up grid strand the last one in a half-empty row. */
+  .sd-kpis > :last-child {
+    grid-column: span 2;
+  }
+
+  .sd-two {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Card headers carry three things — title, severity chip, correlation count
+     — which do not fit one line at this width. Let them wrap instead of
+     squeezing the title. */
+  .sd-card-head {
+    height: auto;
+    min-height: 42px;
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  /* Alert rows go two-line: node + age on the first, the message beneath.
+     The site column is dropped — every message already names its node. */
+  .sd-alert {
+    height: auto;
+    min-height: 44px;
+    padding: 9px 12px;
+    flex-wrap: wrap;
+    row-gap: 2px;
+  }
+
+  .sd-alert-node {
+    width: auto;
+  }
+
+  .sd-alert-site {
+    display: none;
+  }
+
+  .sd-alert-msg {
+    order: 5;
+    flex-basis: 100%;
+    padding-left: 18px;
+  }
+
+  /* Incident steps wrap rather than truncate; the layer chip goes. */
+  .sd-steps {
+    padding: 6px;
+  }
+
+  .sd-step {
+    height: auto;
+    min-height: 38px;
+    padding: 7px 8px;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .sd-step-layer {
+    display: none;
+  }
+
+  .sd-cause {
+    margin: 4px 12px 12px 12px;
+  }
+}
+
+/* Narrow phones can't fit five pills next to the wordmark; the two that are
+   purely informational (maintenance, healthy) give way first. */
+@media (max-width: 420px) {
+  .sd-pill-optional {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Reduced motion — every loop off. The component also skips its intro
+   animation and its interval in JS, rendering the completed state directly.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .sd-pulse,
+  .sd-flow,
+  .sd-sweep,
+  .sd-live,
+  .sd-callout,
+  .sd-step,
+  .sd-step-dot {
+    animation: none;
+    transition: none;
+  }
+}

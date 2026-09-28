@@ -18,6 +18,20 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/stratora-favicon.png" />
 
+    <!-- Geist Mono — numerals, node names and timestamps in the hero's live
+         dashboard. Body text stays on the system sans stack.
+         Loaded non-blocking (media="print" until onload): nothing above the
+         fold is monospace, so blocking first paint on it cost ~800ms of FCP
+         for no visual benefit. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&amp;display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+
     <!-- Cloudflare Web Analytics -->
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js'
             data-cf-beacon='{"token": "013b1f88336149f7a4bebadd87ee65b4"}'></script>
