@@ -1,0 +1,84 @@
+{
+  "$comment": [
+    "Each entry produces one PNG in outDir, captured at the viewport size below.",
+    "",
+    "Targeting a page, two ways:",
+    "  url    — navigate straight to this path.",
+    "  index + pick — open the index page, then click the card whose heading is",
+    "           exactly `pick`. Use this for anything with a generated UUID in",
+    "           its URL (dashboards, maps, sites, racks). Names survive a",
+    "           re-seed of the dev box; UUIDs do not.",
+    "",
+    "Timing:",
+    "  waitFor  — CSS selector that must appear before capture.",
+    "  settleMs — extra pause after that, for charts/maps that animate in.",
+    "  hide     — selectors hidden just before the shot (toasts, banners).",
+    "",
+    "The `title` is only used in console output, to match the carousel entry in",
+    "src/app/components/screenshot-gallery.tsx."
+  ],
+
+  "baseUrl": "https://app.stratora.io",
+  "outDir": "public/screenshots",
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 1,
+  "colorScheme": "dark",
+  "defaultSettleMs": 1800,
+
+  "shots": [
+    {
+      "file": "dashboard.png",
+      "title": "Global NOC dashboard",
+      "index": "/dashboards",
+      "pick": "Global Dashboard",
+      "settleMs": 3500
+    },
+    {
+      "file": "world-map.png",
+      "title": "Multi-site visibility",
+      "index": "/maps",
+      "pick": "World Map",
+      "settleMs": 3500
+    },
+    {
+      "file": "topology.png",
+      "title": "Visual network topology",
+      "index": "/maps",
+      "pick": "Stratora HQ Office — Network Overview",
+      "settleMs": 3000
+    },
+    {
+      "file": "alerts.png",
+      "title": "Alerting that scales",
+      "url": "/alerts",
+      "settleMs": 2000
+    },
+    {
+      "file": "escalation.png",
+      "title": "On-call escalation",
+      "url": "/escalation-teams",
+      "settleMs": 2000
+    },
+    {
+      "file": "site-overview.png",
+      "title": "Site health at a glance",
+      "index": "/sites",
+      "pick": "Stratora HQ Office",
+      "indexWaitFor": "table td",
+      "settleMs": 3000
+    },
+    {
+      "file": "ipam.png",
+      "title": "Built-in IPAM",
+      "url": "/ipam",
+      "settleMs": 2000
+    },
+    {
+      "file": "rack.png",
+      "title": "Rack visualization",
+      "index": "/racks",
+      "pickFirstCard": true,
+      "settleMs": 2500
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "stratora-website-screenshots",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Captures the app screenshots used by the website carousel. Deliberately kept out of the site's package.json so the Pages deploy never installs Playwright.",
+  "scripts": {
+    "capture": "node capture.mjs",
+    "setup": "npm install && npx playwright install chromium"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
+  }
+}
