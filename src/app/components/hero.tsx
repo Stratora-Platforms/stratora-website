@@ -28,8 +28,14 @@ export function Hero() {
         />
       </div>
 
-      <div className="container mx-auto relative z-10">
-        <div className="max-w-5xl mx-auto text-center">
+      {/* Deliberately wider than the shared `container` (1280). At 72px the
+          headline needs 1289px to fall to two lines — nine past the container
+          cap — so the hero gets its own wider measure. The subheading, CTAs
+          and proof strip all keep their own narrower caps below, so only the
+          h1 actually spreads. Below ~1340px viewport it still wraps to three
+          lines; there is no width left to give it without shrinking the type. */}
+      <div className="relative z-10 mx-auto w-full max-w-[1460px]">
+        <div className="text-center">
           
           {/* Headline */}
           <motion.h1
@@ -95,7 +101,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-            className="border-t border-border/30 pt-12 mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto text-center"
+            className="border-t border-border/30 pt-7 mt-8 grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 max-w-6xl mx-auto text-center"
           >
             {[
               { label: '10-minute deployment', desc: 'Single MSI on Windows Server' },
