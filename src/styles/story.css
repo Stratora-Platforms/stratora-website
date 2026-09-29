@@ -89,6 +89,79 @@
 }
 
 /* ==========================================================================
+   Sensitive-environments architecture diagram
+   ========================================================================== */
+.sc-ants {
+  animation: sc-ants 14s linear infinite;
+}
+
+@keyframes sc-ants {
+  to {
+    stroke-dashoffset: -280;
+  }
+}
+
+/* The blocked probe: leaves the server, dies at the boundary. */
+.sc-probe {
+  animation: sc-probe 3.4s ease-in-out infinite;
+}
+
+@keyframes sc-probe {
+  0%,
+  10% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(-148px);
+    opacity: 1;
+  }
+  72%,
+  100% {
+    transform: translateY(-148px);
+    opacity: 0;
+  }
+}
+
+.sc-flow {
+  stroke-dasharray: 5 9;
+  animation: sc-flow 1.6s linear infinite;
+}
+
+@keyframes sc-flow {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+
+/* Leader lines draw in on view. The dash length is generous because the
+   measured paths vary with viewport width. */
+.sc-draw {
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  animation: sc-draw 0.9s ease forwards;
+}
+
+@keyframes sc-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-draw {
+    stroke-dashoffset: 0;
+  }
+
+  .sc-probe {
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
    Features carousel
    ========================================================================== */
 .ft-stage {
