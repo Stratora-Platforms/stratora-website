@@ -510,11 +510,14 @@ function SmsAck() {
               MTY-CORE-SW01 uplink Gi1/0/48 down — Monterrey Plant.
             </div>
 
+            {/* Shipped syntax is `ACK <token>` / `ESCALATE <token>` — single-use,
+                24-hour TTL, case-insensitive. 7f3k is sample data. */}
             <div className="st-fade" style={{ ...incoming, animationDelay: ".35s" }}>
-              Reply <b style={{ color: "#fff" }}>ACK</b> to acknowledge or <b style={{ color: "#fff" }}>ESC</b> to escalate.
+              Reply <b style={{ color: "#fff" }}>ACK 7f3k</b> to acknowledge or{" "}
+              <b style={{ color: "#fff" }}>ESCALATE 7f3k</b> to escalate.
             </div>
 
-            <div className="st-fade" style={{ ...outgoing, animationDelay: ".9s" }}>ACK</div>
+            <div className="st-fade" style={{ ...outgoing, animationDelay: ".9s" }}>ACK 7f3k</div>
 
             {/* iOS puts the receipt under the message you sent, not the reply. */}
             <div className="st-fade" style={{ animationDelay: "1.05s", alignSelf: "flex-end", fontSize: 9, color: "#6f6f79", paddingRight: 5, marginTop: -3 }}>
@@ -522,7 +525,7 @@ function SmsAck() {
             </div>
 
             <div className="st-fade" style={{ ...incoming, animationDelay: "1.35s" }}>
-              Acknowledged 02:07. Escalation stopped — you own this alert.
+              Acknowledged 02:07. Escalation stopped.
             </div>
           </div>
 

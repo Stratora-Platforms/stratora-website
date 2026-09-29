@@ -19,9 +19,21 @@ import { ScaledStage } from "./scaled-stage";
 
 const STAGE = { width: 784, height: 540 };
 
-/** 36 ticks at 300ms. Phase 0 is install, 1 is discovery, 2 is monitoring. */
-const TICKS = 36;
-const TICK_MS = 300;
+/**
+ * 35 ticks at 200ms = 7.0s end to end, inside the 6-8s target.
+ *
+ *   Phase 0  install   ticks 0-8   1.8s  — settles on the finished install
+ *   Phase 1  discover  ticks 9-24  3.2s  — the longest: devices arrive one at
+ *                                          a time and templates apply behind
+ *   Phase 2  monitor   ticks 25-34 2.0s  — dashboards, health score, alerts
+ *
+ * Runs once on view and stops on the final frame. It never loops, and the
+ * written steps beside it are never gated on it.
+ */
+const TICKS = 35;
+const TICK_MS = 200;
+const PHASE_1_AT = 9;
+const PHASE_2_AT = 25;
 
 const STEPS = [
   {
@@ -140,18 +152,18 @@ export function HowItWorks() {
     };
   }, []);
 
-  const phase = t < 8 ? 0 : t < 24 ? 1 : 2;
-  const devices = phase === 0 ? 0 : Math.round(62 * ease((t - 8) / 14));
-  const hq = phase === 0 ? 0 : Math.round(44 * ease((t - 8) / 14));
-  const mty = phase === 0 ? 0 : Math.round(18 * ease((t - 12) / 10));
-  const score = phase === 2 ? Math.round(95 * ease((t - 24) / 6)) : 0;
-  const railPct = phase === 0 ? 18 : phase === 1 ? 18 + (t - 8) * 3.2 : 100;
+  const phase = t < PHASE_1_AT ? 0 : t < PHASE_2_AT ? 1 : 2;
+  const devices = phase === 0 ? 0 : Math.round(62 * ease((t - PHASE_1_AT) / 15));
+  const hq = phase === 0 ? 0 : Math.round(44 * ease((t - PHASE_1_AT) / 15));
+  const mty = phase === 0 ? 0 : Math.round(18 * ease((t - PHASE_1_AT - 4) / 11));
+  const score = phase === 2 ? Math.round(95 * ease((t - PHASE_2_AT) / 7)) : 0;
+  const railPct = phase === 0 ? 18 : phase === 1 ? 18 + (t - PHASE_1_AT) * 3.4 : 100;
   const banner = BANNERS[phase];
 
   const rows =
     phase === 1
-      ? DISCOVERED.slice(0, Math.max(0, Math.min(6, Math.floor((t - 8) / 2)))).map((x, k, arr) => {
-          const applied = k < arr.length - 1 || t >= 22;
+      ? DISCOVERED.slice(0, Math.max(0, Math.min(6, Math.floor((t - PHASE_1_AT) / 2.4) + 1))).map((x, k, arr) => {
+          const applied = k < arr.length - 1 || t >= PHASE_2_AT - 3;
           return {
             name: x[0],
             text: `${x[1]} · ${x[2]}`,
@@ -315,11 +327,11 @@ export function HowItWorks() {
     <section ref={sectionRef} className="st-scope relative px-6 py-20">
       <div className="container mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="max-w-3xl mb-14"
+          viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
+          className="max-w-3xl mx-auto mb-14 text-center"
         >
           <h2 className="text-3xl md:text-5xl mb-4 tracking-tight">Up and running in three steps</h2>
           <p className="text-lg text-muted-foreground">

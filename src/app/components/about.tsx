@@ -21,32 +21,33 @@ export function About() {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background via-purple-950/5 to-background" />
 
       <div className="container relative z-10 mx-auto px-6">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:gap-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6 }}
-            className="lg:sticky lg:top-28 lg:self-start"
-          >
-            <h2 className="mb-4 text-3xl md:text-5xl tracking-tight">About Stratora</h2>
-            <p className="text-lg text-purple-200/70">
-              Monitoring that works out of the box — no specialists required.
-            </p>
-          </motion.div>
+        {/* Centred section header, matching every other section. The heading
+            used to be a sticky left-hand label column, which read as an
+            off-centre title next to its centred neighbours. */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
+          className="mx-auto mb-14 max-w-2xl text-center"
+        >
+          <h2 className="mb-4 text-3xl md:text-5xl tracking-tight">About Stratora</h2>
+          <p className="text-lg text-purple-200/70">
+            Monitoring that works out of the box — no specialists required.
+          </p>
+        </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="flex flex-col gap-6 text-muted-foreground leading-relaxed"
-          >
-            {PARAGRAPHS.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </motion.div>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+          transition={{ duration: 0.32, ease: "easeOut", delay: 0.08 }}
+          className="mx-auto flex max-w-3xl flex-col gap-6 leading-relaxed text-muted-foreground"
+        >
+          {PARAGRAPHS.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </motion.div>
       </div>
     </section>
   );

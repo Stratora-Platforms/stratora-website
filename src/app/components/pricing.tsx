@@ -162,10 +162,10 @@ export function Pricing() {
     <section id="pricing" className="relative px-6 py-20">
       <div className="container mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
           className="mb-16 text-center"
         >
           <h2 className="mb-4 text-3xl md:text-5xl tracking-tight">Simple, Transparent Pricing</h2>
@@ -175,10 +175,10 @@ export function Pricing() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
           className="pr-grid mx-auto max-w-6xl"
         >
           {/* The rule the flat tiers sit on; Pro breaks out of it. */}

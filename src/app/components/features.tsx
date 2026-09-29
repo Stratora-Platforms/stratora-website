@@ -73,13 +73,36 @@ const GROUPS: { label: string; items: number[] }[] = [
 /** Seconds each slide holds before auto-advance moves on. */
 const DWELL_S = [8, 8, 11, 12, 12, 16, 12, 8, 8, 8];
 
+const groupOf = (i: number) => GROUPS.find((g) => g.items.includes(i))?.label ?? "";
+
 export function Features() {
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const pickerRef = useRef<HTMLButtonElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const timerRef = useRef<number | null>(null);
   const onScreen = useRef(false);
+
+  /* Opening and closing the list changes the height above the stage. Pin the
+     picker button to the same viewport offset across the reflow so choosing a
+     feature never yanks the page up or down under the reader's thumb. */
+  const keepPickerAnchored = useCallback((mutate: () => void) => {
+    const before = pickerRef.current?.getBoundingClientRect().top;
+    mutate();
+    if (before === undefined) return;
+    requestAnimationFrame(() => {
+      const after = pickerRef.current?.getBoundingClientRect().top;
+      if (after === undefined) return;
+      const drift = after - before;
+      if (Math.abs(drift) > 1) window.scrollBy({ top: drift, behavior: "instant" as ScrollBehavior });
+    });
+  }, []);
+
+  const togglePicker = useCallback(() => {
+    keepPickerAnchored(() => setPickerOpen((open) => !open));
+  }, [keepPickerAnchored]);
 
   const stop = useCallback(() => {
     if (timerRef.current !== null) {
@@ -153,10 +176,10 @@ export function Features() {
     <section id="features" ref={sectionRef} className="st-scope ap-root relative px-6 py-20">
       <div className="container mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
           className="text-center mb-14 max-w-2xl mx-auto"
         >
           <h2 className="text-3xl md:text-5xl mb-4 tracking-tight">
@@ -172,50 +195,78 @@ export function Features() {
             children: without them the implicit column sizes to the chip rail's
             max-content at mobile and pushes the page sideways. */}
         <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-14 lg:items-start">
-          {/* Rail — a horizontally scrolling row of chips on mobile. */}
-          <div
-            role="tablist"
-            aria-label="Features"
-            aria-orientation="vertical"
-            onKeyDown={onKeyDown}
-            className="flex min-w-0 gap-2 overflow-x-auto pb-2 lg:flex-col lg:gap-6 lg:overflow-visible lg:pb-0"
-          >
-            {GROUPS.map((group) => {
-              const groupActive = group.items.includes(index);
-              return (
-                <div key={group.label} className="flex gap-2 lg:flex-col lg:gap-0.5">
-                  <span
-                    className="hidden lg:block pb-1.5 pl-3.5 text-[12.5px] font-semibold transition-colors"
-                    style={{ color: groupActive ? "#c4b5fd" : "#6b6b78" }}
-                  >
-                    {group.label}
-                  </span>
-                  {group.items.map((i) => {
-                    const on = i === index;
-                    return (
-                      <button
-                        key={i}
-                        type="button"
-                        role="tab"
-                        id={`feature-tab-${i}`}
-                        aria-controls={`feature-panel-${i}`}
-                        aria-selected={on}
-                        tabIndex={on ? 0 : -1}
-                        ref={(el) => {
-                          tabRefs.current[i] = el;
-                        }}
-                        onClick={() => select(i, true)}
-                        className="ft-tab"
-                        data-on={on ? "true" : "false"}
-                      >
-                        <span className="ft-tab-bar" />
-                        {FEATURES[i].title}
-                      </button>
-                    );
-                  })}
-                </div>
-              );
-            })}
+          <div className="min-w-0">
+            {/* Mobile: a disclosure that opens the full grouped list. A single
+                scrolling chip row showed one of ten titles at 390px, with no
+                cue the other nine existed. */}
+            <button
+              type="button"
+              ref={pickerRef}
+              className="ft-picker lg:hidden"
+              aria-expanded={pickerOpen}
+              aria-controls="feature-rail"
+              onClick={togglePicker}
+            >
+              <span className="ft-picker-eyebrow">{groupOf(index)}</span>
+              <span className="ft-picker-title">{active.title}</span>
+              <span className="ft-picker-meta">
+                {index + 1} / {FEATURES.length}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: pickerOpen ? "rotate(180deg)" : undefined, transition: "transform .2s" }}>
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </span>
+            </button>
+
+            <div
+              id="feature-rail"
+              role="tablist"
+              aria-label="Features"
+              aria-orientation="vertical"
+              onKeyDown={onKeyDown}
+              className={`ft-rail min-w-0 flex-col gap-1 lg:flex lg:gap-6 ${pickerOpen ? "flex" : "hidden lg:flex"}`}
+            >
+              {GROUPS.map((group) => {
+                const groupActive = group.items.includes(index);
+                return (
+                  <div key={group.label} className="flex flex-col gap-0.5">
+                    <span
+                      className="pb-1.5 pl-3.5 text-[12.5px] font-semibold transition-colors"
+                      style={{ color: groupActive ? "#c4b5fd" : "#6b6b78" }}
+                    >
+                      {group.label}
+                    </span>
+                    {group.items.map((i) => {
+                      const on = i === index;
+                      return (
+                        <button
+                          key={i}
+                          type="button"
+                          role="tab"
+                          id={`feature-tab-${i}`}
+                          aria-controls={`feature-panel-${i}`}
+                          aria-selected={on}
+                          tabIndex={on ? 0 : -1}
+                          ref={(el) => {
+                            tabRefs.current[i] = el;
+                          }}
+                          onClick={() =>
+                            keepPickerAnchored(() => {
+                              select(i, true);
+                              setPickerOpen(false);
+                            })
+                          }
+                          className="ft-tab"
+                          data-on={on ? "true" : "false"}
+                        >
+                          <span className="ft-tab-bar" />
+                          {FEATURES[i].title}
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           <div className="flex min-w-0 flex-col gap-6">

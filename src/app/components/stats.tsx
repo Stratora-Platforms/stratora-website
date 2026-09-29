@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
+import { revealDelay } from "./reveal";
 
 /**
  * The four proof stats. Same four values and labels as before; the refresh
@@ -80,8 +81,8 @@ export function Stats() {
               key={stat.label}
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: i * 0.05 }}
+              viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+              transition={{ duration: 0.32, ease: "easeOut", delay: revealDelay(i) }}
               className="relative space-y-2"
             >
               {/* The size step is at lg, not md. Between 768 and 1023 the

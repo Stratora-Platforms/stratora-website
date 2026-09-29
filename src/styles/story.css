@@ -9,6 +9,32 @@
    switches all of it off, leaving each section on its end state.
    ========================================================================== */
 
+/* ==========================================================================
+   Sticky-header anchor offset
+   --------------------------------------------------------------------------
+   The nav is fixed: 73px tall on mobile (40px logo + 32px padding + border)
+   and 81px from md up (48px logo). Without an offset, jumping to #features
+   parks the heading underneath it.
+
+   Keyed off `main section[id]` rather than a list of ids, so any section that
+   gains an id is covered automatically. Both hash navigation and the nav's
+   scrollIntoView honour scroll-margin-top.
+   ========================================================================== */
+:root {
+  --nav-h: 73px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --nav-h: 81px;
+  }
+}
+
+main section[id],
+main [id][data-anchor] {
+  scroll-margin-top: calc(var(--nav-h) + 24px);
+}
+
 .st-scope {
   --st-panel: #0f0f16;
   --st-panel-2: #13131c;
@@ -196,19 +222,43 @@
   font-weight: 600;
 }
 
+/* Secondary CTA — Community and Enterprise.
+   NOT var(--color-foreground) / var(--color-border): Tailwind v4's
+   `@theme inline` SUBSTITUTES those at build time, so they carry the light
+   palette's near-black regardless of the .dark class, and both buttons
+   rendered black-on-black. The underlying --foreground does respond to .dark,
+   but explicit values are clearer here. */
 .pr-cta {
   display: block;
   width: 100%;
   padding: 12px 0;
   border-radius: 999px;
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(167, 139, 250, 0.45);
+  background: rgba(255, 255, 255, 0.02);
   text-align: center;
-  color: var(--color-foreground);
-  transition: background 0.2s, border-color 0.2s;
+  color: #ededf0;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
 .pr-cta:hover {
-  background: var(--color-secondary);
+  border-color: rgba(167, 139, 250, 0.9);
+  background: rgba(139, 92, 246, 0.12);
+  color: #ffffff;
+}
+
+.pr-cta:active {
+  background: rgba(139, 92, 246, 0.2);
+}
+
+.pr-cta:focus-visible {
+  outline: 2px solid #a78bfa;
+  outline-offset: 3px;
+}
+
+.pr-cta[aria-disabled="true"],
+.pr-cta:disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .pr-cta-primary {
@@ -425,23 +475,96 @@
   border-radius: 6px;
 }
 
-/* Mobile: the rail is a scrolling row of chips rather than a list. */
+/* Mobile: a disclosure that names the current feature and opens the full
+   grouped list. The previous treatment was one scrolling row of chips, which
+   at 390px showed exactly one of ten titles (rail scrollWidth 2020 in a 327px
+   window) with nothing on screen to suggest the other nine existed.
+
+   Scoped to the breakpoint rather than left to `lg:hidden`: story.css is
+   imported after Tailwind, so a bare `.ft-picker { display: grid }` would
+   outrank the utility at desktop widths and the disclosure would show there
+   too. */
 @media (max-width: 1023.98px) {
-  .ft-tab {
-    width: auto;
-    white-space: nowrap;
-    padding: 8px 14px;
-    border-radius: 999px;
+  .ft-picker {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 4px 12px;
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 12px;
     border: 1px solid #23232c;
-    font-size: 13.5px;
+    background: rgba(255, 255, 255, 0.02);
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .ft-picker:hover {
+    border-color: rgba(167, 139, 250, 0.5);
+  }
+
+  .ft-picker[aria-expanded="true"] {
+    border-color: var(--st-accent);
+    background: rgba(139, 92, 246, 0.08);
+  }
+
+  .ft-picker:focus-visible {
+    outline: 2px solid var(--st-accent);
+    outline-offset: 2px;
+  }
+
+  .ft-picker-eyebrow {
+    grid-column: 1;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #c4b5fd;
+  }
+
+  .ft-picker-title {
+    grid-column: 1;
+    min-width: 0;
+    font-size: 15px;
+    line-height: 1.3;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  .ft-picker-meta {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12.5px;
+    font-variant-numeric: tabular-nums;
+    color: #8b8b98;
+  }
+
+  .ft-rail {
+    margin-top: 8px;
+    padding: 10px 8px 12px;
+    border-radius: 12px;
+    border: 1px solid #23232c;
+    background: rgba(255, 255, 255, 0.015);
+  }
+
+  .ft-tab {
+    padding: 9px 12px 9px 14px;
+    border-radius: 8px;
+    font-size: 14.5px;
   }
 
   .ft-tab[data-on="true"] {
-    border-color: var(--st-accent);
+    background: rgba(139, 92, 246, 0.12);
   }
 
   .ft-tab-bar {
-    display: none;
+    top: 9px;
+    bottom: 9px;
   }
 }
 
@@ -693,6 +816,94 @@
   outline: 2px solid var(--st-accent);
   outline-offset: 4px;
   border-radius: 6px;
+}
+
+/* Mobile story accordion — the <lg counterpart to the sticky desktop rail.
+   The five state names stay on screen; one body is open at a time, and only
+   the open one mounts its visual. */
+.st-acc {
+  min-width: 0;
+}
+
+.st-acc-lead {
+  margin-bottom: 22px;
+}
+
+.st-acc-lead-text {
+  margin-top: 14px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--st-ink-2);
+}
+
+.st-acc-item {
+  border-top: 1px solid #23232c;
+}
+
+.st-acc-item:last-child {
+  border-bottom: 1px solid #23232c;
+}
+
+.st-acc-h {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.st-acc-btn {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: 15px 2px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.st-acc-title {
+  min-width: 0;
+  font-size: 15.5px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: var(--st-ink-3);
+  transition: color 0.2s;
+}
+
+.st-acc-item[data-on="true"] .st-acc-title {
+  color: #ffffff;
+}
+
+.st-acc-chev {
+  flex: none;
+  margin-top: 3px;
+  color: #6b6b78;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.st-acc-item[data-on="true"] .st-acc-chev {
+  transform: rotate(180deg);
+  color: var(--st-accent);
+}
+
+.st-acc-btn:focus-visible {
+  outline: 2px solid var(--st-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.st-acc-panel {
+  padding-bottom: 18px;
+}
+
+.st-acc-body {
+  margin-top: 14px;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--st-ink-2);
 }
 
 @media (prefers-reduced-motion: reduce) {

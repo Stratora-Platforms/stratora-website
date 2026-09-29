@@ -19,19 +19,34 @@ export function Downloads() {
   return (
     <section id="downloads" className="st-scope relative px-6 py-20">
       <div className="container mx-auto">
-        <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="mb-4 text-3xl md:text-5xl tracking-tight">Download Stratora</h2>
-            <p className="text-lg text-muted-foreground">
-              Free forever for up to 100 nodes. No account required.
-            </p>
+        {/* Centred section header, matching every other section. It used to sit
+            inside the left grid column, which left it hard against the page
+            edge while its neighbours were centred. */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
+          className="mx-auto mb-14 max-w-2xl text-center"
+        >
+          <h2 className="mb-4 text-3xl md:text-5xl tracking-tight">Download Stratora</h2>
+          <p className="text-lg text-muted-foreground">
+            Free forever for up to 100 nodes. No account required.
+          </p>
+        </motion.div>
 
-            <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+        {/* One centred column rather than two. With the heading lifted out, the
+            left column held only the two buttons and a footnote and sat half
+            empty beside a tall card. */}
+        <div className="mx-auto max-w-3xl">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+            transition={{ duration: 0.32, ease: "easeOut" }}
+            className="text-center"
+          >
+            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
               <a
                 href={MSI_DOWNLOAD_URL}
                 target="_blank"
@@ -59,11 +74,11 @@ export function Downloads() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="rounded-2xl border border-border/50 bg-card/40"
+            viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+            transition={{ duration: 0.32, ease: "easeOut", delay: 0.08 }}
+            className="mt-12 rounded-2xl border border-border/50 bg-card/40 text-left"
           >
             <div className="flex items-center gap-3 border-b border-border/50 px-7 py-5">
               <h3 className="text-lg font-semibold">Stratora Server v{RELEASE_VERSION}</h3>

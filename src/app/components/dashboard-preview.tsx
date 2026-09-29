@@ -21,10 +21,10 @@ export function DashboardPreview() {
       <div className="container mx-auto">
         {/* EXISTING Framer Motion fade-up — kept as the outer wrapper. */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
+          viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
           className="relative"
         >
           <LiveDashboard />

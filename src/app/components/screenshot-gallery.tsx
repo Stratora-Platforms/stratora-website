@@ -122,10 +122,10 @@ export function ScreenshotGallery() {
     <section id="screenshots" ref={sectionRef} className="relative px-6 py-20">
       <div className="container mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-5xl mb-4">See Stratora in action</h2>
@@ -135,10 +135,10 @@ export function ScreenshotGallery() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
           // Full container width. max-w-6xl held this to 1152 while every
           // other section ran to 1280, which read as the carousel being
           // inset from the rest of the page.

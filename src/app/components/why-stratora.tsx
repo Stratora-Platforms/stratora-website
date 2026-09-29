@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { ScaledStage } from "./scaled-stage";
 import { STORY_STAGE, STORY_VISUALS } from "./why-stratora-visuals";
@@ -54,6 +54,66 @@ export function WhyStratora() {
   /** Set once the reader picks a paragraph, so scrolling stops overriding them. */
   const pickedRef = useRef(false);
   const paraRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  /* Mobile only, and deliberately separate from `active`: the accordion is
+     driven by taps, not by scroll position. Index 1 — the first of the five
+     states — starts open so the pattern is legible without a tap. */
+  const [open, setOpen] = useState(1);
+  const headerRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  /** Header to hold still across a toggle, captured before the state change. */
+  const anchorRef = useRef<{ index: number; top: number } | null>(null);
+
+  const toggle = (i: number) => {
+    const top = headerRefs.current[i]?.getBoundingClientRect().top;
+    if (top !== undefined) anchorRef.current = { index: i, top };
+    setOpen((current) => (current === i ? -1 : i));
+  };
+
+  /* Closing a taller panel above the one being tapped drops everything below
+     it by the panel's height — enough to throw the header out from under the
+     reader's thumb. Pin the tapped header to the viewport offset it had before
+     the toggle.
+     A single frame isn't enough: the visual inside the opening panel is a
+     ScaledStage, which measures itself and sets the wrapper height from a
+     ResizeObserver callback, so the layout keeps settling for several frames.
+     Re-correct across a short window, and stop the moment the reader scrolls
+     themselves so we never fight a deliberate gesture. */
+  useLayoutEffect(() => {
+    const anchor = anchorRef.current;
+    if (!anchor) return;
+    anchorRef.current = null;
+
+    let frame = 0;
+    let raf = 0;
+    let cancelled = false;
+
+    const stop = () => {
+      cancelled = true;
+      cancelAnimationFrame(raf);
+      window.removeEventListener("wheel", stop);
+      window.removeEventListener("touchstart", stop);
+      window.removeEventListener("keydown", stop);
+    };
+
+    const correct = () => {
+      if (cancelled) return;
+      const node = headerRefs.current[anchor.index];
+      if (node) {
+        const drift = node.getBoundingClientRect().top - anchor.top;
+        if (Math.abs(drift) > 1) {
+          window.scrollBy({ top: drift, behavior: "instant" as ScrollBehavior });
+        }
+      }
+      if (++frame < 12) raf = requestAnimationFrame(correct);
+      else stop();
+    };
+
+    window.addEventListener("wheel", stop, { passive: true });
+    window.addEventListener("touchstart", stop, { passive: true });
+    window.addEventListener("keydown", stop);
+    raf = requestAnimationFrame(correct);
+
+    return stop;
+  }, [open]);
 
   /* Scroll drives the active paragraph: whichever one is crossing the middle
      band of the viewport wins. The margins leave a ~10% band so exactly one
@@ -83,11 +143,11 @@ export function WhyStratora() {
     <section id="why-stratora" className="st-scope relative px-6 py-20">
       <div className="container mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="max-w-3xl mb-14"
+          viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
+          className="max-w-3xl mx-auto mb-14 text-center"
         >
           <h2 className="text-3xl md:text-5xl mb-4 tracking-tight">
             From detection to escalation to resolution — in one system.
@@ -111,44 +171,112 @@ export function WhyStratora() {
             </ScaledStage>
           </div>
 
-          <div className="flex min-w-0 flex-col gap-1">
+          {/* Desktop rail — unchanged. */}
+          <div className="hidden min-w-0 lg:flex lg:flex-col lg:gap-1">
             {PARAS.map((para, i) => (
-              <div key={para.body}>
-                {/* Mobile: the visual sits above the paragraph it belongs to. */}
-                <div className="lg:hidden mb-3">
-                  <ScaledStage
-                    width={STORY_STAGE.width}
-                    height={STORY_STAGE.height}
-                    className="st-stage"
-                  >
-                    {(() => {
-                      const Inline = STORY_VISUALS[i];
-                      return <Inline />;
-                    })()}
-                  </ScaledStage>
-                </div>
-
-                <button
-                  type="button"
-                  ref={(el) => {
-                    paraRefs.current[i] = el;
-                  }}
-                  onClick={() => {
-                    pickedRef.current = true;
-                    setActive(i);
-                  }}
-                  aria-current={i === active}
-                  className={`st-para${i === active ? " is-on" : ""}`}
-                >
-                  <span className="st-para-bar" />
-                  <span className="st-para-text">
-                    {para.lead ? <span className="st-para-lead">{para.lead}</span> : null}
-                    {para.lead ? " " : null}
-                    {para.body}
-                  </span>
-                </button>
-              </div>
+              <button
+                key={para.body}
+                type="button"
+                ref={(el) => {
+                  paraRefs.current[i] = el;
+                }}
+                onClick={() => {
+                  pickedRef.current = true;
+                  setActive(i);
+                }}
+                aria-current={i === active}
+                className={`st-para${i === active ? " is-on" : ""}`}
+              >
+                <span className="st-para-bar" />
+                <span className="st-para-text">
+                  {para.lead ? <span className="st-para-lead">{para.lead}</span> : null}
+                  {para.lead ? " " : null}
+                  {para.body}
+                </span>
+              </button>
             ))}
+          </div>
+
+          {/* Mobile — an accordion. Every paragraph previously carried its own
+              full-size visual inline, so the section ran to six stacked stages
+              and the reader had to scroll past all of them to see what the
+              story covered. The five state names are now always on screen and
+              one body is open at a time. */}
+          <div className="st-acc lg:hidden">
+            {/* PARAS[0] is the blockquote that opens the story rather than one
+                of the five states, so it stays open and uncollapsed. */}
+            <div className="st-acc-lead">
+              <ScaledStage
+                width={STORY_STAGE.width}
+                height={STORY_STAGE.height}
+                className="st-stage"
+              >
+                {(() => {
+                  const Opening = STORY_VISUALS[0];
+                  return <Opening />;
+                })()}
+              </ScaledStage>
+              <p className="st-acc-lead-text">{PARAS[0].body}</p>
+            </div>
+
+            {PARAS.slice(1).map((para, n) => {
+              const i = n + 1;
+              const isOpen = i === open;
+              const Panel = STORY_VISUALS[i];
+              return (
+                <div key={para.body} className="st-acc-item" data-on={isOpen ? "true" : "false"}>
+                  <h3 className="st-acc-h">
+                    <button
+                      type="button"
+                      id={`story-acc-${i}`}
+                      ref={(el) => {
+                        headerRefs.current[i] = el;
+                      }}
+                      aria-expanded={isOpen}
+                      aria-controls={`story-panel-${i}`}
+                      onClick={() => toggle(i)}
+                      className="st-acc-btn"
+                    >
+                      <span className="st-acc-title">{para.lead}</span>
+                      <svg
+                        className="st-acc-chev"
+                        aria-hidden="true"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="m6 9 6 6 6-6" />
+                      </svg>
+                    </button>
+                  </h3>
+                  <div
+                    id={`story-panel-${i}`}
+                    role="region"
+                    aria-labelledby={`story-acc-${i}`}
+                    hidden={!isOpen}
+                    className="st-acc-panel"
+                  >
+                    {/* Only the open panel mounts a stage — six live visuals on
+                        a phone is six animation loops nobody is watching. */}
+                    {isOpen ? (
+                      <ScaledStage
+                        width={STORY_STAGE.width}
+                        height={STORY_STAGE.height}
+                        className="st-stage"
+                      >
+                        <Panel />
+                      </ScaledStage>
+                    ) : null}
+                    <p className="st-acc-body">{para.body}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

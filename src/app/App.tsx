@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { MotionConfig } from "motion/react";
 import { Navigation } from "./components/navigation";
 import { Hero } from "./components/hero";
 import { DashboardPreview } from "./components/dashboard-preview";
@@ -60,16 +61,22 @@ export default function App() {
   }, []);
 
   return (
-    <div className="dark min-h-screen bg-background text-foreground">
-      <Navigation />
-      <main>
-        {path === "/billing" ? <Billing /> :
-         path === "/privacy-policy" ? <PrivacyPolicyPage /> :
-         path === "/terms" ? <TermsPage /> :
-         path === "/" ? <LandingPage /> :
-         <NotFoundPage />}
-      </main>
-      <Footer />
-    </div>
+    // reducedMotion="user" makes every motion component on the site honour
+    // prefers-reduced-motion in one place: transforms are dropped and the
+    // entrances resolve to a plain fade, rather than each section having to
+    // opt in individually.
+    <MotionConfig reducedMotion="user">
+      <div className="dark min-h-screen bg-background text-foreground">
+        <Navigation />
+        <main>
+          {path === "/billing" ? <Billing /> :
+           path === "/privacy-policy" ? <PrivacyPolicyPage /> :
+           path === "/terms" ? <TermsPage /> :
+           path === "/" ? <LandingPage /> :
+           <NotFoundPage />}
+        </main>
+        <Footer />
+      </div>
+    </MotionConfig>
   );
 }

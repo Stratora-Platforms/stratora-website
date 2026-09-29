@@ -412,10 +412,10 @@ export function SecurityCompliance() {
     <section id="security-compliance" className="st-scope relative px-6 py-20">
       <div className="container mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
+          viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
           className="mx-auto mb-14 max-w-2xl text-center"
         >
           <h2 className="mb-4 text-3xl md:text-5xl tracking-tight">Designed for sensitive environments</h2>
