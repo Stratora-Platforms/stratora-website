@@ -98,7 +98,7 @@ export function WhyStratora() {
           </p>
         </motion.div>
 
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,660px)_minmax(0,1fr)] lg:gap-16 lg:items-start">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,660px)_minmax(0,1fr)] lg:gap-16 lg:items-start">
           {/* Sticky stage — desktop only. Below lg each paragraph carries its
               own visual inline instead, so nothing is pinned on a phone. */}
           <div className="hidden lg:block lg:sticky lg:top-28">
@@ -111,7 +111,7 @@ export function WhyStratora() {
             </ScaledStage>
           </div>
 
-          <div className="flex flex-col gap-1">
+          <div className="flex min-w-0 flex-col gap-1">
             {PARAS.map((para, i) => (
               <div key={para.body}>
                 {/* Mobile: the visual sits above the paragraph it belongs to. */}

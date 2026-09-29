@@ -84,7 +84,12 @@ export function Stats() {
               transition={{ duration: 0.5, delay: i * 0.05 }}
               className="relative space-y-2"
             >
-              <div className={`text-3xl md:text-5xl leading-tight${started ? " stat-shine" : " stat-flat"}`}>
+              {/* The size step is at lg, not md. Between 768 and 1023 the
+                  container is 768 wide, so a four-column row gives each stat
+                  156px — and "Collector" sets 189px at text-5xl, overflowing
+                  the row and the page by 33px. Pre-existing; it was masked by
+                  the nav's larger overflow at the same width. 30px fits. */}
+              <div className={`text-3xl lg:text-5xl leading-tight${started ? " stat-shine" : " stat-flat"}`}>
                 {stat.value}
               </div>
               <div className="text-sm text-muted-foreground">{stat.label}</div>

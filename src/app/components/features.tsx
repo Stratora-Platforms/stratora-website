@@ -168,14 +168,17 @@ export function Features() {
           </p>
         </motion.div>
 
-        <div className="grid gap-8 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-14 lg:items-start">
+        {/* An explicit minmax(0,1fr) base column, plus min-w-0 on both
+            children: without them the implicit column sizes to the chip rail's
+            max-content at mobile and pushes the page sideways. */}
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-14 lg:items-start">
           {/* Rail — a horizontally scrolling row of chips on mobile. */}
           <div
             role="tablist"
             aria-label="Features"
             aria-orientation="vertical"
             onKeyDown={onKeyDown}
-            className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:gap-6 lg:overflow-visible lg:pb-0"
+            className="flex min-w-0 gap-2 overflow-x-auto pb-2 lg:flex-col lg:gap-6 lg:overflow-visible lg:pb-0"
           >
             {GROUPS.map((group) => {
               const groupActive = group.items.includes(index);
@@ -215,7 +218,7 @@ export function Features() {
             })}
           </div>
 
-          <div className="flex flex-col gap-6">
+          <div className="flex min-w-0 flex-col gap-6">
             <ScaledStage
               width={STAGE.width}
               height={STAGE.height}

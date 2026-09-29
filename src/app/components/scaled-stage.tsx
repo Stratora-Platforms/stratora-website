@@ -64,10 +64,20 @@ export function ScaledStage({
   }, [applyFit]);
 
   return (
-    <div ref={outerRef} className={className} style={{ position: "relative", overflow: "hidden", ...style }}>
+    // The inner box is absolutely positioned so its authored width is out of
+    // flow entirely and can never set a max-content track size on an ancestor.
+    // In flow it did: the grid track sized to the authored width, which
+    // inflated the outer's clientWidth, which made the very first scale
+    // measurement wrong — fine after a resize, broken on a fresh load.
+    // minWidth: 0 / maxWidth: 100% keep the outer itself inside its track.
+    <div
+      ref={outerRef}
+      className={className}
+      style={{ position: "relative", overflow: "hidden", minWidth: 0, maxWidth: "100%", ...style }}
+    >
       <div
         ref={innerRef}
-        style={{ width, height, transformOrigin: "0 0", position: "relative" }}
+        style={{ width, height, transformOrigin: "0 0", position: "absolute", top: 0, left: 0 }}
       >
         {children}
       </div>

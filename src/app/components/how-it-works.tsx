@@ -327,7 +327,7 @@ export function HowItWorks() {
           </p>
         </motion.div>
 
-        <div className="grid gap-10 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-14 lg:items-stretch">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-14 lg:items-stretch">
           {/* Steps on a rail that fills as the demo runs. */}
           <div className="relative flex flex-col justify-between gap-10 py-2 pl-7">
             <span className="absolute left-[5px] top-3.5 bottom-3.5 w-px bg-[#23232c]" />

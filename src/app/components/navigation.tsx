@@ -66,8 +66,11 @@ export function Navigation() {
             </a>
           </div>
 
-          {/* Center Navigation (desktop) */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Center Navigation (desktop).
+              lg, not md: the nine links plus the Get Started button do not fit
+              a 768px row, which pushed the page sideways by 13px. 768-1023 now
+              gets the mobile menu instead. */}
+          <div className="hidden lg:flex items-center gap-8">
             {links.map((link) => (
               <a
                 key={link.label}
@@ -86,14 +89,14 @@ export function Navigation() {
               onClick={() => {
                 document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="hidden md:block rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-2 text-sm text-white hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg shadow-purple-500/20"
+              className="hidden lg:block rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-2 text-sm text-white hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg shadow-purple-500/20"
             >
               Get Started
             </button>
 
             {/* Mobile hamburger */}
             <button
-              className="md:hidden flex items-center justify-center"
+              className="lg:hidden flex items-center justify-center"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label="Toggle menu"
             >
@@ -109,7 +112,7 @@ export function Navigation() {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-border/40 bg-background/95 backdrop-blur-lg">
+        <div className="lg:hidden border-t border-border/40 bg-background/95 backdrop-blur-lg">
           <div className="container mx-auto px-6 py-4 flex flex-col gap-4">
             {links.map((link) => (
               <a

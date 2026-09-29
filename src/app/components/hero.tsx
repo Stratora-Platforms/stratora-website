@@ -1,8 +1,12 @@
 import { Play } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { MSI_DOWNLOAD_URL } from "../constants";
 
 export function Hero() {
+  // The two decorative light streaks loop forever. Under prefers-reduced-motion
+  // they hold still at their resting opacity instead of pulsing.
+  const reduceMotion = useReducedMotion();
+
   return (
     <section className="relative pt-32 pb-0 px-6 overflow-hidden">
       {/* Background grid pattern */}
@@ -10,16 +14,16 @@ export function Hero() {
       
       {/* Vertical light streaks (subtle) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div 
-          initial={{ opacity: 0, y: -100 }}
-          animate={{ opacity: [0.4, 0.25, 0.4], y: 0 }}
-          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+        <motion.div
+          initial={reduceMotion ? { opacity: 0.4, y: 0 } : { opacity: 0, y: -100 }}
+          animate={reduceMotion ? { opacity: 0.4, y: 0 } : { opacity: [0.4, 0.25, 0.4], y: 0 }}
+          transition={reduceMotion ? { duration: 0 } : { duration: 4, repeat: Infinity, ease: "linear" }}
           className="absolute top-0 left-[30%] w-px h-full bg-gradient-to-b from-purple-500/40 via-purple-500/15 to-transparent"
         />
-        <motion.div 
-          initial={{ opacity: 0, y: -100 }}
-          animate={{ opacity: [0.35, 0.15, 0.35], y: 0 }}
-          transition={{ duration: 4.5, repeat: Infinity, ease: "linear", delay: 1 }}
+        <motion.div
+          initial={reduceMotion ? { opacity: 0.35, y: 0 } : { opacity: 0, y: -100 }}
+          animate={reduceMotion ? { opacity: 0.35, y: 0 } : { opacity: [0.35, 0.15, 0.35], y: 0 }}
+          transition={reduceMotion ? { duration: 0 } : { duration: 4.5, repeat: Infinity, ease: "linear", delay: 1 }}
           className="absolute top-0 left-[70%] w-px h-full bg-gradient-to-b from-purple-500/35 via-purple-500/12 to-transparent"
         />
       </div>
