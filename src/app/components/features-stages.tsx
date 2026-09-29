@@ -326,10 +326,31 @@ function NetworkDiagrams() {
         <svg width="100%" height="100%" viewBox="0 0 260 300" style={{ flexGrow: 1 }}>
           <path className="st-draw" d="M130 44 L70 120 M130 44 L190 120 M70 120 L40 200 M70 120 L100 200 M190 120 L160 200 M190 120 L220 200" stroke="#2f2f42" strokeWidth="1.6" fill="none" />
           <path className="st-flow" d="M130 44 L70 120 M70 120 L40 200" stroke="#a78bfa" strokeWidth="1.6" fill="none" />
-          {[[130, 44, "#a78bfa"], [70, 120, "#22c55e"], [190, 120, "#22c55e"], [40, 200, "#22c55e"], [100, 200, "#eab308"], [160, 200, "#22c55e"], [220, 200, "#22c55e"]].map(([x, y, c], i) => (
-            <g key={i}>
-              <rect x={(x as number) - 22} y={(y as number) - 11} width="44" height="22" rx="5" fill="#1a1a2e" stroke={c as string} strokeWidth="1.2" />
-              <circle cx={(x as number) + 14} cy={y as number} r="2.6" fill={c as string} />
+          {/* live interface utilization on the two lit links */}
+          <text x="96" y="80" fontSize="6.5" fill="#a78bfa" textAnchor="middle" className="st-mono">1.8 Gb/s</text>
+          <text x="48" y="164" fontSize="6.5" fill="#a78bfa" textAnchor="middle" className="st-mono">640 Mb/s</text>
+          {/* `short` is explicit rather than derived: NYC-CORE-SW01 trimmed to
+              "CORE-SW01" overran the node box, while the others fitted. */}
+          {(
+            [
+              [130, 44, "#a78bfa", "NYC-CORE-SW01", "SW01"],
+              [70, 120, "#22c55e", "NYC-FW-01", "FW-01"],
+              [190, 120, "#22c55e", "NYC-EDGE-01", "EDGE-01"],
+              [40, 200, "#22c55e", "NYC-ESX-01", "ESX-01"],
+              [100, 200, "#eab308", "NYC-NAS-01", "NAS-01"],
+              [160, 200, "#22c55e", "NYC-AP-11", "AP-11"],
+              [220, 200, "#22c55e", "NYC-DC-01", "DC-01"],
+            ] as [number, number, string, string, string][]
+          ).map(([x, y, c, label, short]) => (
+            <g key={label}>
+              <rect x={x - 24} y={y - 11} width="48" height="22" rx="5" fill="#1a1a2e" stroke={c} strokeWidth="1.2" />
+              <circle cx={x + 17} cy={y} r="2.4" fill={c} />
+              <text x={x - 4} y={y + 2.4} fontSize="6" fill="#c9c9d4" textAnchor="middle" className="st-mono">
+                {short}
+              </text>
+              <text x={x} y={y + 21} fontSize="6" fill="#7b7b88" textAnchor="middle" className="st-mono">
+                {label}
+              </text>
             </g>
           ))}
         </svg>
@@ -355,8 +376,31 @@ function NetworkDiagrams() {
         <div style={{ position: "relative", flexGrow: 1, background: "#0a0a11" }}>
           <div style={{ position: "absolute", inset: 0, backgroundImage: "url(/worldmap.svg)", backgroundRepeat: "no-repeat", backgroundPosition: "center", backgroundSize: "contain", opacity: 0.5 }} />
           <svg width="100%" height="100%" viewBox="0 0 1060 340" preserveAspectRatio="xMidYMid meet" style={{ position: "absolute", inset: 0 }}>
-            {[[312, 91, "#22c55e"], [235, 130, "#f97316"], [556, 67, "#f97316"], [836, 192, "#22c55e"], [941, 104, "#22c55e"], [975, 283, "#22c55e"], [758, 162, "#a855f7"]].map(([x, y, c], i) => (
-              <circle key={i} cx={x as number} cy={y as number} r="13" fill={c as string} stroke="#0c0c0f" strokeWidth="5" />
+            {(
+              [
+                [312, 91, "#22c55e", "NYC", "end"],
+                [235, 130, "#f97316", "MTY", "end"],
+                [556, 67, "#f97316", "FRA", "start"],
+                [836, 192, "#22c55e", "SIN", "start"],
+                [941, 104, "#22c55e", "TYO", "start"],
+                [975, 283, "#22c55e", "SYD", "end"],
+                [758, 162, "#a855f7", "BLR", "start"],
+              ] as [number, number, string, string, "start" | "end"][]
+            ).map(([x, y, c, label, anchor]) => (
+              <g key={label}>
+                {c !== "#22c55e" ? <circle className="st-pulse-ring" cx={x} cy={y} r="13" fill={c} /> : null}
+                <circle cx={x} cy={y} r="13" fill={c} stroke="#0c0c0f" strokeWidth="5" />
+                <text
+                  x={anchor === "end" ? x - 22 : x + 22}
+                  y={y + 8}
+                  fontSize="21"
+                  fill="#9ca3af"
+                  textAnchor={anchor}
+                  className="st-mono"
+                >
+                  {label}
+                </text>
+              </g>
             ))}
           </svg>
         </div>
@@ -365,51 +409,114 @@ function NetworkDiagrams() {
   );
 }
 
-/* ---------------------------------------------------------------- 6 ipam -- */
+/* ---------------------------------------------------------------- 6 ipam --
+ * Discovery sweeping a /24: the address grid fills as the scan runs, the
+ * utilization bars grow with it, and the subnet nearing capacity trips its
+ * >85% flag. Everything here is address-space data the app tracks.
+ */
 function Ipam() {
-  const subnets: [string, string, number, number, number][] = [
-    ["10.10.0.0/24", "Servers and OOBM", 10, 218, 254],
-    ["10.10.1.0/24", "Wired Access", 11, 164, 254],
-    ["10.10.2.0/24", "Wi-Fi Access", 12, 233, 254],
-    ["10.30.0.0/24", "Plant Floor OT", 20, 197, 254],
-    ["10.30.4.0/24", "SCADA Historians", 24, 76, 254],
+  const subnets: [string, string, number, number, number, string][] = [
+    ["10.10.0.0/24", "Servers and OOBM", 10, 218, 254, "0s"],
+    ["10.10.1.0/24", "Wired Access", 11, 164, 254, "-0.4s"],
+    ["10.10.2.0/24", "Wi-Fi Access", 12, 233, 254, "-0.8s"],
+    ["10.30.0.0/24", "Plant Floor OT", 20, 197, 254, "-1.2s"],
   ];
+
+  // A 16x8 slice of the /24 being scanned. Index order drives the fill sweep.
+  const CELLS = 128;
+  const cells = Array.from({ length: CELLS }, (_, i) => {
+    const kind = i % 17 === 3 ? "gw" : i % 11 === 5 ? "dhcp" : i % 7 === 6 ? "free" : "used";
+    return { i, kind };
+  });
+  const cellColour: Record<string, string> = {
+    used: "#3b82f6",
+    dhcp: "#22c55e",
+    gw: "#a78bfa",
+    free: "#23233a",
+  };
+
   return (
     <div className="st-fade" style={{ position: "absolute", inset: 0, padding: 20, display: "flex", flexDirection: "column", gap: 10 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, fontWeight: 600 }}>
         IPAM
         <span style={{ fontSize: 11.5, fontWeight: 400, color: "#9d9da8" }}>Supernets · Subnets · Addresses</span>
-        <span style={{ marginLeft: "auto" }}>
+        <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 8 }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 11, fontWeight: 400, color: "#9d9da8" }}>
+            <span className="st-blink" style={{ width: 6, height: 6, borderRadius: "50%", background: "#58a6ff" }} />
+            discovery sync
+          </span>
           <span style={chip(STATUS_BG.warning, STATUS_TEXT.warning)}>6 over 85%</span>
         </span>
       </div>
-      <div style={{ ...panel, flexGrow: 1 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1.3fr .5fr .6fr 1.6fr", gap: 10, alignItems: "center", height: 30, padding: "0 14px", borderBottom: "1px solid #2a2a31", fontSize: 10, letterSpacing: ".07em", textTransform: "uppercase", color: "#7e7e98" }}>
-          <span>CIDR</span>
-          <span>Name</span>
-          <span>VLAN</span>
-          <span>DHCP</span>
-          <span>Utilization</span>
-        </div>
-        {subnets.map(([cidr, name, vlan, used, total]) => {
-          const pct = (used / total) * 100;
-          const colour = pct >= 85 ? STATUS_TEXT.critical : pct >= 65 ? STATUS_TEXT.degraded : STATUS_TEXT.healthy;
-          return (
-            <div key={cidr} style={{ display: "grid", gridTemplateColumns: "1.1fr 1.3fr .5fr .6fr 1.6fr", gap: 10, alignItems: "center", height: 44, padding: "0 14px", borderBottom: "1px solid #17172a", fontSize: 12.5 }}>
-              <span className="st-mono" style={{ color: "#58a6ff" }}>{cidr}</span>
-              <span>{name}</span>
-              <span className="st-mono" style={{ color: "#9d9da8" }}>{vlan}</span>
-              <span style={{ color: "#9d9da8" }}>yes</span>
-              <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ flexGrow: 1, height: 6, borderRadius: 3, background: "#26262c", overflow: "hidden" }}>
-                  <span style={{ display: "block", height: 6, width: `${pct}%`, background: colour, transition: "width .6s" }} />
+
+      <div style={{ flexGrow: 1, minHeight: 0, display: "grid", gridTemplateColumns: "1.25fr 1fr", gap: 10 }}>
+        {/* subnet list, bars growing as the scan lands */}
+        <div style={panel}>
+          <div style={{ display: "grid", gridTemplateColumns: "1.15fr 1.25fr .45fr 1.5fr", gap: 8, alignItems: "center", height: 28, padding: "0 12px", borderBottom: "1px solid #2a2a31", fontSize: 9.5, letterSpacing: ".07em", textTransform: "uppercase", color: "#7e7e98" }}>
+            <span>CIDR</span>
+            <span>Name</span>
+            <span>VLAN</span>
+            <span>Utilization</span>
+          </div>
+          {subnets.map(([cidr, name, vlan, used, total, delay]) => {
+            const pct = (used / total) * 100;
+            const colour = pct >= 85 ? STATUS_TEXT.critical : pct >= 65 ? STATUS_TEXT.degraded : STATUS_TEXT.healthy;
+            return (
+              <div key={cidr} style={{ display: "grid", gridTemplateColumns: "1.15fr 1.25fr .45fr 1.5fr", gap: 8, alignItems: "center", flexGrow: 1, padding: "0 12px", borderBottom: "1px solid #17172a", fontSize: 11.5 }}>
+                <span className="st-mono" style={{ color: "#58a6ff" }}>{cidr}</span>
+                <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{name}</span>
+                <span className="st-mono" style={{ color: "#9d9da8" }}>{vlan}</span>
+                <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ flexGrow: 1, height: 6, borderRadius: 3, background: "#26262c", overflow: "hidden" }}>
+                    <span
+                      className="ip-grow"
+                      style={{ display: "block", height: 6, background: colour, ["--ip-w" as string]: `${pct}%`, animationDelay: delay }}
+                    />
+                  </span>
+                  <span className="st-mono" style={{ width: 40, textAlign: "right", color: colour }}>{pct.toFixed(1)}%</span>
                 </span>
-                <span className="st-mono" style={{ width: 44, textAlign: "right", color: colour }}>{pct.toFixed(1)}%</span>
-                <span className="st-mono" style={{ width: 62, textAlign: "right", fontSize: 11, color: "#7b7b88" }}>{used} / {total}</span>
-              </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* the address grid being swept */}
+        <div style={panel}>
+          <div style={head}>
+            Addresses
+            <span className="st-mono" style={{ fontWeight: 400, color: "#8b8b98" }}>10.10.0.0/24</span>
+          </div>
+          <div style={{ position: "relative", flexGrow: 1, padding: 12, overflow: "hidden" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(16, 1fr)", gap: 3 }}>
+              {cells.map((c) => (
+                <span
+                  key={c.i}
+                  className="ip-cell"
+                  style={{
+                    height: 11,
+                    borderRadius: 2,
+                    background: cellColour[c.kind],
+                    // stagger by row then column so the fill reads as a sweep
+                    animationDelay: `${(Math.floor(c.i / 16) * 0.09 + (c.i % 16) * 0.012).toFixed(3)}s`,
+                  }}
+                />
+              ))}
             </div>
-          );
-        })}
+            {/* scan line crossing the grid */}
+            <span className="ip-scan" />
+            <div style={{ display: "flex", gap: 12, marginTop: 12, fontSize: 9.5, color: "#7b7b88" }}>
+              {[["In use", "#3b82f6"], ["DHCP", "#22c55e"], ["Gateway", "#a78bfa"], ["Free", "#3a3a46"]].map(([l, c]) => (
+                <span key={l} style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                  <span style={{ width: 7, height: 7, borderRadius: 2, background: c }} />
+                  {l}
+                </span>
+              ))}
+            </div>
+            <div className="st-mono" style={{ marginTop: 8, fontSize: 10.5, color: "#9d9da8" }}>
+              218 of 254 in use · synced from discovery
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -499,7 +606,11 @@ function Rbac() {
   );
 }
 
-/* -------------------------------------------------------------- 9 syslog -- */
+/* -------------------------------------------------------------- 9 syslog --
+ * Events leave the log, travel the wire and fan out to three receivers. The
+ * packets are staggered per lane so the stream reads as continuous rather than
+ * as three things blinking in time.
+ */
 function Syslog() {
   const events: [string, string][] = [
     ["14:08:10", "Alert acknowledged — FRA-SAN-02"],
@@ -507,34 +618,101 @@ function Syslog() {
     ["14:02:40", "Alert raised — FRA-SAN-02 read latency"],
     ["14:01:52", "Sign-in via OIDC — j.moreau"],
     ["13:58:20", "Configuration changed — escalation team"],
+    ["13:44:05", "Device discovered — 10.10.4.31"],
   ];
+
+  // Lane endpoints in the 840x440 stage, drawn from the hub out to each target.
+  const lanes: { to: [number, number]; name: string; proto: string; delay: string }[] = [
+    { to: [700, 118], name: "Splunk", proto: "TLS 6514", delay: "0s" },
+    { to: [700, 222], name: "Elastic", proto: "TCP 601", delay: "-0.9s" },
+    { to: [700, 326], name: "Graylog", proto: "UDP 514", delay: "-1.8s" },
+  ];
+  const HUB: [number, number] = [452, 222];
+
   return (
-    <div className="st-fade" style={{ position: "absolute", inset: 0, padding: "26px 34px", display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 24, alignItems: "start" }}>
-      <div style={panel}>
+    <div className="st-fade" style={{ position: "absolute", inset: 0, padding: 20 }}>
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ position: "absolute", inset: 0 }}>
+        {lanes.map((lane) => {
+          const d = `M${HUB[0]} ${HUB[1]} C${HUB[0] + 90} ${HUB[1]} ${lane.to[0] - 90} ${lane.to[1]} ${lane.to[0]} ${lane.to[1]}`;
+          return (
+            <g key={lane.name}>
+              <path d={d} fill="none" stroke="#24242f" strokeWidth="2" />
+              <path className="st-flow" d={d} fill="none" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" style={{ animationDelay: lane.delay }} />
+              {/* a packet riding the wire */}
+              <circle r="4" fill="#c4b5fd">
+                <animateMotion dur="2.7s" repeatCount="indefinite" path={d} begin={lane.delay} />
+              </circle>
+              <circle r="7" fill="#8b5cf6" opacity=".28">
+                <animateMotion dur="2.7s" repeatCount="indefinite" path={d} begin={lane.delay} />
+              </circle>
+            </g>
+          );
+        })}
+        {/* hub */}
+        <circle cx={HUB[0]} cy={HUB[1]} r="13" fill="#14141e" stroke="#8b5cf6" strokeWidth="1.6" />
+        <circle className="st-pulse-ring" cx={HUB[0]} cy={HUB[1]} r="13" fill="none" stroke="#8b5cf6" strokeWidth="1.2" />
+      </svg>
+
+      {/* the log the stream comes from */}
+      <div style={{ position: "absolute", left: 20, top: 44, width: 400, ...panel }}>
         <div style={head}>
           All Stratora events
-          <span style={{ marginLeft: "auto", fontWeight: 400, color: STATUS_TEXT.healthy }}>streaming</span>
+          <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 6, fontWeight: 400, color: STATUS_TEXT.healthy }}>
+            <span className="st-blink" style={{ width: 6, height: 6, borderRadius: "50%", background: STATUS_TEXT.healthy }} />
+            streaming
+          </span>
         </div>
         {events.map(([time, text], i) => (
-          <div key={time} className="st-row" style={{ animationDelay: `${i * 0.06}s`, display: "grid", gridTemplateColumns: "68px 1fr", gap: 10, padding: "10px 14px", borderBottom: i < events.length - 1 ? "1px solid #17172a" : undefined, fontSize: 12 }}>
+          <div
+            key={time}
+            className="st-row"
+            style={{
+              animationDelay: `${i * 0.07}s`,
+              display: "grid",
+              gridTemplateColumns: "64px 1fr",
+              gap: 10,
+              padding: "9px 14px",
+              borderBottom: i < events.length - 1 ? "1px solid #17172a" : undefined,
+              fontSize: 11.5,
+            }}
+          >
             <span className="st-mono" style={{ color: "#8b8b98" }}>{time}</span>
-            <span style={{ color: "#c9c9d4" }}>{text}</span>
+            <span style={{ color: "#c9c9d4", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{text}</span>
           </div>
         ))}
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <span style={{ fontSize: 12.5, fontWeight: 600 }}>Destinations</span>
-        {[["Splunk", "TLS", "healthy"], ["Elastic", "TCP", "healthy"], ["Graylog", "UDP", "healthy"]].map(([name, proto, state], i) => (
-          <div key={name} className="st-fade" style={{ animationDelay: `${i * 0.08}s`, display: "flex", alignItems: "center", gap: 10, padding: "11px 12px", borderRadius: 9, background: "#13131c", border: "1px solid #20202b", fontSize: 12.5 }}>
-            <span>{name}</span>
-            <span className="st-mono" style={{ fontSize: 11, color: "#7b7b88" }}>{proto}</span>
-            <span style={{ marginLeft: "auto" }}>
-              <span style={chip(STATUS_BG.healthy, STATUS_TEXT.healthy)}>{state}</span>
-            </span>
-          </div>
-        ))}
-        <span style={{ fontSize: 11.5, color: "#7b7b88", lineHeight: 1.5 }}>Multi-destination fan-out · per-destination health</span>
-      </div>
+
+      <span style={{ position: "absolute", left: 404, top: 250, fontSize: 10.5, color: "#7b7b88" }}>fan-out</span>
+
+      {/* the receivers */}
+      {lanes.map((lane, i) => (
+        <div
+          key={lane.name}
+          className="st-fade"
+          style={{
+            position: "absolute",
+            left: lane.to[0] + 8,
+            top: lane.to[1] - 27,
+            width: 112,
+            animationDelay: `${0.15 + i * 0.1}s`,
+            padding: "9px 11px",
+            borderRadius: 10,
+            background: "#13131c",
+            border: "1px solid #20202b",
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+          }}
+        >
+          <span style={{ fontSize: 12.5, fontWeight: 600 }}>{lane.name}</span>
+          <span className="st-mono" style={{ fontSize: 10, color: "#7b7b88" }}>{lane.proto}</span>
+          <span style={chip(STATUS_BG.healthy, STATUS_TEXT.healthy)}>healthy</span>
+        </div>
+      ))}
+
+      <span style={{ position: "absolute", left: 708, top: 384, width: 120, fontSize: 10.5, lineHeight: 1.45, color: "#7b7b88" }}>
+        Multi-destination fan-out · per-destination health
+      </span>
     </div>
   );
 }

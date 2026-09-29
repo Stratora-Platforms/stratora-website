@@ -84,8 +84,13 @@ export function LiveDashboard() {
     }
 
     inner.style.width = `${DESIGN_WIDTH}px`;
-    const scale = Math.min(1, fit.clientWidth / DESIGN_WIDTH);
-    inner.style.transform = scale === 1 ? "" : `scale(${scale})`;
+    // Scale is uncapped, so the frame fills its container rather than stopping
+    // at its 1240px design width. Every other section runs to the full
+    // container, and stopping short left the hero visibly narrower than the
+    // page around it — more so on a wide laptop, where the container is 1536.
+    // Scaling up is safe: this is DOM, so the browser re-rasterises the text.
+    const scale = fit.clientWidth / DESIGN_WIDTH;
+    inner.style.transform = `scale(${scale})`;
 
     const height = `${Math.ceil(inner.offsetHeight * scale)}px`;
     if (fit.style.height !== height) fit.style.height = height;

@@ -139,7 +139,10 @@ export function ScreenshotGallery() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
-          className="max-w-6xl mx-auto"
+          // Full container width. max-w-6xl held this to 1152 while every
+          // other section ran to 1280, which read as the carousel being
+          // inset from the rest of the page.
+          className="mx-auto"
         >
           <Carousel setApi={setApi} opts={{ loop: true }}>
             {/* Main viewer. Each slide renders the app view live rather than as

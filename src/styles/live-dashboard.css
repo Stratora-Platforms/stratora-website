@@ -34,8 +34,11 @@
   position: relative;
 }
 
+/* margin 0, not auto: the scale is uncapped so the painted box always equals
+   the container width, and an auto margin would offset the origin and push the
+   scaled frame past the right edge. */
 .sd-fit-inner {
-  margin: 0 auto;
+  margin: 0;
   transform-origin: 0 0;
 }
 
