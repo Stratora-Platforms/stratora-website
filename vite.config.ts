@@ -14,4 +14,17 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // The refreshed sections pushed a single bundle past Rollup's 500 kB
+        // advisory. Splitting the dependencies out keeps both chunks under it
+        // and lets the vendor half stay cached across site deploys, since it
+        // only changes when package.json does.
+        manualChunks(id) {
+          if (id.includes('node_modules')) return 'vendor'
+        },
+      },
+    },
+  },
 })

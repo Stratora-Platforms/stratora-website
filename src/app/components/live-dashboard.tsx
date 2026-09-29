@@ -7,12 +7,12 @@ import {
   CALLOUT_LEADER,
   CITY_LABELS,
   DESIGN_WIDTH,
+  ESCALATION,
+  ESCALATION_STEPS,
   ESTATE,
   FEED_AGES,
   FEED_EVENTS,
   FEED_ROWS,
-  INCIDENT,
-  INCIDENT_STEPS,
   INTRO_MS,
   KPIS,
   MAP_ARCS,
@@ -33,7 +33,7 @@ import {
  * Three things move:
  *   1. An intro count-up (~1.8s, cubic ease-out) on every number — KPIs, the
  *      health ring, the healthy-nodes line, and the per-site bars.
- *   2. A 2.6s tick that advances the incident card's highlighted step and
+ *   2. A 2.6s tick that advances the escalation card's highlighted step and
  *      shifts the activity feed by one event.
  *   3. Continuous CSS loops — pin pulses, dashes flowing toward NYC, the scan
  *      line, the Frankfurt callout, the blinking live dots.
@@ -62,7 +62,7 @@ export function LiveDashboard() {
   const [reduced, setReduced] = useState(prefersReducedMotion);
   /** Intro progress, 0 to 1. */
   const [t, setT] = useState(() => (prefersReducedMotion() ? 1 : 0));
-  /** Loop counter — drives the incident step and the feed offset. */
+  /** Loop counter — drives the escalation step and the feed offset. */
   const [tick, setTick] = useState(0);
 
   /* -- fit ---------------------------------------------------------------
@@ -208,7 +208,7 @@ export function LiveDashboard() {
 
   /* -- derived values ----------------------------------------------------- */
   const ease = 1 - Math.pow(1 - t, 3);
-  const activeStep = tick % INCIDENT_STEPS.length;
+  const activeStep = tick % ESCALATION_STEPS.length;
   const score = Math.round(ESTATE.healthScore * ease);
   const ringOffset = (ESTATE.ringLength * (1 - (ESTATE.healthScore / 100) * ease)).toFixed(1);
 
@@ -493,19 +493,19 @@ export function LiveDashboard() {
                       </div>
                     </div>
 
-                    {/* ----------------------------- incident context */}
-                    <div className="sd-card sd-incident">
+                    {/* ---------------------------------- escalation */}
+                    <div className="sd-card sd-escalation">
                       <div className="sd-card-head">
-                        <span className="sd-card-title">Incident context</span>
-                        <span className="sd-sev">{INCIDENT.severity}</span>
-                        <span className="sd-correlation sd-mono">{INCIDENT.correlation}</span>
+                        <span className="sd-card-title">Escalation</span>
+                        <span className="sd-sev">{ESCALATION.severity}</span>
+                        <span className="sd-team sd-mono">{ESCALATION.team}</span>
                       </div>
-                      <div className="sd-incident-title">
-                        <div style={{ fontSize: 15, fontWeight: 600 }}>{INCIDENT.title}</div>
-                        <div style={{ fontSize: 12, color: "#9f9fb6" }}>{INCIDENT.meta}</div>
+                      <div className="sd-escalation-title">
+                        <div style={{ fontSize: 15, fontWeight: 600 }}>{ESCALATION.title}</div>
+                        <div style={{ fontSize: 12, color: "#9f9fb6" }}>{ESCALATION.meta}</div>
                       </div>
                       <div className="sd-steps">
-                        {INCIDENT_STEPS.map((step, index) => (
+                        {ESCALATION_STEPS.map((step, index) => (
                           <div
                             key={step.time}
                             className={`sd-step${index === activeStep ? " is-on" : ""}`}
@@ -523,18 +523,20 @@ export function LiveDashboard() {
                             <div className="sd-step-body">
                               <span className="sd-step-text">
                                 <span className="sd-mono" style={{ color: "#ececf3" }}>
-                                  {step.node}
+                                  {step.action}
                                 </span>{" "}
-                                <span style={{ color: "#b4b4c8" }}>{step.what}</span>
+                                <span style={{ color: "#b4b4c8" }}>{step.detail}</span>
                               </span>
                             </div>
-                            <span className="sd-step-layer">{step.layer}</span>
+                            <span className="sd-step-stage">{step.stage}</span>
                           </div>
                         ))}
                       </div>
-                      <div className="sd-cause">
-                        <span style={{ color: "#c4b5fd", fontWeight: 600 }}>Probable cause</span> ·{" "}
-                        {INCIDENT.cause}
+                      <div className="sd-maintenance">
+                        <span style={{ color: "#c084fc", fontWeight: 600 }}>
+                          {ESCALATION.maintenanceLabel}
+                        </span>{" "}
+                        · {ESCALATION.maintenance}
                       </div>
                     </div>
                   </div>

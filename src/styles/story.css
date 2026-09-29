@@ -1,0 +1,596 @@
+/* ============================================================================
+   Shared motion + surfaces for the refreshed below-the-fold sections.
+
+   Namespaced `st-` and scoped to `.st-scope`, so none of it reaches the rest
+   of the site. Colours come from the app's status palette (see
+   app-preview.css) — this file adds no new hues.
+
+   Every animation here is decorative. The reduced-motion block at the bottom
+   switches all of it off, leaving each section on its end state.
+   ========================================================================== */
+
+.st-scope {
+  --st-panel: #0f0f16;
+  --st-panel-2: #13131c;
+  --st-line: #1d1d28;
+  --st-line-2: #26263a;
+  --st-ink: #f5f5f7;
+  --st-ink-2: #c9c9d4;
+  --st-ink-3: #9d9da8;
+  --st-ink-4: #8b8b98;
+  --st-accent: #8b5cf6;
+  --st-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.st-mono {
+  font-family: var(--st-mono);
+}
+
+/* The stage every story visual sits on. */
+.st-stage {
+  border-radius: 16px;
+  background: radial-gradient(120% 90% at 30% 20%, #15131f, #0d0d13 70%);
+  border: 1px solid #1f1f29;
+}
+
+/* -- motion --------------------------------------------------------------- */
+.st-fade {
+  animation: st-fade 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes st-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.st-row {
+  animation: st-row 0.45s ease both;
+}
+
+@keyframes st-row {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.st-pulse {
+  animation: st-pulse 1.8s ease-out infinite;
+}
+
+@keyframes st-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgba(249, 115, 22, 0);
+  }
+}
+
+.st-flow {
+  stroke-dasharray: 4 8;
+  animation: st-flow 1.4s linear infinite;
+}
+
+@keyframes st-flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+/* ==========================================================================
+   Pricing — flat tiers on a rule, Pro raised out of it
+   ========================================================================== */
+.pr-grid {
+  position: relative;
+  display: grid;
+  gap: 32px;
+}
+
+@media (min-width: 768px) {
+  .pr-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    align-items: start;
+    padding: 48px 0;
+  }
+}
+
+.pr-rule {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .pr-rule {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 48px;
+    bottom: 48px;
+    border-top: 1px solid rgba(139, 92, 246, 0.14);
+    border-bottom: 1px solid rgba(139, 92, 246, 0.14);
+    pointer-events: none;
+  }
+}
+
+.pr-plain,
+.pr-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.pr-plain {
+  padding: 32px 28px;
+}
+
+/* The raised tier: breaks out of the rule above and below. */
+.pr-card {
+  padding: 44px 28px 32px 28px;
+  border-radius: 18px;
+  border: 1px solid rgba(139, 92, 246, 0.45);
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.1), rgba(18, 18, 26, 0.6));
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 60px rgba(139, 92, 246, 0.14);
+}
+
+@media (min-width: 768px) {
+  .pr-card {
+    margin: -48px 0;
+  }
+}
+
+.pr-badge {
+  position: absolute;
+  left: 28px;
+  top: 16px;
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: #8b5cf6;
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.pr-cta {
+  display: block;
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  text-align: center;
+  color: var(--color-foreground);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.pr-cta:hover {
+  background: var(--color-secondary);
+}
+
+.pr-cta-primary {
+  border-color: transparent;
+  background: linear-gradient(90deg, #7c3aed, #8b5cf6);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.35);
+}
+
+.pr-cta-primary:hover {
+  background: linear-gradient(90deg, #6d28d9, #7c3aed);
+}
+
+/* ==========================================================================
+   Sensitive-environments architecture diagram
+   ========================================================================== */
+.sc-ants {
+  animation: sc-ants 14s linear infinite;
+}
+
+@keyframes sc-ants {
+  to {
+    stroke-dashoffset: -280;
+  }
+}
+
+/* The blocked probe: leaves the server, dies at the boundary. */
+.sc-probe {
+  animation: sc-probe 3.4s ease-in-out infinite;
+}
+
+@keyframes sc-probe {
+  0%,
+  10% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(-148px);
+    opacity: 1;
+  }
+  72%,
+  100% {
+    transform: translateY(-148px);
+    opacity: 0;
+  }
+}
+
+.sc-flow {
+  stroke-dasharray: 5 9;
+  animation: sc-flow 1.6s linear infinite;
+}
+
+@keyframes sc-flow {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+
+/* Leader lines draw in on view. The dash length is generous because the
+   measured paths vary with viewport width. */
+.sc-draw {
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  animation: sc-draw 0.9s ease forwards;
+}
+
+@keyframes sc-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sc-draw {
+    stroke-dashoffset: 0;
+  }
+
+  .sc-probe {
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   Features carousel
+   ========================================================================== */
+.ft-stage {
+  border-radius: 18px;
+  background: radial-gradient(110% 120% at 20% 0%, #15131f, #0d0d13 65%);
+  border: 1px solid #20202b;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.45);
+}
+
+.ft-tab {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 0 8px 14px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.35;
+  color: #8b8b98;
+  transition: color 0.3s;
+}
+
+.ft-tab[data-on="true"] {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.ft-tab-bar {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  border-radius: 1px;
+  background: transparent;
+  transition: background 0.3s;
+}
+
+.ft-tab[data-on="true"] .ft-tab-bar {
+  background: var(--st-accent);
+}
+
+.ft-tab:focus-visible {
+  outline: 2px solid var(--st-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Mobile: the rail is a scrolling row of chips rather than a list. */
+@media (max-width: 1023.98px) {
+  .ft-tab {
+    width: auto;
+    white-space: nowrap;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid #23232c;
+    font-size: 13.5px;
+  }
+
+  .ft-tab[data-on="true"] {
+    border-color: var(--st-accent);
+  }
+
+  .ft-tab-bar {
+    display: none;
+  }
+}
+
+.ft-nav {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid #2a2a35;
+  background: transparent;
+  color: var(--st-ink-2);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.ft-nav:hover {
+  border-color: var(--st-accent);
+  color: #ffffff;
+}
+
+.ft-nav:focus-visible {
+  outline: 2px solid var(--st-accent);
+  outline-offset: 2px;
+}
+
+.ft-progress {
+  height: 2px;
+  border-radius: 1px;
+  background: #1d1d28;
+  overflow: hidden;
+}
+
+.ft-progress-fill {
+  display: block;
+  height: 2px;
+  background: #a78bfa;
+  transform-origin: 0 50%;
+  animation: ft-progress linear both;
+}
+
+@keyframes ft-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Line charts that draw themselves in. */
+.st-draw {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: st-draw 0.9s ease forwards;
+}
+
+@keyframes st-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-draw {
+    stroke-dashoffset: 0;
+  }
+
+  .ft-progress-fill {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Stats row — shine sweep, travelling light, node dots
+   ========================================================================== */
+.stat-scope {
+  --stat-orange: #f0a04b;
+}
+
+/* Before the row is in view the numerals sit flat, so nothing flashes on
+   first paint; the sweep runs once when it arrives. */
+.stat-flat {
+  color: var(--stat-orange);
+}
+
+.stat-shine {
+  background: linear-gradient(
+    100deg,
+    #f0a04b 0%,
+    #f0a04b 40%,
+    #ffe2b8 50%,
+    #f0a04b 60%,
+    #f0a04b 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: stat-shine 1.4s cubic-bezier(0.3, 0.6, 0.3, 1) both 0.3s;
+}
+
+@keyframes stat-shine {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+.stat-rule {
+  position: absolute;
+  left: 12.5%;
+  right: 12.5%;
+  top: 88px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(240, 160, 75, 0),
+    rgba(240, 160, 75, 0.35) 15%,
+    rgba(240, 160, 75, 0.35) 85%,
+    rgba(240, 160, 75, 0)
+  );
+}
+
+.stat-travel {
+  position: absolute;
+  top: -2px;
+  width: 60px;
+  height: 5px;
+  margin-left: -30px;
+  border-radius: 3px;
+  background: radial-gradient(closest-side, rgba(255, 210, 150, 0.95), rgba(255, 152, 24, 0));
+  animation: stat-travel 2.4s cubic-bezier(0.45, 0.05, 0.35, 1) both 0.2s;
+}
+
+@keyframes stat-travel {
+  from {
+    left: 0%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  to {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+.stat-node {
+  display: block;
+  margin: 14px auto 0 auto;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--stat-orange);
+  box-shadow: 0 0 0 4px rgba(240, 160, 75, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stat-scope * {
+    animation: none !important;
+  }
+
+  /* Without the sweep the clipped gradient would leave the text invisible. */
+  .stat-shine {
+    background: none;
+    -webkit-text-fill-color: var(--stat-orange);
+    color: var(--stat-orange);
+  }
+
+  .stat-travel {
+    display: none;
+  }
+}
+
+/* Discovery sweep across the install demo's banner. */
+.hiw-scan {
+  animation: hiw-scan 1.6s linear infinite;
+}
+
+@keyframes hiw-scan {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(400%);
+  }
+}
+
+/* -- why-stratora story rail ---------------------------------------------- */
+.st-para {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 0 12px 22px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
+.st-para-bar {
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  border-radius: 1px;
+  background: #23232c;
+  transition: background 0.4s;
+}
+
+.st-para.is-on .st-para-bar {
+  background: var(--st-accent);
+}
+
+.st-para-text {
+  display: block;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #7b7b88;
+  transition: color 0.4s;
+}
+
+.st-para.is-on .st-para-text {
+  color: var(--st-ink-2);
+}
+
+.st-para-lead {
+  font-weight: 600;
+  color: var(--st-ink-3);
+  transition: color 0.4s;
+}
+
+.st-para.is-on .st-para-lead {
+  color: #ffffff;
+}
+
+.st-para:focus-visible {
+  outline: 2px solid var(--st-accent);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-scope *,
+  .st-scope *::before,
+  .st-scope *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
