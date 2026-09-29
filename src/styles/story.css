@@ -148,6 +148,9 @@ main [id][data-anchor] {
 
 /* ==========================================================================
    Pricing — flat tiers on a rule, Pro raised out of it
+   Three columns from lg (1024) up; below that the tiers stack exactly as on
+   a phone. At 768-1023 three 240-256px columns were too narrow: the price
+   rows ran into each other and off the page.
    ========================================================================== */
 .pr-grid {
   position: relative;
@@ -155,11 +158,11 @@ main [id][data-anchor] {
   gap: 32px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .pr-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0;
-    align-items: start;
+    align-items: stretch;
     padding: 48px 0;
   }
 }
@@ -168,7 +171,7 @@ main [id][data-anchor] {
   display: none;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .pr-rule {
     display: block;
     position: absolute;
@@ -203,9 +206,20 @@ main [id][data-anchor] {
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 60px rgba(139, 92, 246, 0.14);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .pr-card {
     margin: -48px 0;
+  }
+
+  /* Stretch to the row (.pr-grid align-items: stretch), not height: 100%.
+     Pro's -48px margins make its row contribution its content minus 96px, so
+     with a percentage height the card was 96px shorter than its content
+     whenever Pro was the tallest tier, and the CTA hung over or below the
+     bottom border (1024-1279). Stretched, the card is the row plus the two
+     breakouts, which always holds its content. Must follow the base rule. */
+  .pr-plain,
+  .pr-card {
+    height: auto;
   }
 }
 
