@@ -27,13 +27,23 @@ const STAGE = { width: 784, height: 540 };
  *                                          a time and templates apply behind
  *   Phase 2  monitor   ticks 25-34 2.0s  — dashboards, health score, alerts
  *
- * Runs once on view and stops on the final frame. It never loops, and the
- * written steps beside it are never gated on it.
+ * Plays while the section is on screen, holds the final frame for 10s, then
+ * restarts. Scrolling away freezes it where it stands and scrolling back
+ * resumes — it never runs unwatched. The three written steps are also
+ * controls: clicking one restarts playback from that phase. The step copy is
+ * never gated on the animation, so it reads fine if nothing ever plays.
  */
 const TICKS = 35;
 const TICK_MS = 200;
 const PHASE_1_AT = 9;
 const PHASE_2_AT = 25;
+/** Tick each phase begins on — where a click on that step resumes from. */
+const PHASE_START = [0, PHASE_1_AT, PHASE_2_AT];
+/** Last tick of each phase — the settled frame a click lands on under
+    prefers-reduced-motion, where nothing plays forward to fill it in. */
+const PHASE_SETTLED = [PHASE_1_AT - 1, PHASE_2_AT - 1, TICKS];
+/** How long the finished deployment holds before the loop restarts. */
+const HOLD_MS = 10000;
 
 const STEPS = [
   {
@@ -112,45 +122,48 @@ const panel: React.CSSProperties = {
 };
 
 export function HowItWorks() {
-  const [t, setT] = useState(0);
+  const [reduced] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+  const [t, setT] = useState(() => (reduced ? TICKS : 0));
+  const [onScreen, setOnScreen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-  const startedRef = useRef(false);
-  const intervalRef = useRef<number | null>(null);
+  const timerRef = useRef<number | null>(null);
 
+  /* Kept observing rather than disconnected on first hit: the demo loops now,
+     so it has to stop again when the section leaves the viewport. */
   useEffect(() => {
     const node = sectionRef.current;
     if (!node) return;
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setT(TICKS);
-      return;
-    }
-
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (startedRef.current || !entries.some((e) => e.isIntersecting)) return;
-        startedRef.current = true;
-        observer.disconnect();
-        intervalRef.current = window.setInterval(() => {
-          setT((prev) => {
-            const next = prev + 1;
-            if (next >= TICKS && intervalRef.current !== null) {
-              window.clearInterval(intervalRef.current);
-              intervalRef.current = null;
-            }
-            return next;
-          });
-        }, TICK_MS);
-      },
+      (entries) => setOnScreen(entries.some((e) => e.isIntersecting)),
       { threshold: 0.25 },
     );
-
     observer.observe(node);
-    return () => {
-      observer.disconnect();
-      if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
-    };
+    return () => observer.disconnect();
   }, []);
+
+  /* One self-scheduling timeout rather than an interval, so the 10s hold on
+     the final frame and the 200ms tick are the same mechanism. Re-running on
+     every tick means the timer is always cleared before it is replaced, and
+     a click that moves `t` re-times the next step from that instant. */
+  useEffect(() => {
+    if (reduced || !onScreen) return;
+    timerRef.current = window.setTimeout(
+      () => setT((prev) => (prev >= TICKS ? 0 : prev + 1)),
+      t >= TICKS ? HOLD_MS : TICK_MS,
+    );
+    return () => {
+      if (timerRef.current !== null) {
+        window.clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [t, onScreen, reduced]);
+
+  /** Replay from the top of a step. Under reduced motion nothing plays it
+      forward, so land on that phase's settled frame instead of its first. */
+  const goToStep = (i: number) => setT(reduced ? PHASE_SETTLED[i] : PHASE_START[i]);
 
   const phase = t < PHASE_1_AT ? 0 : t < PHASE_2_AT ? 1 : 2;
   const devices = phase === 0 ? 0 : Math.round(62 * ease((t - PHASE_1_AT) / 15));
@@ -358,14 +371,23 @@ export function HowItWorks() {
                       boxShadow: i === phase ? "0 0 0 5px rgba(139,92,246,.18)" : "none",
                     }}
                   />
-                  <div className="flex items-baseline gap-3">
+                  {/* Only the heading row is the button — the body stays a
+                      sibling <p>, which a <button> can't legally contain and
+                      which would bloat the control's accessible name. */}
+                  <button
+                    type="button"
+                    onClick={() => goToStep(i)}
+                    aria-current={i === phase ? "step" : undefined}
+                    className="hiw-step flex items-baseline gap-3"
+                  >
                     <span className="text-[15px] transition-colors duration-400" style={{ color: lit ? "#c4b5fd" : "#4a4a56" }}>
                       {step.n}
                     </span>
                     <span className="text-[22px] font-semibold transition-colors duration-400" style={{ color: lit ? "#ffffff" : "#7b7b88" }}>
                       {step.title}
                     </span>
-                  </div>
+                    <span className="sr-only">{i === phase ? " — playing now" : " — replay from this step"}</span>
+                  </button>
                   <p className="m-0 text-[14.5px] leading-relaxed text-muted-foreground">{step.body}</p>
                 </div>
               );

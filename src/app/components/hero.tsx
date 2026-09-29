@@ -96,25 +96,8 @@ export function Hero() {
             </a>
           </motion.div>
 
-          {/* Proof strip */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-            className="border-t border-border/30 pt-7 mt-8 grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 max-w-6xl mx-auto text-center"
-          >
-            {[
-              { label: '10-minute deployment', desc: 'Single MSI on Windows Server' },
-              { label: 'Auto-discovery — no config', desc: 'SNMP, agents, and ping' },
-              { label: 'Dashboards instantly generated', desc: 'Built automatically from live data' },
-              { label: 'Alerting from day one', desc: 'Email, Teams, Slack, SMS, and voice' },
-            ].map((item) => (
-              <div key={item.label} className="flex flex-col items-center gap-1">
-                <span className="text-sm font-semibold text-foreground">{item.label}</span>
-                <span className="text-xs text-muted-foreground">{item.desc}</span>
-              </div>
-            ))}
-          </motion.div>
+          {/* The four-up proof row used to sit here. It now renders as
+              <ProofStrip /> below the dashboard — see proof-strip.tsx. */}
 
         </div>
       </div>

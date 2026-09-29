@@ -568,6 +568,29 @@ main [id][data-anchor] {
   }
 }
 
+/* The three "Up and running" steps double as replay controls. */
+.hiw-step {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+/* !important because the step number and title carry inline `color` that
+   tracks the lit/unlit state, and an inline style outranks a class rule. */
+.hiw-step:hover span:not(.sr-only) {
+  color: #ffffff !important;
+}
+
+.hiw-step:focus-visible {
+  outline: 2px solid var(--st-accent);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
 .ft-nav {
   width: 38px;
   height: 38px;

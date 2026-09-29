@@ -3,6 +3,7 @@ import { MotionConfig } from "motion/react";
 import { Navigation } from "./components/navigation";
 import { Hero } from "./components/hero";
 import { DashboardPreview } from "./components/dashboard-preview";
+import { ProofStrip } from "./components/proof-strip";
 import { ScreenshotGallery } from "./components/screenshot-gallery";
 import { WhyStratora } from "./components/why-stratora";
 import { HowItWorks } from "./components/how-it-works";
@@ -33,6 +34,7 @@ function LandingPage() {
     <>
       <Hero />
       <DashboardPreview />
+      <ProofStrip />
       <ScreenshotGallery />
       <WhyStratora />
 
