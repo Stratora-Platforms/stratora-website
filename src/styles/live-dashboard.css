@@ -292,17 +292,15 @@
   color: #b4b4c8;
 }
 
-/* DEVIATION FROM THE REFERENCE, deliberate. The reference puts these at
-   top: 14px, which collides with the Frankfurt callout: at the frame's own
-   1240px width the callout spans x 640-902 and the chips start at x 721, so
-   the opaque chips clip "Frankfurt DC" and its incident badge every time the
-   callout fades in.
-   The chips move rather than the callout because the callout's position is
-   pin-optimal — at top: 18px it covers no site pin, whereas every alternative
-   placement for it buries one (DXB at 693,131 below, TYO at 941,104 right).
-   The chips are free-floating chrome, and bottom-right is empty ocean that
-   clears the SYD pin at (975,283) by 12px, balancing the health card at
-   bottom-left. */
+/* Bottom-right, matching the approved mockup (reference 01-Hero).
+   An earlier build had these top-right, where they collided with the
+   Frankfurt callout: at the frame's 1240px width the callout spans x 640-902
+   and the chips start at x 721, so the opaque chips clipped "Frankfurt DC"
+   and its badge every time the callout faded in. The chips moved rather than
+   the callout because the callout's position is pin-optimal — at top: 18px it
+   covers no site pin, while every alternative buries one (DXB at 693,131
+   below, TYO at 941,104 right). Bottom-right is empty ocean that clears the
+   SYD pin at (975,283) by 12px and balances the health card at bottom-left. */
 .sd-regions {
   position: absolute;
   right: 16px;
@@ -514,8 +512,8 @@
   flex-shrink: 0;
 }
 
-/* -- incident context ----------------------------------------------------- */
-.sd-incident {
+/* -- escalation ----------------------------------------------------------- */
+.sd-escalation {
   /* Same card shape, warmed to critical orange. */
   border-color: rgba(249, 115, 22, 0.35);
   box-shadow: inset 0 1px 0 rgba(249, 115, 22, 0.45);
@@ -532,14 +530,14 @@
   white-space: nowrap;
 }
 
-.sd-correlation {
+.sd-team {
   margin-left: auto;
   font-size: 11.5px;
   color: #9f9fb6;
   white-space: nowrap;
 }
 
-.sd-incident-title {
+.sd-escalation-title {
   padding: 12px 14px 4px 14px;
   display: flex;
   flex-direction: column;
@@ -602,7 +600,7 @@
   font-size: 12.5px;
 }
 
-.sd-step-layer {
+.sd-step-stage {
   font-size: 10.5px;
   color: #9f9fb6;
   padding: 2px 7px;
@@ -612,7 +610,7 @@
   white-space: nowrap;
 }
 
-.sd-cause {
+.sd-maintenance {
   margin: auto 14px 12px 14px;
   padding: 9px 11px;
   border-radius: 9px;
@@ -826,7 +824,7 @@
    Scaling the 1240px frame to a phone would put its 12.5px body text under
    8px, so below the md breakpoint the frame stops scaling and reflows: the
    sidebar, the sites table and the live activity feed drop out, and the map,
-   KPIs, needs-attention and incident-context stack in one column at native
+   KPIs, needs-attention and escalation stack in one column at native
    text sizes. The map keeps its 1064:340 aspect so the arcs and pins stay
    registered to the continents; its labels, region chips and callout are hung
    at map scale and become illegible, so they go, and the health ring moves
@@ -921,7 +919,7 @@
     gap: 8px;
   }
 
-  /* Labels like "Active alerts, correlated" need two lines in a half-width
+  /* Labels like "Nodes in maintenance" need two lines in a half-width
      card, which would push the trend row out of the fixed 92px box. */
   .sd-kpi {
     height: auto;
@@ -938,7 +936,7 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* Card headers carry three things — title, severity chip, correlation count
+  /* Card headers carry three things — title, severity chip, on-call team
      — which do not fit one line at this width. Let them wrap instead of
      squeezing the title. */
   .sd-card-head {
@@ -973,7 +971,7 @@
     padding-left: 18px;
   }
 
-  /* Incident steps wrap rather than truncate; the layer chip goes. */
+  /* Escalation steps wrap rather than truncate; the stage chip goes. */
   .sd-steps {
     padding: 6px;
   }
@@ -986,11 +984,11 @@
     gap: 8px;
   }
 
-  .sd-step-layer {
+  .sd-step-stage {
     display: none;
   }
 
-  .sd-cause {
+  .sd-maintenance {
     margin: 4px 12px 12px 12px;
   }
 }

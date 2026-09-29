@@ -4,7 +4,7 @@
  * The animated hero dashboard shows one fictional global customer — Halden
  * Group: 4,812 nodes, 38 sites, 14 countries — chosen to sell two things at a
  * glance: monitoring at scale (the world map of collector traffic into NYC HQ)
- * and context (nine alerts correlated into one incident with a probable cause).
+ * and context (one alert followed through its escalation chain to an ack).
  *
  * Everything the dashboard says lives in this module so the story can be edited
  * without touching layout or animation code.
@@ -93,8 +93,8 @@ export const KPIS: Kpi[] = [
   {
     target: 41,
     color: "#fb923c",
-    label: "Active alerts, correlated",
-    sub: "→ 7 incidents",
+    label: "Active alerts",
+    sub: "18 acknowledged",
     foot: "↓ 11 since 24h",
     spark: "M0 5 L16 6 L28 8 L40 7 L52 10 L64 12 L80 13",
     sparkColor: STATUS_COLORS.critical,
@@ -185,9 +185,9 @@ export const CALLOUT_LEADER = "M560 64 L640 44";
 
 export const CALLOUT = {
   site: "Frankfurt DC",
-  badge: "1 incident",
-  body: "FRA-SAN-02 latency traced to a flapping core-switch port · ",
-  emphasis: "42 VMs affected",
+  badge: "3 critical",
+  body: "FRA-SAN-02 read latency 28 ms · ",
+  emphasis: "escalated to storage on-call",
 };
 
 export const REGIONS = [
@@ -209,22 +209,28 @@ export const ALERTS = [
 
 export const ALERTS_TOTAL = "41";
 
-/* ------------------------------------------------------------- incident -- */
+/* ----------------------------------------------------------- escalation -- */
 
-export const INCIDENT = {
-  title: "Frankfurt DC · storage latency",
-  meta: "Frankfurt, Germany · FRA-VSAN cluster · opened 14:02 CEST",
+/**
+ * One alert travelling through its escalation chain — detect, notify,
+ * escalate, acknowledge. Alert correlation and root-cause analysis are not
+ * shipped, so nothing here groups alerts into incidents or names a cause.
+ */
+export const ESCALATION = {
+  title: "FRA-SAN-02 · read latency 28 ms",
+  meta: "Frankfurt DC · threshold 15 ms · raised 14:02 CEST",
   severity: "Critical",
-  correlation: "9 alerts → 1 incident",
-  cause: "FRA-CORE-SW02 Te1/0/12 · owner: Frankfurt DC infra · 3 related alerts suppressed",
+  team: "Storage on-call",
+  maintenanceLabel: "Maintenance window",
+  maintenance: "BLR-ESX-04 alerts suppressed until 22:00 IST",
 };
 
-/** The correlation chain. The loop highlights one step at a time, wrapping. */
-export const INCIDENT_STEPS = [
-  { time: "14:02:11", node: "FRA-CORE-SW02", what: "Te1/0/12 flapping, 3× in 60 s", layer: "Network", color: STATUS_COLORS.degraded },
-  { time: "14:02:14", node: "FRA-SAN-02", what: "iSCSI path failover to controller B", layer: "Storage", color: STATUS_COLORS.degraded },
-  { time: "14:02:40", node: "FRA-SAN-02", what: "read latency 28 ms (threshold 15 ms)", layer: "Storage", color: STATUS_COLORS.critical },
-  { time: "14:03:05", node: "FRA-VSAN", what: "42 VMs on 6 hosts see datastore latency", layer: "Virtualization", color: STATUS_COLORS.critical },
+/** The escalation chain. The loop highlights one step at a time, wrapping. */
+export const ESCALATION_STEPS = [
+  { time: "14:02:40", action: "Alert raised", detail: "critical — above threshold", stage: "Detect", color: STATUS_COLORS.critical },
+  { time: "14:02:41", action: "Notified", detail: "Teams and email to storage on-call", stage: "Notify", color: "#ff9818" },
+  { time: "14:07:41", action: "Escalated", detail: "SMS and phone call, next contact", stage: "Escalate", color: "#ff9818" },
+  { time: "14:08:10", action: "Acknowledged", detail: "by reply to SMS", stage: "Two-way ack", color: "#8b5cf6" },
 ];
 
 /* ---------------------------------------------------------------- sites -- */
@@ -287,7 +293,7 @@ export const FEED_AGES = ["just now", "9s", "34s", "1m", "2m", "4m"];
 /** Number of feed rows on screen. */
 export const FEED_ROWS = 6;
 
-/** Loop period, in ms: one tick advances the incident step and the feed. */
+/** Loop period, in ms: one tick advances the escalation step and the feed. */
 export const TICK_MS = 2600;
 
 /** Intro count-up duration, in ms. */
