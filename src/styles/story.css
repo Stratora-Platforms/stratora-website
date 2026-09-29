@@ -1,0 +1,155 @@
+/* ============================================================================
+   Shared motion + surfaces for the refreshed below-the-fold sections.
+
+   Namespaced `st-` and scoped to `.st-scope`, so none of it reaches the rest
+   of the site. Colours come from the app's status palette (see
+   app-preview.css) — this file adds no new hues.
+
+   Every animation here is decorative. The reduced-motion block at the bottom
+   switches all of it off, leaving each section on its end state.
+   ========================================================================== */
+
+.st-scope {
+  --st-panel: #0f0f16;
+  --st-panel-2: #13131c;
+  --st-line: #1d1d28;
+  --st-line-2: #26263a;
+  --st-ink: #f5f5f7;
+  --st-ink-2: #c9c9d4;
+  --st-ink-3: #9d9da8;
+  --st-ink-4: #8b8b98;
+  --st-accent: #8b5cf6;
+  --st-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.st-mono {
+  font-family: var(--st-mono);
+}
+
+/* The stage every story visual sits on. */
+.st-stage {
+  border-radius: 16px;
+  background: radial-gradient(120% 90% at 30% 20%, #15131f, #0d0d13 70%);
+  border: 1px solid #1f1f29;
+}
+
+/* -- motion --------------------------------------------------------------- */
+.st-fade {
+  animation: st-fade 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes st-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.st-row {
+  animation: st-row 0.45s ease both;
+}
+
+@keyframes st-row {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.st-pulse {
+  animation: st-pulse 1.8s ease-out infinite;
+}
+
+@keyframes st-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgba(249, 115, 22, 0);
+  }
+}
+
+.st-flow {
+  stroke-dasharray: 4 8;
+  animation: st-flow 1.4s linear infinite;
+}
+
+@keyframes st-flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+/* -- why-stratora story rail ---------------------------------------------- */
+.st-para {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 0 12px 22px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
+.st-para-bar {
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 2px;
+  border-radius: 1px;
+  background: #23232c;
+  transition: background 0.4s;
+}
+
+.st-para.is-on .st-para-bar {
+  background: var(--st-accent);
+}
+
+.st-para-text {
+  display: block;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #7b7b88;
+  transition: color 0.4s;
+}
+
+.st-para.is-on .st-para-text {
+  color: var(--st-ink-2);
+}
+
+.st-para-lead {
+  font-weight: 600;
+  color: var(--st-ink-3);
+  transition: color 0.4s;
+}
+
+.st-para.is-on .st-para-lead {
+  color: #ffffff;
+}
+
+.st-para:focus-visible {
+  outline: 2px solid var(--st-accent);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-scope *,
+  .st-scope *::before,
+  .st-scope *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
