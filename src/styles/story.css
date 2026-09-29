@@ -88,6 +88,20 @@
   }
 }
 
+/* Discovery sweep across the install demo's banner. */
+.hiw-scan {
+  animation: hiw-scan 1.6s linear infinite;
+}
+
+@keyframes hiw-scan {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(400%);
+  }
+}
+
 /* -- why-stratora story rail ---------------------------------------------- */
 .st-para {
   position: relative;
