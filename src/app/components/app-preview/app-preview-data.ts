@@ -37,8 +37,8 @@ export const USER = { initial: "A", name: "Administrator" };
 /* ----------------------------------------------------------------- alerts -- */
 
 export const ALERT_STATS = [
-  { value: "17", label: "Active", kind: "offline" as const },
-  { value: "0", label: "Acknowledged", kind: "discovering" as const },
+  { value: "41", label: "Active", kind: "offline" as const },
+  { value: "18", label: "Acknowledged", kind: "discovering" as const },
   { value: "1", label: "Muted", kind: "unknown" as const },
   { value: "984", label: "Resolved", kind: "healthy" as const },
 ];
@@ -54,13 +54,13 @@ export type AlertRow = {
 };
 
 export const ALERT_ROWS: AlertRow[] = [
-  { severity: "critical", alert: "Node Unreachable", node: "FRA-SAN-02", triggered: "Sep 28, 2026, 2:42 PM", duration: "2h 32m", status: "Active", team: "NOC Team 1" },
+  { severity: "critical", alert: "Storage Read Latency High", node: "FRA-SAN-02", triggered: "Sep 28, 2026, 2:02 PM", duration: "2h 32m", status: "Active", team: "Storage On-Call" },
   { severity: "warning", alert: "High Packet Loss", node: "MTY-CORE-SW01", triggered: "Sep 28, 2026, 2:42 PM", duration: "1m", status: "Resolved" },
   { severity: "warning", alert: "High Packet Loss", node: "LON-FW-01", triggered: "Sep 28, 2026, 2:42 PM", duration: "1m", status: "Resolved" },
   { severity: "warning", alert: "High Interface Errors", node: "SIN-POS-114", triggered: "Sep 28, 2026, 2:30 PM", duration: "5m", status: "Resolved" },
-  { severity: "critical", alert: "vSphere VM CPU High", node: "FRA-ESX-04", triggered: "Sep 28, 2026, 2:25 PM", duration: "4h 33m", status: "Active", team: "Storage On-Call" },
+  { severity: "critical", alert: "vSphere Host CPU High", node: "FRA-ESX-04", triggered: "Sep 28, 2026, 2:25 PM", duration: "4h 33m", status: "Active", team: "Storage On-Call" },
   { severity: "warning", alert: "High Packet Loss", node: "TYO-AP-12", triggered: "Sep 28, 2026, 2:22 PM", duration: "1m", status: "Resolved" },
-  { severity: "warning", alert: "Network Device CPU High", node: "JNB-ESX-02", triggered: "Sep 28, 2026, 2:19 PM", duration: "5m", status: "Resolved" },
+  { severity: "warning", alert: "Host Memory High", node: "JNB-ESX-02", triggered: "Sep 28, 2026, 2:19 PM", duration: "22m", status: "Active" },
   { severity: "warning", alert: "High Memory Usage", node: "BLR-ESX-04", triggered: "Sep 28, 2026, 2:17 PM", duration: "5m", status: "Resolved" },
   { severity: "critical", alert: "PSU Redundancy Lost", node: "TYO-ILO-07", triggered: "Sep 28, 2026, 2:10 PM", duration: "1h 04m", status: "Active", team: "NOC Team 1" },
   { severity: "warning", alert: "High Packet Loss", node: "SYD-HV-02", triggered: "Sep 28, 2026, 1:10 PM", duration: "1m", status: "Resolved" },
@@ -88,7 +88,7 @@ export type EscalationTeam = {
 
 export const ESCALATION_TEAMS: EscalationTeam[] = [
   { name: "NOC Team 1", description: "First response, 24/7 follow-the-sun", schedule: "Rotation", steps: 3, channels: ["Email", "Teams", "SMS"], status: "Active", usage: "12 alerts" },
-  { name: "Storage On-Call", description: "SAN and vSAN escalations", schedule: "Rotation", steps: 2, channels: ["Email", "Voice"], status: "Active", usage: "3 alerts" },
+  { name: "Storage On-Call", description: "SAN and vSAN escalations", schedule: "Rotation", steps: 2, channels: ["Email", "Teams", "SMS", "Voice"], status: "Active", usage: "3 alerts" },
   { name: "Network Engineering", description: "Core, edge and WAN circuits", schedule: "Business hours", steps: 3, channels: ["Email", "Slack"], status: "Active", usage: "7 alerts" },
   { name: "EMEA Field Ops", description: "Frankfurt, London, Stockholm sites", schedule: "Rotation", steps: 2, channels: ["Email", "SMS"], status: "Active", usage: "4 alerts" },
   { name: "APAC Field Ops", description: "Singapore, Tokyo, Bengaluru sites", schedule: "Rotation", steps: 2, channels: ["Teams", "SMS"], status: "Active", usage: "2 alerts" },
@@ -194,13 +194,13 @@ export const SITE = {
   networks: 5,
   healthPct: 95.8,
   healthLabel: "Critical",
-  counts: { healthy: 523, degraded: 6, critical: 3, offline: 16 },
+  counts: { healthy: 537, degraded: 6, critical: 3, offline: 2 },
   tabs: ["Overview", "Dashboard", "Nodes", "Topology", "Racks", "Alerts", "Reports", "Photos"],
   alertsBadge: 12,
   chips: [
     { label: "3 nodes critical", kind: "critical" as const },
     { label: "6 nodes degraded", kind: "warning" as const },
-    { label: "16 nodes offline", kind: "unknown" as const },
+    { label: "2 nodes offline", kind: "unknown" as const },
     { label: "12 active alerts", kind: "warning" as const },
   ],
   networksList: [
@@ -256,8 +256,8 @@ export const NOC = {
   ],
   nodesBySite: [
     { site: "New York HQ", healthy: 609, degraded: 3, critical: 0, offline: 0, maint: 0, total: 612 },
-    { site: "Frankfurt DC", healthy: 523, degraded: 6, critical: 3, offline: 16, maint: 0, total: 548 },
-    { site: "Singapore Hub", healthy: 429, degraded: 2, critical: 0, offline: 0, maint: 0, total: 431 },
+    { site: "Frankfurt DC", healthy: 537, degraded: 6, critical: 3, offline: 2, maint: 0, total: 548 },
+    { site: "Singapore Hub", healthy: 428, degraded: 2, critical: 0, offline: 1, maint: 0, total: 431 },
     { site: "Monterrey Plant", healthy: 350, degraded: 4, critical: 2, offline: 0, maint: 0, total: 356 },
     { site: "London Office", healthy: 284, degraded: 3, critical: 0, offline: 0, maint: 0, total: 287 },
     { site: "Bengaluru Dev Centre", healthy: 251, degraded: 0, critical: 0, offline: 0, maint: 12, total: 263 },
