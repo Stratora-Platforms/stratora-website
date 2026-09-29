@@ -88,6 +88,115 @@
   }
 }
 
+/* ==========================================================================
+   Stats row — shine sweep, travelling light, node dots
+   ========================================================================== */
+.stat-scope {
+  --stat-orange: #f0a04b;
+}
+
+/* Before the row is in view the numerals sit flat, so nothing flashes on
+   first paint; the sweep runs once when it arrives. */
+.stat-flat {
+  color: var(--stat-orange);
+}
+
+.stat-shine {
+  background: linear-gradient(
+    100deg,
+    #f0a04b 0%,
+    #f0a04b 40%,
+    #ffe2b8 50%,
+    #f0a04b 60%,
+    #f0a04b 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: stat-shine 1.4s cubic-bezier(0.3, 0.6, 0.3, 1) both 0.3s;
+}
+
+@keyframes stat-shine {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+.stat-rule {
+  position: absolute;
+  left: 12.5%;
+  right: 12.5%;
+  top: 88px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(240, 160, 75, 0),
+    rgba(240, 160, 75, 0.35) 15%,
+    rgba(240, 160, 75, 0.35) 85%,
+    rgba(240, 160, 75, 0)
+  );
+}
+
+.stat-travel {
+  position: absolute;
+  top: -2px;
+  width: 60px;
+  height: 5px;
+  margin-left: -30px;
+  border-radius: 3px;
+  background: radial-gradient(closest-side, rgba(255, 210, 150, 0.95), rgba(255, 152, 24, 0));
+  animation: stat-travel 2.4s cubic-bezier(0.45, 0.05, 0.35, 1) both 0.2s;
+}
+
+@keyframes stat-travel {
+  from {
+    left: 0%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  to {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+.stat-node {
+  display: block;
+  margin: 14px auto 0 auto;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--stat-orange);
+  box-shadow: 0 0 0 4px rgba(240, 160, 75, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stat-scope * {
+    animation: none !important;
+  }
+
+  /* Without the sweep the clipped gradient would leave the text invisible. */
+  .stat-shine {
+    background: none;
+    -webkit-text-fill-color: var(--stat-orange);
+    color: var(--stat-orange);
+  }
+
+  .stat-travel {
+    display: none;
+  }
+}
+
 /* Discovery sweep across the install demo's banner. */
 .hiw-scan {
   animation: hiw-scan 1.6s linear infinite;
