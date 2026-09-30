@@ -4,8 +4,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
   type CarouselApi,
 } from "./ui/carousel";
 import { cn } from "./ui/utils";
@@ -177,9 +175,17 @@ export function ScreenshotGallery() {
 
             {/* Main viewer. Each slide renders the app view live rather than as
                 an image, so it stays sharp at any size — the frame is a fixed
-                16:9 because that is the app's 1920x1080 layout. */}
-            <div className="relative rounded-2xl border border-purple-500/20 overflow-hidden shadow-2xl shadow-purple-900/20">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-purple-800/20 rounded-2xl blur-xl -z-10" />
+                16:9 because that is the app's 1920x1080 layout.
+
+                Full-bleed below md: -mx-6 cancels the section's px-6 so the
+                view gets the whole viewport width. At 390 that is 325 -> 390,
+                about 20% more of a view that has very little room to spare.
+                The card treatment (radius, side borders) is dropped there
+                because it would sit hard against the screen edge. */}
+            <div className="relative -mx-6 border-y border-purple-500/20 overflow-hidden shadow-2xl shadow-purple-900/20 md:mx-0 md:rounded-2xl md:border">
+              {/* The glow is -inset-1, so at full bleed it would reach 4px past
+                  each edge of the viewport and push the document sideways. */}
+              <div className="absolute -inset-1 hidden bg-gradient-to-r from-purple-600/20 to-purple-800/20 rounded-2xl blur-xl -z-10 md:block" />
               <CarouselContent className="ml-0">
                 {SLIDES.map((slide, i) => (
                   /* The title is no longer shown — aria-label keeps it as the
@@ -198,8 +204,11 @@ export function ScreenshotGallery() {
                 ))}
               </CarouselContent>
 
-              <CarouselPrevious className="left-4 bg-background/60 backdrop-blur-sm border-orange-accent/40 dark:border-orange-accent/60 dark:bg-background/60 text-foreground shadow-[0_0_14px_rgba(255,152,24,0.35)] hover:bg-orange-accent/20" />
-              <CarouselNext className="right-4 bg-background/60 backdrop-blur-sm border-orange-accent/40 dark:border-orange-accent/60 dark:bg-background/60 text-foreground shadow-[0_0_14px_rgba(255,152,24,0.35)] hover:bg-orange-accent/20" />
+              {/* No overlay prev/next arrows. They sat on top of the view at
+                  every size, and once phones fitted the whole 1920px layout
+                  into a ~183px-tall strip they covered about a third of the
+                  thing they were meant to help you look at. The chip row above
+                  names all eight views and swipe still works. */}
             </div>
 
             {/* Caption — below the view, swapping with the slide. The title
