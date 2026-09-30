@@ -148,9 +148,14 @@ export function ScreenshotGallery() {
                 than a desktop strip plus a mobile dot rail: the dots never
                 named the view, and with the per-slide <h3> gone that left
                 phones with no way to tell which view they were looking at.
-                Scrolls horizontally below md, wraps and centres from md up. */}
+
+                Wraps at every size. It used to scroll horizontally below md,
+                where the eight chips need 796px in a 327px box — two of eight
+                visible and 470px of them unreachable without a sideways drag
+                nobody knew was there. Smaller padding and type on mobile keep
+                the wrapped rows down to a sensible height. */}
             <div
-              className="mb-8 flex gap-2 overflow-x-auto pb-2 md:flex-wrap md:items-center md:justify-center md:overflow-visible md:pb-0"
+              className="mb-8 flex flex-wrap items-center justify-center gap-2"
               role="group"
               aria-label="Choose a view"
             >
@@ -162,7 +167,7 @@ export function ScreenshotGallery() {
                   aria-label={`View ${slide.title}`}
                   aria-current={i === selected}
                   className={cn(
-                    "shrink-0 whitespace-nowrap rounded-full border px-4 py-2 text-sm transition-all",
+                    "rounded-full border px-3 py-1.5 text-xs transition-all md:px-4 md:py-2 md:text-sm",
                     i === selected
                       ? "border-orange-accent text-foreground shadow-[0_0_16px_rgba(255,152,24,0.35)]"
                       : "border-border/50 text-muted-foreground hover:text-foreground hover:border-orange-bright",
