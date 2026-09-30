@@ -17,6 +17,9 @@ import { STORY_STAGE, STORY_VISUALS } from "./why-stratora-visuals";
 
 type Para = { lead: string; body: string };
 
+/** How long each paragraph holds before the story advances on its own. */
+const DWELL_MS = 5000;
+
 const PARAS: Para[] = [
   {
     lead: "",
@@ -51,9 +54,17 @@ const PARAS: Para[] = [
 
 export function WhyStratora() {
   const [active, setActive] = useState(0);
-  /** Set once the reader picks a paragraph, so scrolling stops overriding them. */
-  const pickedRef = useRef(false);
-  const paraRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [onScreen, setOnScreen] = useState(false);
+  const [reduced] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+  /* The sticky stage this drives is `hidden lg:block`. Without the breakpoint
+     check a phone would still remount a full story visual every 5s behind
+     display:none. */
+  const [isDesktop, setIsDesktop] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches,
+  );
   /* Mobile only, and deliberately separate from `active`: the accordion is
      driven by taps, not by scroll position. Index 1 — the first of the five
      states — starts open so the pattern is legible without a tap. */
@@ -115,32 +126,44 @@ export function WhyStratora() {
     return stop;
   }, [open]);
 
-  /* Scroll drives the active paragraph: whichever one is crossing the middle
-     band of the viewport wins. The margins leave a ~10% band so exactly one
-     paragraph qualifies at a time. */
+  /* The active paragraph used to be chosen by scroll position — whichever one
+     crossed the middle band of the viewport won. That's gone: it advances on
+     its own every 5s instead, and a click still picks one directly. */
   useEffect(() => {
-    const nodes = paraRefs.current.filter(Boolean) as HTMLButtonElement[];
-    if (!nodes.length) return;
-
+    const node = sectionRef.current;
+    if (!node) return;
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (pickedRef.current) return;
-        const hit = entries.find((entry) => entry.isIntersecting);
-        if (!hit) return;
-        const index = nodes.indexOf(hit.target as HTMLButtonElement);
-        if (index >= 0) setActive(index);
-      },
-      { rootMargin: "-45% 0px -45% 0px", threshold: 0 },
+      (entries) => setOnScreen(entries.some((e) => e.isIntersecting)),
+      { threshold: 0.2 },
     );
-
-    nodes.forEach((node) => observer.observe(node));
+    observer.observe(node);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const sync = () => setIsDesktop(mq.matches);
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  /* One self-scheduling timeout keyed on `active`, so a click restarts the
+     dwell from that instant rather than leaving a partly-elapsed timer to fire
+     early. Paused off screen, and off entirely under reduced motion — content
+     that swaps itself every 5s is exactly what that preference asks to stop. */
+  useEffect(() => {
+    if (reduced || !onScreen || !isDesktop) return;
+    const id = window.setTimeout(
+      () => setActive((prev) => (prev + 1) % PARAS.length),
+      DWELL_MS,
+    );
+    return () => window.clearTimeout(id);
+  }, [active, onScreen, isDesktop, reduced]);
 
   const Visual = STORY_VISUALS[active];
 
   return (
-    <section id="why-stratora" className="st-scope relative px-6 py-20">
+    <section id="why-stratora" ref={sectionRef} className="st-scope relative px-6 py-20">
       <div className="container mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -177,13 +200,7 @@ export function WhyStratora() {
               <button
                 key={para.body}
                 type="button"
-                ref={(el) => {
-                  paraRefs.current[i] = el;
-                }}
-                onClick={() => {
-                  pickedRef.current = true;
-                  setActive(i);
-                }}
+                onClick={() => setActive(i)}
                 aria-current={i === active}
                 className={`st-para${i === active ? " is-on" : ""}`}
               >
