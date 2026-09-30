@@ -145,6 +145,36 @@ export function ScreenshotGallery() {
           className="mx-auto"
         >
           <Carousel setApi={setApi} opts={{ loop: true }}>
+            {/* Picker — above the view, so the control that names the slides
+                comes before the thing it controls. One responsive row rather
+                than a desktop strip plus a mobile dot rail: the dots never
+                named the view, and with the per-slide <h3> gone that left
+                phones with no way to tell which view they were looking at.
+                Scrolls horizontally below md, wraps and centres from md up. */}
+            <div
+              className="mb-8 flex gap-2 overflow-x-auto pb-2 md:flex-wrap md:items-center md:justify-center md:overflow-visible md:pb-0"
+              role="group"
+              aria-label="Choose a view"
+            >
+              {SLIDES.map((slide, i) => (
+                <button
+                  key={slide.id}
+                  type="button"
+                  onClick={() => scrollTo(i)}
+                  aria-label={`View ${slide.title}`}
+                  aria-current={i === selected}
+                  className={cn(
+                    "shrink-0 whitespace-nowrap rounded-full border px-4 py-2 text-sm transition-all",
+                    i === selected
+                      ? "border-orange-accent text-foreground shadow-[0_0_16px_rgba(255,152,24,0.35)]"
+                      : "border-border/50 text-muted-foreground hover:text-foreground hover:border-orange-bright",
+                  )}
+                >
+                  {slide.short}
+                </button>
+              ))}
+            </div>
+
             {/* Main viewer. Each slide renders the app view live rather than as
                 an image, so it stays sharp at any size — the frame is a fixed
                 16:9 because that is the app's 1920x1080 layout. */}
@@ -152,7 +182,10 @@ export function ScreenshotGallery() {
               <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 to-purple-800/20 rounded-2xl blur-xl -z-10" />
               <CarouselContent className="ml-0">
                 {SLIDES.map((slide, i) => (
-                  <CarouselItem key={slide.id} className="pl-0">
+                  /* The title is no longer shown — aria-label keeps it as the
+                     slide's accessible name for screen readers and the copy
+                     check, which reads aria-labels as well as text. */
+                  <CarouselItem key={slide.id} className="pl-0" aria-label={slide.title}>
                     {isMounted(i) ? (
                       /* Animation is gated on the active slide too: embla lays
                          every slide out in one track, so a mounted neighbour
@@ -169,51 +202,19 @@ export function ScreenshotGallery() {
               <CarouselNext className="right-4 bg-background/60 backdrop-blur-sm border-orange-accent/40 dark:border-orange-accent/60 dark:bg-background/60 text-foreground shadow-[0_0_14px_rgba(255,152,24,0.35)] hover:bg-orange-accent/20" />
             </div>
 
-            {/* Active title + caption */}
-            <div className="text-center mt-8">
-              <h3 className="text-xl md:text-2xl font-semibold mb-2">{active.title}</h3>
-              <p className="text-muted-foreground max-w-2xl mx-auto">{active.caption}</p>
-            </div>
+            {/* Caption — below the view, swapping with the slide. The title
+                that used to sit above it is gone: the picker already names
+                the view, so the heading only repeated it.
 
-            {/* Selector strip — desktop (md+). Labelled rather than thumbnailed:
-                a 130px-wide thumbnail of a 1920px app view is unreadable, and
-                rendering eight more live views to make them would double the
-                DOM for no gain. */}
-            <div className="hidden md:flex flex-wrap items-center justify-center gap-2 mt-8">
-              {SLIDES.map((slide, i) => (
-                <button
-                  key={slide.id}
-                  type="button"
-                  onClick={() => scrollTo(i)}
-                  aria-label={`View ${slide.title}`}
-                  aria-current={i === selected}
-                  className={cn(
-                    "rounded-full border px-4 py-2 text-sm transition-all",
-                    i === selected
-                      ? "border-orange-accent text-foreground shadow-[0_0_16px_rgba(255,152,24,0.35)]"
-                      : "border-border/50 text-muted-foreground hover:text-foreground hover:border-orange-bright",
-                  )}
-                >
-                  {slide.short}
-                </button>
-              ))}
-            </div>
-
-            {/* Dot indicators — mobile (<md) */}
-            <div className="flex md:hidden items-center justify-center gap-2 mt-6">
-              {SLIDES.map((slide, i) => (
-                <button
-                  key={slide.id}
-                  type="button"
-                  onClick={() => scrollTo(i)}
-                  aria-label={`Go to ${slide.title}`}
-                  aria-current={i === selected}
-                  className={cn(
-                    "h-2 rounded-full transition-all",
-                    i === selected ? "w-6 bg-orange-accent" : "w-2 bg-muted-foreground/40",
-                  )}
-                />
-              ))}
+                Height is reserved rather than letting the block grow and
+                shrink, because captions wrap to different line counts and the
+                page would jog on every switch. Only the active caption is
+                rendered — stacking all eight in one grid cell would size to
+                the tallest automatically, but it would also put every caption
+                in the section's textContent at once, and the copy check
+                proves the tabs work by watching that text change per slide. */}
+            <div className="mt-8 flex items-start justify-center min-h-[72px] sm:min-h-[48px] md:min-h-[24px]">
+              <p className="text-muted-foreground max-w-2xl text-center">{active.caption}</p>
             </div>
           </Carousel>
         </motion.div>
