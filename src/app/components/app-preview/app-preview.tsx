@@ -55,11 +55,12 @@ const VIEWS: Record<ViewId, (props: ViewProps) => JSX.Element> = {
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 const INTRO_MS = 1400;
 
-/** Floor for the scale on narrow screens — below this the app's type turns to mush. */
-const MIN_SCALE = 0.45;
-
-/** The app's left navigation, panned out of frame when cropping. */
-const SIDEBAR_WIDTH = 220;
+/* There used to be a MIN_SCALE floor of 0.45 here, with the view cropped and
+   panned past the sidebar on anything under 768px. It kept the app's type
+   legible, but it meant a phone saw roughly 760px of the 1920px layout and no
+   way to reach the rest: .ap-fit clips, so swiping to find the missing half
+   just advanced the carousel. Fitting the whole view is the lesser evil —
+   you can see what each view IS, which is what the carousel is for. */
 
 function prefersReducedMotion() {
   return typeof window !== "undefined" && window.matchMedia(REDUCED_MOTION_QUERY).matches;
@@ -74,24 +75,15 @@ export function AppPreview({ view, active = true }: { view: ViewId; active?: boo
   const [t, setT] = useState(() => (prefersReducedMotion() ? 1 : 0));
 
   /* -- fit ----------------------------------------------------------------
-     Wide containers scale the whole 1920px view down to fit. Narrow ones
-     can't: at a 325px phone width that is a scale of 0.17, which renders the
-     app's 13.5px body text at 2.3px — mush. Below the md breakpoint the view
-     is held at MIN_SCALE and cropped instead, anchored past the sidebar, so a
-     phone shows a readable window onto the page rather than an unreadable
-     whole. .ap-fit clips the overflow. */
+     The whole 1920x1080 view scales to the container's width, at every size.
+     The wrapper's height is set to match so the transform leaves no gap. */
   const applyFit = useCallback(() => {
     const fit = fitRef.current;
     const inner = innerRef.current;
     if (!fit || !inner) return;
 
-    const fitScale = fit.clientWidth / DESIGN_WIDTH;
-    const narrow = window.matchMedia("(max-width: 767.98px)").matches;
-    const scale = narrow ? Math.max(fitScale, MIN_SCALE) : fitScale;
-
-    // Only pan when we are actually cropping.
-    const offsetX = scale > fitScale ? -SIDEBAR_WIDTH * scale : 0;
-    inner.style.transform = `translateX(${offsetX}px) scale(${scale})`;
+    const scale = fit.clientWidth / DESIGN_WIDTH;
+    inner.style.transform = `scale(${scale})`;
 
     const height = `${Math.round(DESIGN_HEIGHT * scale)}px`;
     if (fit.style.height !== height) fit.style.height = height;
