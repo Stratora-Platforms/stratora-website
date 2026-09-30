@@ -378,13 +378,17 @@ export function HowItWorks() {
                     type="button"
                     onClick={() => goToStep(i)}
                     aria-current={i === phase ? "step" : undefined}
-                    className="hiw-step flex items-baseline gap-3"
+                    className="hiw-step"
                   >
-                    <span className="text-[15px] transition-colors duration-400" style={{ color: lit ? "#c4b5fd" : "#4a4a56" }}>
-                      {step.n}
-                    </span>
-                    <span className="text-[22px] font-semibold transition-colors duration-400" style={{ color: lit ? "#ffffff" : "#7b7b88" }}>
-                      {step.title}
+                    {/* The visible heading is its own box so the focus ring can
+                        wrap it rather than the taller invisible hit area. */}
+                    <span className="hiw-step-label flex items-baseline gap-3">
+                      <span className="text-[15px] transition-colors duration-400" style={{ color: lit ? "#c4b5fd" : "#4a4a56" }}>
+                        {step.n}
+                      </span>
+                      <span className="text-[22px] font-semibold transition-colors duration-400" style={{ color: lit ? "#ffffff" : "#7b7b88" }}>
+                        {step.title}
+                      </span>
                     </span>
                     <span className="sr-only">{i === phase ? " — playing now" : " — replay from this step"}</span>
                   </button>

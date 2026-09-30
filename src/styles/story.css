@@ -582,10 +582,19 @@ main [id][data-anchor] {
   }
 }
 
-/* The three "Up and running" steps double as replay controls. */
+/* The three "Up and running" steps double as replay controls.
+
+   The heading row alone is only 33px tall, short of a 44px touch target. The
+   padding grows the button's border box to 45px and the equal negative margin
+   cancels it in layout: a flex item is positioned by its MARGIN box, so the
+   margin box stays 33px and the dots, rail, headings and body gaps do not
+   move a pixel. The extra 6px above and below is transparent hit area that
+   overhangs into the surrounding gap. */
 .hiw-step {
-  margin: 0;
-  padding: 0;
+  display: block;
+  width: 100%;
+  padding: 6px 0;
+  margin: -6px 0;
   border: 0;
   background: transparent;
   cursor: pointer;
@@ -599,7 +608,14 @@ main [id][data-anchor] {
   color: #ffffff !important;
 }
 
+/* The ring goes on the label, not the button: outline-offset is a single
+   value for all four sides, so an offset tuned to the padded box would sit
+   6px too far out vertically and correct horizontally. */
 .hiw-step:focus-visible {
+  outline: none;
+}
+
+.hiw-step:focus-visible .hiw-step-label {
   outline: 2px solid var(--st-accent);
   outline-offset: 4px;
   border-radius: 6px;
