@@ -138,7 +138,7 @@ export const IPAM_SUBNETS: SubnetRow[] = [
   { cidr: "10.20.0.0/24", name: "Servers and OOBM", site: "Frankfurt DC", vlan: 10, gateway: "10.20.0.1", used: 241, total: 254 },
   { cidr: "10.20.2.0/24", name: "Wi-Fi Access", site: "Frankfurt DC", vlan: 12, gateway: "10.20.2.1", used: 88, total: 254 },
   { cidr: "10.30.0.0/24", name: "Plant Floor OT", site: "Monterrey Plant", vlan: 20, gateway: "10.30.0.1", used: 197, total: 254 },
-  { cidr: "10.40.0.0/24", name: "Servers and OOBM", site: "Singapore Hub", vlan: 10, gateway: "10.40.0.1", used: 131, total: 254 },
+  { cidr: "10.41.0.0/24", name: "Servers and OOBM", site: "Singapore Hub", vlan: 10, gateway: "10.41.0.1", used: 131, total: 254 },
   { cidr: "10.50.1.0/24", name: "Wired Access", site: "London Office", vlan: 11, gateway: "10.50.1.1", used: 97, total: 254 },
   { cidr: "10.60.3.0/24", name: "Dev and Lab", site: "Bengaluru Dev Centre", vlan: 30, gateway: "10.60.3.1", used: 52, total: 254 },
   { cidr: "192.168.8.0/24", name: "Guest Wi-Fi", site: "São Paulo Plant", vlan: 40, gateway: "192.168.8.1", used: 34, total: 254 },
@@ -188,7 +188,7 @@ export const RACK = {
 
 export const SITE = {
   name: "Frankfurt DC",
-  address: "Hanauer Landstraße 298, Frankfurt, 60314, Germany",
+  address: "Musterstraße 1, 60000 Frankfurt am Main, Germany",
   collector: "FRA-COL-01",
   nodes: 548,
   networks: 5,

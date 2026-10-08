@@ -121,7 +121,7 @@ function Templates() {
     ["NYC-AP-11", "Ubiquiti U6", "Access point template"],
     ["NYC-NAS-01", "Synology DS", "NAS template"],
     ["NYC-ESX-01", "VMware ESXi", "Hypervisor template"],
-    ["status.haldengroup.com", "HTTPS endpoint", "Web service check"],
+    ["status.haldengroup.example", "HTTPS endpoint", "Web service check"],
   ];
   return (
     <div className="st-fade" style={{ position: "absolute", inset: 0, padding: "26px 34px", display: "flex", flexDirection: "column", gap: 14 }}>
