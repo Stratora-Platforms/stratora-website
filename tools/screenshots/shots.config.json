@@ -19,7 +19,7 @@
   ],
 
   "baseUrl": "https://app.stratora.io",
-  "outDir": "public/screenshots",
+  "outDir": "tools/screenshots/out",
   "viewport": { "width": 1920, "height": 1080 },
   "deviceScaleFactor": 1,
   "colorScheme": "dark",

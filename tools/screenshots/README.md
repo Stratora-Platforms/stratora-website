@@ -1,7 +1,9 @@
 # Carousel screenshots
 
 Recaptures the eight app screenshots behind **See Stratora in action** on the
-homepage, at 1920×1080, straight into `public/screenshots/`.
+homepage, at 1920×1080, into `tools/screenshots/out/` (gitignored). The site
+no longer ships these PNGs — the carousel renders recreated HTML views — so the
+output is local reference material only.
 
 Lives in its own package on purpose: Playwright's postinstall downloads ~150 MB
 of browsers, and the Pages deploy runs `npm install` at the repo root. Keeping it
@@ -24,8 +26,8 @@ node capture.mjs --dry-run                   # print the plan, write nothing
 node capture.mjs --headed                    # watch it drive the browser
 ```
 
-Then check the diff, eyeball the carousel with `npm run dev` at the repo root,
-and commit the PNGs.
+Then compare the output against the carousel with `npm run dev` at the repo
+root. Don't commit the PNGs: `tools/screenshots/out/` is gitignored.
 
 ## What it shoots
 

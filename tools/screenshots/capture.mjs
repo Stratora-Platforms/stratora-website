@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
  * Captures the app screenshots used by the website's "See Stratora in action"
- * carousel, at 1920x1080, straight into public/screenshots/.
+ * carousel, at 1920x1080, into tools/screenshots/out/ (gitignored).
  *
  *   npm run setup     # once — installs Playwright and its Chromium
  *   npm run capture   # all eight shots
  *
  *   node capture.mjs --only alerts.png,ipam.png   # just those two
- *   node capture.mjs --out reference/current     # somewhere other than public/
+ *   node capture.mjs --out tools/screenshots/reference  # somewhere other than the default outDir
  *   node capture.mjs --dry-run                    # print the plan, touch nothing
  *   node capture.mjs --headed                     # watch it work
  *   node capture.mjs --keep-auth=false            # force a fresh login

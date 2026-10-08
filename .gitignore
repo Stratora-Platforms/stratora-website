@@ -5,3 +5,4 @@ dist
 tools/screenshots/.env
 tools/screenshots/.auth.json
 tools/screenshots/reference/
+tools/screenshots/out/
