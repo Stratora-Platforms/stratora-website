@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { ScaledStage } from "./scaled-stage";
+import { RELEASE_VERSION } from "../constants";
 
 /**
  * "Up and running in three steps" — the three steps on a timeline rail that
@@ -83,7 +84,7 @@ const ATTENTION: [string, string, string, string][] = [
 
 const BANNERS = [
   {
-    text: "Stratora Server 2.4.4 installed · server, collector and agent support running",
+    text: `Stratora Server ${RELEASE_VERSION} installed · server, collector and agent support running`,
     right: "setup complete",
     style: { background: "rgba(34,197,94,.08)", border: "1px solid rgba(34,197,94,.25)", color: "#bbf7d0" },
     dot: "#22c55e",
