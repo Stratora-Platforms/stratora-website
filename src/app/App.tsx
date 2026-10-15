@@ -20,6 +20,7 @@ import { TermsPage } from "./pages/TermsPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { SubscribePage } from "./pages/SubscribePage";
 import { NewsletterCta } from "./components/newsletter-cta";
+import { SubscribeBar } from "./components/subscribe-bar";
 
 function getInitialPath(): string {
   const redirect = sessionStorage.getItem("redirect");
@@ -84,6 +85,7 @@ export default function App() {
            <NotFoundPage />}
         </main>
         <Footer />
+        {path === "/" && <SubscribeBar />}
       </div>
     </MotionConfig>
   );

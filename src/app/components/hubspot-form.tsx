@@ -5,6 +5,7 @@ import {
   HUBSPOT_PORTAL_ID,
   HUBSPOT_REGION,
   loadHubSpotFormsScript,
+  markNewsletterSubscribed,
 } from "../lib/hubspot";
 
 /**
@@ -30,10 +31,18 @@ type Status = "loading" | "ready" | "error";
 // privacy extension, a network policy) rather than left spinning forever.
 const READY_TIMEOUT_MS = 20_000;
 
-export function HubSpotForm({ className = "" }: { className?: string }) {
+export function HubSpotForm({
+  className = "",
+  onSubmitted,
+}: {
+  className?: string;
+  onSubmitted?: () => void;
+}) {
   const [status, setStatus] = useState<Status>("loading");
   const [attempt, setAttempt] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const onSubmittedRef = useRef(onSubmitted);
+  onSubmittedRef.current = onSubmitted;
 
   // Registered before HubSpot can see the container, so the ready event can't
   // fire ahead of the listener.
@@ -46,6 +55,19 @@ export function HubSpotForm({ className = "" }: { className?: string }) {
     document.addEventListener("hs-form-event:on-ready", onReady);
     return () => document.removeEventListener("hs-form-event:on-ready", onReady);
   }, [attempt]);
+
+  // A successful submission, wherever the form is shown, retires the bottom
+  // subscribe bar for this browser. HubSpot shows its own thank-you message.
+  useEffect(() => {
+    const onSuccess = (e: Event) => {
+      const detail = (e as CustomEvent<{ formId?: string }>).detail;
+      if (detail?.formId && detail.formId !== HUBSPOT_NEWSLETTER_FORM_ID) return;
+      markNewsletterSubscribed();
+      onSubmittedRef.current?.();
+    };
+    document.addEventListener("hs-form-event:on-submission:success", onSuccess);
+    return () => document.removeEventListener("hs-form-event:on-submission:success", onSuccess);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -72,7 +94,7 @@ export function HubSpotForm({ className = "" }: { className?: string }) {
   const retry = useCallback(() => setAttempt((n) => n + 1), []);
 
   return (
-    <div className={`relative rounded-xl bg-white p-2 text-slate-700 sm:p-4 ${className}`}>
+    <div className={`relative rounded-xl bg-white p-1 text-slate-700 sm:p-4 ${className}`}>
       {status !== "error" && (
         <div
           key={attempt}

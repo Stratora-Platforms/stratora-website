@@ -32,7 +32,7 @@ export function SubscribePage() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden px-6 pb-24 pt-32 md:pt-36">
+    <section className="relative overflow-hidden px-3 pb-24 pt-32 sm:px-6 md:pt-36">
       {/* Same faint purple wash the landing sections sit on, plus a glow
           behind the form card. */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background via-purple-950/10 to-background" />
@@ -56,7 +56,7 @@ export function SubscribePage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.32, ease: "easeOut", delay: 0.08 }}
-          className="rounded-2xl border border-purple-500/30 bg-card/60 p-2 shadow-2xl shadow-purple-500/15 backdrop-blur-sm sm:p-3"
+          className="rounded-2xl border border-purple-500/30 bg-card/60 p-1.5 shadow-2xl shadow-purple-500/15 backdrop-blur-sm sm:p-3"
         >
           <HubSpotForm />
         </motion.div>

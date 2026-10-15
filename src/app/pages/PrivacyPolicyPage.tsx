@@ -276,7 +276,10 @@ export function PrivacyPolicyPage() {
             Only essential session cookies are used. The subscription form on our
             subscription page is provided by HubSpot and protected by Google
             reCAPTCHA, which may set their own cookies when that page is visited.
-            We do not use HubSpot's visitor tracking code.
+            We do not use HubSpot's visitor tracking code. Our website also
+            remembers, in your browser's local storage, whether you dismissed or
+            completed the subscription prompt, so it isn't shown again; this
+            stays on your device.
           </p>
         </section>
 

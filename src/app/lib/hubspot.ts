@@ -72,3 +72,39 @@ export function loadHubSpotFormsScript(): Promise<void> {
 
   return scriptPromise;
 }
+
+// -- Subscribe prompt memory ------------------------------------------------
+// Per-browser only: with no HubSpot tracking code there is no way to know a
+// visitor subscribed on another device, so the bottom bar remembers what
+// happened here. Storage can be unavailable (private windows, blocked site
+// data); every access is guarded and the bar simply shows again.
+
+const SUBSCRIBED_KEY = "stratora:newsletter:subscribed";
+const DISMISSED_KEY = "stratora:newsletter:dismissedAt";
+const DISMISS_FOR_MS = 30 * 24 * 60 * 60 * 1000;
+
+export function markNewsletterSubscribed() {
+  try {
+    localStorage.setItem(SUBSCRIBED_KEY, "1");
+  } catch {
+    /* storage unavailable */
+  }
+}
+
+export function dismissNewsletterPrompt() {
+  try {
+    localStorage.setItem(DISMISSED_KEY, String(Date.now()));
+  } catch {
+    /* storage unavailable */
+  }
+}
+
+export function shouldPromptNewsletter(): boolean {
+  try {
+    if (localStorage.getItem(SUBSCRIBED_KEY)) return false;
+    const dismissedAt = Number(localStorage.getItem(DISMISSED_KEY));
+    return !dismissedAt || Date.now() - dismissedAt > DISMISS_FOR_MS;
+  } catch {
+    return true;
+  }
+}
