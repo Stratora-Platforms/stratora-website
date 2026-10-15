@@ -1,6 +1,8 @@
 import { Download, ExternalLink } from "lucide-react";
 import { motion } from "motion/react";
 import { RELEASE_VERSION, MSI_DOWNLOAD_URL, RELEASE_NOTES_URL } from "../constants";
+import { navigate } from "../lib/navigate";
+import { subscribeHref } from "../lib/hubspot";
 
 /**
  * Downloads — restyle only.
@@ -14,6 +16,8 @@ import { RELEASE_VERSION, MSI_DOWNLOAD_URL, RELEASE_NOTES_URL } from "../constan
  */
 
 const CONTENTS = ["Stratora Server", "Windows Agent", "Linux Agent (.deb / .rpm)", "Collector"];
+
+const SUBSCRIBE_HREF = subscribeHref("downloads");
 
 export function Downloads() {
   return (
@@ -101,6 +105,33 @@ export function Downloads() {
                 and priority support.
               </p>
             </div>
+          </motion.div>
+
+          {/* Optional newsletter pointer. Deliberately quiet and below the
+              release card: the download above never depends on it. */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "0px 0px 15% 0px" }}
+            transition={{ duration: 0.32, ease: "easeOut", delay: 0.12 }}
+            className="mt-6 flex flex-col items-center justify-between gap-3 rounded-2xl border border-dashed border-border/60 px-7 py-5 text-center sm:flex-row sm:text-left"
+          >
+            <div>
+              <h3 className="text-sm font-medium">Keep Up with Stratora</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Get notified about new releases, feature improvements, and platform updates.
+              </p>
+            </div>
+            <a
+              href={SUBSCRIBE_HREF}
+              onClick={(e) => {
+                e.preventDefault();
+                navigate(SUBSCRIBE_HREF);
+              }}
+              className="shrink-0 text-sm text-purple-400 transition-colors hover:text-purple-300"
+            >
+              Subscribe to Updates &rarr;
+            </a>
           </motion.div>
         </div>
       </div>

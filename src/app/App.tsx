@@ -18,13 +18,17 @@ import { Billing } from "./components/billing";
 import { PrivacyPolicyPage } from "./pages/PrivacyPolicyPage";
 import { TermsPage } from "./pages/TermsPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
+import { SubscribePage } from "./pages/SubscribePage";
+import { NewsletterCta } from "./components/newsletter-cta";
 
 function getInitialPath(): string {
   const redirect = sessionStorage.getItem("redirect");
   if (redirect) {
     sessionStorage.removeItem("redirect");
+    // The redirect keeps any ?query and #hash (404.html stores them), so
+    // restore the full URL but route on the path alone.
     window.history.replaceState(null, "", redirect);
-    return redirect;
+    return window.location.pathname;
   }
   return window.location.pathname;
 }
@@ -45,6 +49,7 @@ function LandingPage() {
       <Pricing />
       <Downloads />
       <About />
+      <NewsletterCta />
     </>
   );
 }
@@ -74,6 +79,7 @@ export default function App() {
           {path === "/billing" ? <Billing /> :
            path === "/privacy-policy" ? <PrivacyPolicyPage /> :
            path === "/terms" ? <TermsPage /> :
+           path === "/subscribe" ? <SubscribePage /> :
            path === "/" ? <LandingPage /> :
            <NotFoundPage />}
         </main>

@@ -1,5 +1,6 @@
 import { Mail } from "lucide-react";
 import { navigate } from "../lib/navigate";
+import { subscribeHref } from "../lib/hubspot";
 
 export function Footer() {
   const footerLinks = {
@@ -15,6 +16,7 @@ export function Footer() {
     Resources: [
       { name: "Documentation", href: "https://docs.stratora.io", external: true },
       { name: "Twilio Setup", href: "https://docs.stratora.io/docs/integrations/external-notifications", external: true },
+      { name: "Product Updates", href: subscribeHref("website"), internal: true },
     ],
     Legal: [
       { name: "Privacy Policy", href: "/privacy-policy", internal: true },

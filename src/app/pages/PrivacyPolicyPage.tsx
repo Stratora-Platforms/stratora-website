@@ -19,7 +19,7 @@ export function PrivacyPolicyPage() {
       <main className="max-w-3xl mx-auto px-6 py-24">
         <h1 className="text-3xl font-bold mb-4">Stratora Privacy Policy</h1>
         <p className="text-muted-foreground mb-10">
-          <strong>Last updated:</strong> May 11, 2026
+          <strong>Last updated:</strong> October 14, 2026
         </p>
 
         {/* Intro */}
@@ -41,6 +41,7 @@ export function PrivacyPolicyPage() {
               Our documentation site (<ExtLink href="https://docs.stratora.io">https://docs.stratora.io</ExtLink>)
             </li>
             <li>Our licensing and billing systems</li>
+            <li>Our optional product update emails</li>
           </ul>
         </section>
 
@@ -129,6 +130,45 @@ export function PrivacyPolicyPage() {
 
         <hr className="border-border/40 mb-10" />
 
+        <section className="mb-10">
+          <h3 className="text-lg font-medium mb-2">1.4 Product Update Subscriptions</h3>
+          <p className="text-foreground mb-3">
+            Subscribing to Stratora product updates is voluntary. It is never
+            required to download, install, or use Stratora, including the
+            Community Edition, and the Stratora software does not subscribe you
+            or send your details anywhere.
+          </p>
+          <p className="text-foreground mb-3">
+            If you subscribe through the form on our{" "}
+            <a
+              href="/subscribe"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/subscribe");
+              }}
+              className="text-purple-400 hover:text-purple-300 underline transition-colors"
+            >
+              subscription page
+            </a>
+            , the information you enter (such as your email address) and your
+            marketing consent are collected and stored by{" "}
+            <ExtLink href="https://www.hubspot.com">HubSpot</ExtLink>, which we use
+            to manage subscribers and send release announcements, feature
+            highlights, and occasional product news. The form is protected by
+            Google reCAPTCHA to prevent spam.
+          </p>
+          <p className="text-foreground">
+            Every email includes an unsubscribe link, and you can also ask us to
+            remove your details at any time by contacting{" "}
+            <a href="mailto:support@stratora.io" className="text-purple-400 hover:text-purple-300 underline transition-colors">
+              support@stratora.io
+            </a>
+            .
+          </p>
+        </section>
+
+        <hr className="border-border/40 mb-10" />
+
         {/* 2. How We Use Your Information */}
         <section className="mb-10">
           <h2 className="text-xl font-semibold mb-3">2. How We Use Your Information</h2>
@@ -136,6 +176,7 @@ export function PrivacyPolicyPage() {
             <li>License management</li>
             <li>Payment processing</li>
             <li>Transactional emails</li>
+            <li>Product update emails, only if you subscribe</li>
             <li>Customer support</li>
             <li>Product improvement</li>
             <li>Fraud prevention</li>
@@ -157,6 +198,9 @@ export function PrivacyPolicyPage() {
             </li>
             <li>
               <ExtLink href="https://resend.com">Resend</ExtLink> — email delivery
+            </li>
+            <li>
+              <ExtLink href="https://www.hubspot.com">HubSpot</ExtLink> — product update subscriptions (opt-in)
             </li>
             <li>
               <ExtLink href="https://www.twilio.com">Twilio</ExtLink> — SMS/voice (customer-configured)
@@ -229,7 +273,10 @@ export function PrivacyPolicyPage() {
         <section className="mb-10">
           <h2 className="text-xl font-semibold mb-3">7. Cookies</h2>
           <p className="text-foreground">
-            Only essential session cookies are used.
+            Only essential session cookies are used. The subscription form on our
+            subscription page is provided by HubSpot and protected by Google
+            reCAPTCHA, which may set their own cookies when that page is visited.
+            We do not use HubSpot's visitor tracking code.
           </p>
         </section>
 
