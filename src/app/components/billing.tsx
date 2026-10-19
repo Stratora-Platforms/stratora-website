@@ -7,10 +7,12 @@ export function Billing() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setSent(false);
 
     const trimmed = email.trim().toLowerCase();
     if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
@@ -28,8 +30,14 @@ export function Billing() {
       });
 
       if (res.ok) {
-        const data = await res.json();
-        window.location.href = data.url;
+        const data = await res.json().catch(() => ({}));
+        // Older licensing Worker returned the portal URL directly; the
+        // current one emails a sign-in link and returns only a message.
+        if (typeof data.url === "string" && data.url) {
+          window.location.href = data.url;
+          return;
+        }
+        setSent(true);
         return;
       }
 
@@ -88,9 +96,21 @@ export function Billing() {
               className="w-full rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-3 text-sm text-white hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg shadow-purple-500/20 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-              {loading ? "Connecting..." : "Continue"}
+              {loading ? "Sending..." : "Continue"}
             </button>
           </form>
+
+          {sent && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-4 text-sm text-muted-foreground"
+            >
+              If that address has a Stratora subscription, we've sent it a
+              link to your billing portal. Check your inbox; the link expires
+              in 30 minutes.
+            </motion.p>
+          )}
 
           {error && (
             <motion.p
