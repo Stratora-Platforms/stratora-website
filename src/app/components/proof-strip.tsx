@@ -24,7 +24,7 @@ export function ProofStrip() {
       >
         {[
           { label: '10-minute deployment', desc: 'Single MSI on Windows Server' },
-          { label: 'Auto-discovery — no config', desc: 'SNMP, agents, and ping' },
+          { label: 'Auto-discovery', desc: 'SNMP, agents, and ping' },
           { label: 'Dashboards instantly generated', desc: 'Built automatically from live data' },
           { label: 'Alerting from day one', desc: 'Email, Teams, Slack, SMS, and voice' },
         ].map((item) => (

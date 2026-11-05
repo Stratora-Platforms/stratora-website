@@ -116,9 +116,9 @@ function Agents() {
 /* ----------------------------------------------------------- 2 templates -- */
 function Templates() {
   const matches: [string, string, string][] = [
-    ["NYC-CORE-SW01", "Cisco Catalyst", "Switch template"],
+    ["NYC-CORE-SW01", "Cisco SG300", "Switch template"],
     ["NYC-FW-01", "Palo Alto PA-440", "Firewall template"],
-    ["NYC-AP-11", "Ubiquiti U6", "Access point template"],
+    ["NYC-AP-11", "Aruba AP", "Access point template"],
     ["NYC-NAS-01", "Synology DS", "NAS template"],
     ["NYC-ESX-01", "VMware ESXi", "Hypervisor template"],
     ["status.haldengroup.example", "HTTPS endpoint", "Web service check"],
