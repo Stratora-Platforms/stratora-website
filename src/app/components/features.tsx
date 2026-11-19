@@ -7,7 +7,7 @@ import { FEATURE_STAGES, STAGE } from "./features-stages";
  * "Everything you need to monitor IT / OT infrastructure" as a one-feature-
  * at-a-time carousel, replacing the three-column card grid.
  *
- * All ten titles and descriptions stay in the DOM — inactive panels are
+ * All eleven titles and descriptions stay in the DOM — inactive panels are
  * `hidden` rather than unmounted — so the copy check and search engines still
  * see every word.
  *
@@ -46,6 +46,10 @@ const FEATURES: Feature[] = [
     body: "Topology maps, rack diagrams, and geographic site maps with live health overlays. Drag devices onto a canvas, draw connections with live interface utilization, place equipment into rack U positions, or pin sites onto a world map. All three update in real-time as your environment changes.",
   },
   {
+    title: "Facility maps",
+    body: "Put each site on its own floor plans. Upload a PNG, JPEG, or one page of a PDF per floor, then drag nodes, racks, and spaces (rooms, network closets, MDF/IDFs, and server rooms) into place. Markers and outlines show live status; hover cards and a side panel bring up alerts, power, and environment readings. Set the scale for a scale bar, find floors and spaces from search, and put a floor plan on any dashboard.",
+  },
+  {
     title: "IPAM",
     body: "Track IP address space across supernets, subnets, and individual addresses. VLAN tags, gateway IPs, DHCP flags, and site-binding per subnet. Live utilization bars flag subnets approaching capacity. Address records sync from discovery scans and link to monitored nodes.",
   },
@@ -65,13 +69,13 @@ const FEATURES: Feature[] = [
 
 const GROUPS: { label: string; items: number[] }[] = [
   { label: "Collect", items: [0, 1, 2] },
-  { label: "See", items: [3, 4, 5, 6] },
-  { label: "Act", items: [7] },
-  { label: "Govern", items: [8, 9] },
+  { label: "See", items: [3, 4, 5, 6, 7] },
+  { label: "Act", items: [8] },
+  { label: "Govern", items: [9, 10] },
 ];
 
 /** Seconds each slide holds before auto-advance moves on. */
-const DWELL_S = [8, 8, 11, 12, 12, 16, 12, 8, 8, 8];
+const DWELL_S = [8, 8, 11, 12, 12, 16, 14, 12, 8, 8, 8];
 
 const groupOf = (i: number) => GROUPS.find((g) => g.items.includes(i))?.label ?? "";
 
@@ -295,7 +299,7 @@ export function Features() {
                     <p className="text-muted-foreground leading-relaxed">{feature.body}</p>
                   </div>
                   <div className="flex shrink-0 items-center gap-3 sm:pt-1">
-                    <span className="text-sm text-muted-foreground tabular-nums">{i + 1} / 10</span>
+                    <span className="text-sm text-muted-foreground tabular-nums">{i + 1} / {FEATURES.length}</span>
                     <button
                       type="button"
                       aria-label="Previous feature"

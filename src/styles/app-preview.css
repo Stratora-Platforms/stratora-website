@@ -1484,3 +1484,350 @@
     transition: none !important;
   }
 }
+
+/* ==========================================================================
+   Facility (a site's Facility tab: floor plan + side panel)
+   ========================================================================== */
+.ap-fac-layout {
+  flex-grow: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 540px;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.ap-fac-left {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.ap-fac-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.ap-fac-floor {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 176px;
+  height: 36px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  border-radius: 7px;
+  border: 1px solid var(--ap-border);
+  background: var(--ap-input-bg);
+  font-size: 13px;
+}
+
+.ap-fac-edited {
+  font-size: 12px;
+}
+
+.ap-fac-seg {
+  display: inline-flex;
+  border-radius: 7px;
+  border: 1px solid var(--ap-border);
+  overflow: hidden;
+  font-size: 12px;
+}
+
+.ap-fac-seg > span {
+  padding: 7px 8px;
+  color: var(--ap-text-secondary);
+}
+
+.ap-fac-seg > span.is-active {
+  background: var(--ap-bg-hover);
+  color: var(--ap-text-primary);
+  font-weight: 600;
+}
+
+.ap-fac-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 11px;
+  border-radius: 7px;
+  border: 1px solid var(--ap-border);
+  background: var(--ap-bg-tertiary);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ap-fac-canvas {
+  position: relative;
+  flex-grow: 1;
+  min-height: 0;
+  border-radius: 8px;
+  border: 1px solid var(--ap-border-muted);
+  background: #121215;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.ap-fac-zoom {
+  position: absolute;
+  left: 13px;
+  top: 13px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 7px;
+  border: 1px solid var(--ap-border);
+  background: var(--ap-bg-secondary);
+  color: var(--ap-text-secondary);
+  z-index: 1;
+}
+
+.ap-fac-zoom > span {
+  width: 38px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+}
+
+.ap-fac-plan {
+  position: relative;
+  flex-shrink: 0;
+  margin-left: 30px;
+  transition: opacity 0.4s;
+}
+
+.ap-fac-plan > svg {
+  display: block;
+}
+
+.ap-fac-hover {
+  position: absolute;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 9px;
+  border: 1px solid var(--ap-border-light);
+  background: #141418f2;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+  font-size: 12.5px;
+  animation: ap-row-enter 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.ap-fac-hover-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ap-border);
+}
+
+.ap-fac-hover-icon {
+  width: 32px;
+  height: 32px;
+  box-sizing: border-box;
+  border-radius: 7px;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ap-fac-hover-name {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ap-fac-hover-kind {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+  color: var(--ap-text-secondary);
+}
+
+.ap-fac-hover-kv {
+  margin: 0;
+  padding-top: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ap-fac-hover-kv > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ap-fac-hover-kv dt {
+  color: var(--ap-text-muted);
+}
+
+.ap-fac-hover-kv dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.ap-fac-hover-grid {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--ap-border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 12px;
+}
+
+.ap-fac-hover-grid > span:nth-child(4n + 3),
+.ap-fac-hover-grid > span:nth-child(4n + 4) {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.ap-fac-scale {
+  position: absolute;
+  left: 13px;
+  bottom: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 6px 9px 8px 9px;
+  border-radius: 6px;
+  border: 1px solid var(--ap-border);
+  background: var(--ap-bg-secondary);
+  font-size: 11px;
+}
+
+.ap-fac-scale-bar {
+  width: 58px;
+  height: 4px;
+  border: 2px solid var(--ap-text-primary);
+  border-top: 0;
+}
+
+.ap-fac-side {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-radius: 10px;
+  border: 1px solid var(--ap-border-muted);
+  background: var(--ap-bg-secondary);
+  overflow: hidden;
+}
+
+.ap-fac-side-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 22px 14px 22px;
+}
+
+.ap-fac-side-icon {
+  width: 44px;
+  height: 44px;
+  box-sizing: border-box;
+  border-radius: 9px;
+  border: 2px solid var(--ap-critical);
+  background: var(--ap-critical-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ap-fac-side-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.ap-fac-side-sub {
+  margin-top: 4px;
+  font-size: 13.5px;
+}
+
+.ap-fac-trail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 2px 22px 12px 22px;
+  font-size: 12.5px;
+  color: var(--ap-text-secondary);
+}
+
+.ap-fac-trail .is-last {
+  color: var(--ap-text-primary);
+  font-weight: 600;
+}
+
+.ap-fac-trail-sep {
+  margin: 0 6px;
+  color: var(--ap-text-muted);
+}
+
+.ap-fac-sidetabs {
+  display: flex;
+  gap: 18px;
+  padding: 0 22px;
+  border-bottom: 1px solid var(--ap-border-muted);
+}
+
+.ap-fac-sidetabs .ap-tab {
+  font-size: 13.5px;
+  padding-bottom: 9px;
+}
+
+.ap-fac-readings {
+  padding: 8px 22px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ap-fac-device {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--ap-border-muted);
+}
+
+.ap-fac-device:last-child {
+  border-bottom: 0;
+}
+
+.ap-fac-device-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.ap-fac-device-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ap-fac-device-kv {
+  margin: 10px 0 0 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.ap-fac-device-kv > div {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+}
+
+.ap-fac-device-kv dt {
+  color: var(--ap-accent-blue);
+  opacity: 0.85;
+}
+
+.ap-fac-device-kv dd {
+  margin: 0;
+  font-weight: 600;
+}

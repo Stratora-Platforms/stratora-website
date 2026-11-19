@@ -195,7 +195,7 @@ export const SITE = {
   healthPct: 95.8,
   healthLabel: "Critical",
   counts: { healthy: 537, degraded: 6, critical: 3, offline: 2 },
-  tabs: ["Overview", "Dashboard", "Nodes", "Topology", "Racks", "Alerts", "Reports", "Photos"],
+  tabs: ["Overview", "Dashboard", "Nodes", "Topology", "Racks", "Facility", "Alerts", "Reports", "Photos"],
   alertsBadge: 12,
   chips: [
     { label: "3 nodes critical", kind: "critical" as const },
@@ -225,6 +225,152 @@ export const SITE = {
     "healthy", "healthy", "healthy", "warning", "critical", "critical",
     "critical", "warning", "warning", "critical", "critical", "critical",
   ] as const,
+};
+
+/* --------------------------------------------------------------- facility -- */
+
+/**
+ * The New York HQ floor plan on the site's Facility tab. The plan is drawn,
+ * not an image: Halden Group's Level 1, in a 1040x650 plan space, with the
+ * same rooms, spaces and markers as the reference shots of the real tab.
+ */
+export type FacilityStatus = "healthy" | "warning" | "critical" | "unknown";
+
+export type FacilityRoom = { name: string; x: number; y: number; w: number; h: number };
+
+export type FacilitySpace = FacilityRoom & {
+  status: FacilityStatus;
+  selected?: boolean;
+};
+
+export type FacilityMarker = {
+  id: string;
+  x: number;
+  y: number;
+  icon: "switch" | "sensor" | "ap" | "pdu" | "ups" | "server" | "device" | "camera";
+  status: FacilityStatus;
+  /** An active alert on the node: the small warning badge. */
+  alert?: boolean;
+};
+
+export type FacilityRack = { name: string; x: number; y: number; status: FacilityStatus };
+
+export const FACILITY = {
+  site: "New York HQ",
+  address: "1 Example Plaza, New York, NY",
+  floor: "Level 1",
+  building: "HQ Main Building",
+  edited: "Last edited by admin, 2m ago",
+  tabs: ["Overview", "Dashboard", "Nodes", "Topology", "Racks", "Facility", "Alerts", "Reports", "Photos"],
+  alertsBadge: 6,
+  /** Plain rooms: drawn walls only. */
+  rooms: [
+    { name: "Loading", x: 30, y: 58, w: 156, h: 154 },
+    { name: "Receiving", x: 186, y: 58, w: 154, h: 154 },
+    { name: "Reception", x: 340, y: 58, w: 198, h: 154 },
+    { name: "Meeting rooms", x: 538, y: 58, w: 172, h: 154 },
+    { name: "Office", x: 30, y: 408, w: 170, h: 188 },
+    { name: "NOC", x: 200, y: 408, w: 136, h: 188 },
+    { name: "IT", x: 336, y: 408, w: 134, h: 188 },
+    { name: "Kitchen", x: 470, y: 408, w: 156, h: 188 },
+    { name: "Shipping", x: 626, y: 408, w: 380, h: 188 },
+  ] satisfies FacilityRoom[],
+  /** Spaces placed on the plan: outlined in their live status. */
+  spaces: [
+    { name: "Comms room 1.04", x: 710, y: 58, w: 296, h: 154, status: "critical" },
+    { name: "Production area", x: 30, y: 212, w: 604, h: 196, status: "critical" },
+    { name: "Open office", x: 634, y: 212, w: 372, h: 196, status: "healthy" },
+    { name: "IDF-B", x: 464, y: 226, w: 122, h: 90, status: "critical", selected: true },
+  ] satisfies FacilitySpace[],
+  racks: [
+    { name: "HQ-R01", x: 746, y: 120, status: "healthy" },
+    { name: "HQ-R02", x: 814, y: 120, status: "healthy" },
+    { name: "HQ-R03", x: 486, y: 276, status: "critical" },
+  ] satisfies FacilityRack[],
+  markers: [
+    { id: "NYC-CORE-SW01", x: 731, y: 196, icon: "switch", status: "critical", alert: true },
+    { id: "NYC-ENV-01", x: 964, y: 176, icon: "sensor", status: "critical", alert: true },
+    { id: "NYC-PDU-01", x: 553, y: 280, icon: "pdu", status: "critical", alert: true },
+    { id: "NYC-PLC-04", x: 134, y: 304, icon: "device", status: "critical", alert: true },
+    { id: "NYC-AP-07", x: 310, y: 364, icon: "ap", status: "healthy" },
+    { id: "NYC-AP-11", x: 808, y: 338, icon: "ap", status: "healthy" },
+    { id: "NYC-UPS-01", x: 984, y: 390, icon: "ups", status: "healthy" },
+    { id: "NYC-DC-01", x: 278, y: 480, icon: "server", status: "healthy" },
+    { id: "NYC-CAM-02", x: 476, y: 174, icon: "camera", status: "unknown" },
+    { id: "NYC-CAM-05", x: 268, y: 558, icon: "camera", status: "unknown" },
+  ] satisfies FacilityMarker[],
+  /** The selected space in the side panel, on its Environment tab. */
+  panel: {
+    name: "IDF-B",
+    kind: "Network closet",
+    trail: ["New York HQ", "Level 1", "Production area", "IDF-B"],
+    tabs: ["Overview", "Devices (5)", "Links", "Environment", "Events"],
+    /** Values drift a little per tick: the tab refreshes on its own. */
+    devices: [
+      {
+        name: "NYC-ENV-01",
+        icon: "sensor" as const,
+        status: "critical" as const,
+        label: "Critical",
+        readings: [
+          ["Humidity (Rack 3 Front Humidity)", ["45%", "46%", "45%", "44%"]],
+          ["Temperature (Rack 3 Front Top)", ["25 °C", "25 °C", "26 °C", "25 °C"]],
+          ["Temperature (Rack 3 Rear Top)", ["42 °C", "43 °C", "42 °C", "43 °C"]],
+          ["Humidity (Room Humidity)", ["84%", "84%", "85%", "84%"]],
+          ["Temperature (Room)", ["22 °C", "22 °C", "22 °C", "23 °C"]],
+        ] as [string, string[]][],
+      },
+      {
+        name: "NYC-PDU-01",
+        icon: "pdu" as const,
+        status: "critical" as const,
+        label: "Critical",
+        readings: [
+          ["Input", ["208 V", "208 V", "207 V", "208 V"]],
+          ["Power", ["3.5 kW", "3.6 kW", "3.5 kW", "3.4 kW"]],
+          ["Current", ["14.2 A", "14.6 A", "14.3 A", "13.9 A"]],
+        ] as [string, string[]][],
+      },
+      {
+        name: "NYC-UPS-01",
+        icon: "ups" as const,
+        status: "healthy" as const,
+        label: "Online",
+        readings: [
+          ["Power source", ["Mains", "Mains", "Mains", "Mains"]],
+          ["Battery charge", ["100%", "100%", "100%", "100%"]],
+          ["Runtime", ["45 min", "45 min", "45 min", "45 min"]],
+          ["Load", ["41%", "42%", "41%", "40%"]],
+          ["Input", ["121 V", "121 V", "120 V", "121 V"]],
+          ["Output", ["120 V", "120 V", "120 V", "120 V"]],
+        ] as [string, string[]][],
+      },
+    ],
+  },
+  /** Hover summary cards, shown in turn. */
+  hover: {
+    rack: {
+      name: "HQ-R02",
+      rows: [
+        ["Devices", "5 online"],
+        ["Worst", "Online"],
+        ["Active alerts", "0"],
+        ["Power", "Battery 100%"],
+      ] as [string, string][],
+    },
+    node: {
+      name: "NYC-AP-11",
+      kind: "Wi-Fi Access Point",
+      rows: [
+        ["Ping", "<1 ms · 0% loss"],
+        ["Last seen", "just now"],
+        ["Uptime", "158d 0h"],
+        ["Active alerts", "0"],
+      ] as [string, string][],
+      ip: "10.10.0.21",
+      collector: "NYC-COL-01",
+    },
+  },
 };
 
 /* ------------------------------------------------------------- noc board -- */

@@ -7,7 +7,7 @@
  *   node verify-sections.mjs <baseUrl> <outDir>
  *
  * Also captures the mid-animation states the reference screens show: the
- * install demo's three phases, and each of the ten feature slides.
+ * install demo's three phases, and each of the eleven feature slides.
  */
 
 import { chromium } from "playwright";

@@ -1,11 +1,11 @@
 import { STATUS_BG, STATUS_TEXT } from "./app-preview/app-preview-data";
 
 /**
- * The ten feature stages, authored at 840 x 440 and scaled by <ScaledStage>.
+ * The eleven feature stages, authored at 840 x 440 and scaled by <ScaledStage>.
  *
- * Slides 3-6 (dashboards, virtualization, network diagrams, IPAM) are drawn to
- * match the real app, reusing the app-preview status palette so they sit
- * consistently with the carousel higher up the page. Every capability shown is
+ * Slides 3-7 (dashboards, virtualization, network diagrams, facility maps,
+ * IPAM) are drawn to match the real app, reusing the app-preview status
+ * palette so they sit consistently with the carousel higher up the page. Every capability shown is
  * in CLAIMS.md and the sample data is Halden Group's New York HQ.
  */
 
@@ -409,7 +409,160 @@ function NetworkDiagrams() {
   );
 }
 
-/* ---------------------------------------------------------------- 6 ipam --
+/* ------------------------------------------------------- 6 facility maps --
+ * A site floor plan with spaces outlined in their live status, racks and node
+ * markers, a scale bar, and the side panel for the selected network closet
+ * on its Environment tab. Same New York HQ plan as the carousel's Facility
+ * slide, cut down to fit.
+ */
+function FacilityMaps() {
+  const wall = "#a3b3cf";
+  const room = "#101a2d";
+  const ring = (status: "healthy" | "critical" | "unknown") =>
+    status === "healthy" ? STATUS_TEXT.healthy : status === "critical" ? STATUS_TEXT.critical : STATUS_TEXT.unknown;
+
+  const rooms: [string, number, number, number, number][] = [
+    ["Loading", 10, 30, 90, 92],
+    ["Reception", 100, 30, 120, 92],
+    ["Office", 10, 238, 110, 100],
+    ["NOC", 120, 238, 100, 100],
+    ["Shipping", 220, 238, 260, 100],
+  ];
+  const spaces: [string, number, number, number, number, "healthy" | "critical"][] = [
+    ["Comms room 1.04", 220, 30, 260, 92, "critical"],
+    ["Production area", 10, 122, 260, 116, "critical"],
+    ["Open office", 270, 122, 210, 116, "healthy"],
+  ];
+  const markers: [number, number, "healthy" | "critical" | "unknown", boolean][] = [
+    [240, 106, "critical", true],
+    [450, 104, "critical", true],
+    [70, 180, "critical", true],
+    [150, 214, "healthy", false],
+    [360, 186, "healthy", false],
+    [458, 222, "healthy", false],
+    [160, 270, "healthy", false],
+    [150, 100, "unknown", false],
+  ];
+  const readings: [string, string, string?][] = [
+    ["Rack 3 Rear Top", "42 °C", STATUS_TEXT.critical],
+    ["Rack 3 Front Top", "25 °C"],
+    ["Rack 3 Front Humidity", "45%"],
+    ["PDU power", "3.5 kW"],
+    ["PDU current", "14.2 A"],
+    ["UPS battery", "100% · 45 min"],
+  ];
+
+  return (
+    <div className="st-fade" style={{ position: "absolute", inset: 0, padding: 20, display: "grid", gridTemplateColumns: "1.55fr 1fr", gap: 10 }}>
+      <div style={panel}>
+        <div style={head}>
+          Facility
+          <span style={{ fontSize: 11, fontWeight: 400, color: "#9d9da8" }}>New York HQ · Level 1</span>
+          <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 6, fontSize: 10.5, fontWeight: 400, color: "#9d9da8" }}>
+            <span className="st-blink" style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e" }} />
+            live status
+          </span>
+        </div>
+        <div style={{ position: "relative", flexGrow: 1, background: "#0e1729" }}>
+          <svg width="100%" height="100%" viewBox="0 0 490 362" preserveAspectRatio="xMidYMid meet" style={{ position: "absolute", inset: 0 }}>
+            <defs>
+              <pattern id="st-fac-grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                <path d="M10 0H0V10" fill="none" stroke="#15213a" strokeWidth=".8" />
+              </pattern>
+            </defs>
+            <rect width="490" height="362" fill="url(#st-fac-grid)" />
+            <text x="10" y="20" fontSize="11" fontWeight="700" fill="#ededf0">
+              Halden Group · New York HQ
+            </text>
+            {rooms.map(([name, x, y, w, h]) => (
+              <g key={name}>
+                <rect x={x} y={y} width={w} height={h} fill={room} stroke={wall} strokeWidth="2" />
+                <text x={x + 5} y={y + 11} fontSize="7.5" fill="#dbe3f0">{name}</text>
+              </g>
+            ))}
+            {spaces.map(([name, x, y, w, h, status]) => (
+              <g key={name}>
+                <rect x={x} y={y} width={w} height={h} fill={room} stroke={wall} strokeWidth="2" />
+                <rect x={x + 2} y={y + 2} width={w - 4} height={h - 4} fill={ring(status)} fillOpacity={status === "healthy" ? 0.1 : 0.05} stroke={ring(status)} strokeWidth="1.3" />
+                <text x={x + 5} y={y + 11} fontSize="7.5" fill="#dbe3f0">{name}</text>
+              </g>
+            ))}
+            {/* comms room racks */}
+            {[0, 1, 2, 3, 4].map((i) => (
+              <rect key={i} x={262 + i * 22} y="48" width="15" height="36" fill="#1a2440" stroke="#5b6b8c" strokeWidth=".8" />
+            ))}
+            {[262, 306].map((x) => (
+              <g key={x}>
+                <rect x={x} y="48" width="15" height="36" rx="2" fill="#141418" stroke={STATUS_TEXT.healthy} strokeWidth="1.4" />
+                {[0, 1, 2, 3].map((i) => (
+                  <rect key={i} x={x + 3.5} y={53 + i * 6.5} width="8" height="3.5" fill={STATUS_TEXT.healthy} />
+                ))}
+              </g>
+            ))}
+            {/* open office desks */}
+            {Array.from({ length: 18 }, (_, i) => (
+              <rect key={i} x={292 + (i % 6) * 30} y={140 + Math.floor(i / 6) * 28} width="20" height="11" fill="none" stroke="#5b6b8c" strokeWidth=".8" />
+            ))}
+            {/* IDF-B, selected */}
+            <rect x="182" y="138" width="76" height="56" fill="#8b5cf6" fillOpacity=".14" stroke="#8b5cf6" strokeWidth="1.8" />
+            <rect x="185" y="141" width="70" height="50" fill="none" stroke={STATUS_TEXT.critical} strokeWidth="1" />
+            <text x="189" y="152" fontSize="7.5" fill="#dbe3f0">IDF-B</text>
+            <rect x="196" y="158" width="14" height="26" rx="2" fill="#141418" stroke={STATUS_TEXT.critical} strokeWidth="1.4" />
+            {[0, 1, 2].map((i) => (
+              <rect key={i} x="199.5" y={162 + i * 6.5} width="7" height="3.5" fill={i === 0 ? STATUS_TEXT.degraded : STATUS_TEXT.critical} />
+            ))}
+            {markers.map(([x, y, status, alert]) => (
+              <g key={`${x}-${y}`}>
+                {status === "critical" ? <circle className="st-pulse-ring" cx={x} cy={y} r="5" fill={ring(status)} opacity=".4" /> : null}
+                <circle cx={x} cy={y} r="8" fill="#141418" stroke={ring(status)} strokeWidth="1.6" strokeDasharray={status === "unknown" ? "3 2" : undefined} />
+                <circle cx={x} cy={y} r="2.4" fill={status === "unknown" ? "#9d9da8" : "#ededf0"} />
+                {alert ? <path className="st-blink" d={`M${x + 8} ${y - 12} l4 7 h-8 z`} fill={STATUS_TEXT.critical} /> : null}
+              </g>
+            ))}
+            {/* scale bar */}
+            <text x="10" y="355" fontSize="7" fill="#9d9da8">2 m</text>
+            <path d="M24 350 v4 h30 v-4" fill="none" stroke="#ededf0" strokeWidth="1.2" />
+          </svg>
+        </div>
+      </div>
+
+      <div style={panel}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 12px 8px 12px" }}>
+          <span style={{ width: 30, height: 30, boxSizing: "border-box", borderRadius: 7, border: `1.5px solid ${STATUS_TEXT.critical}`, background: STATUS_BG.critical, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={STATUS_TEXT.critical} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 4v4M15 4v4M7 8h10v3a5 5 0 0 1-10 0zM12 16v4M4 20h16" />
+            </svg>
+          </span>
+          <span style={{ display: "flex", flexDirection: "column" }}>
+            <span style={{ fontSize: 13.5, fontWeight: 700 }}>IDF-B</span>
+            <span style={{ fontSize: 10.5, color: "#9d9da8" }}>Network closet · Level 1</span>
+          </span>
+          <span style={{ marginLeft: "auto", ...chip(STATUS_BG.critical, STATUS_TEXT.critical) }}>2 alerts</span>
+        </div>
+        <div style={{ display: "flex", gap: 12, padding: "0 12px", borderBottom: "1px solid #1c1c2e", fontSize: 10.5, color: "#9d9da8" }}>
+          {["Overview", "Devices", "Environment", "Events"].map((tab) => (
+            <span key={tab} style={{ paddingBottom: 6, borderBottom: tab === "Environment" ? "2px solid #8b5cf6" : "2px solid transparent", color: tab === "Environment" ? "#a78bfa" : undefined }}>
+              {tab}
+            </span>
+          ))}
+        </div>
+        <div style={{ padding: "6px 12px", display: "flex", flexDirection: "column" }}>
+          {readings.map(([label, value, colour], i) => (
+            <div key={label} className="st-row" style={{ animationDelay: `${0.15 + i * 0.07}s`, display: "flex", alignItems: "center", height: 31, borderBottom: "1px solid #17172a", fontSize: 11.5 }}>
+              <span style={{ color: "#9d9da8" }}>{label}</span>
+              <span className="st-mono" style={{ marginLeft: "auto", fontWeight: 600, color: colour }}>{value}</span>
+            </div>
+          ))}
+        </div>
+        <span style={{ marginTop: "auto", padding: "8px 12px 12px 12px", fontSize: 10.5, color: "#7b7b88" }}>
+          Refreshes every 30 s · read-only for viewers
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- 7 ipam --
  * Discovery sweeping a /24: the address grid fills as the scan runs, the
  * utilization bars grow with it, and the subnet nearing capacity trips its
  * >85% flag. Everything here is address-space data the app tracks.
@@ -522,7 +675,7 @@ function Ipam() {
   );
 }
 
-/* ------------------------------------------------------------ 7 alerting -- */
+/* ------------------------------------------------------------ 8 alerting -- */
 function Alerting() {
   const steps: [string, string, string, string][] = [
     ["14:02:40", "Alert raised", "NYC-ESX-01 host memory 91%", STATUS_TEXT.critical],
@@ -563,7 +716,7 @@ function Alerting() {
   );
 }
 
-/* ---------------------------------------------------------------- 8 rbac -- */
+/* ---------------------------------------------------------------- 9 rbac -- */
 function Rbac() {
   const matrix: [string, boolean[]][] = [
     ["View dashboards", [true, true, true]],
@@ -606,7 +759,7 @@ function Rbac() {
   );
 }
 
-/* -------------------------------------------------------------- 9 syslog --
+/* ------------------------------------------------------------- 10 syslog --
  * Events leave the log, travel the wire and fan out to three receivers. The
  * packets are staggered per lane so the stream reads as continuous rather than
  * as three things blinking in time.
@@ -724,6 +877,7 @@ export const FEATURE_STAGES = [
   Dashboards,
   Virtualization,
   NetworkDiagrams,
+  FacilityMaps,
   Ipam,
   Alerting,
   Rbac,

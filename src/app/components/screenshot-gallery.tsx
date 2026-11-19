@@ -61,6 +61,12 @@ const SLIDES: Slide[] = [
     short: "IPAM",
   },
   {
+    id: "facility",
+    title: "Facility maps",
+    caption: "Live status for racks, closets, and devices on your own floor plans.",
+    short: "Facility",
+  },
+  {
     id: "rack",
     title: "Rack visualization",
     caption: "Map physical placement and U-height across your racks.",
@@ -86,8 +92,8 @@ export function ScreenshotGallery() {
   }, [api]);
 
   /* Each slide is a full app view — roughly 300 elements and its own render
-     pass. Mounting all eight up front costs ~600ms of main-thread time for
-     seven views nobody is looking at, so they wait until the gallery is near
+     pass. Mounting all nine up front costs ~600ms of main-thread time for
+     eight views nobody is looking at, so they wait until the gallery is near
      the viewport, and then only the current slide and its neighbours mount.
      Unmounted slides keep a 16:9 spacer so the carousel's layout never
      shifts. */
@@ -128,7 +134,7 @@ export function ScreenshotGallery() {
         >
           <h2 className="text-3xl md:text-5xl mb-4">See Stratora in action</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            From the NOC dashboard to rack-level detail — explore the platform.
+            From the NOC dashboard to floor plans and rack-level detail — explore the platform.
           </p>
         </motion.div>
 
@@ -150,7 +156,7 @@ export function ScreenshotGallery() {
                 phones with no way to tell which view they were looking at.
 
                 Wraps at every size. It used to scroll horizontally below md,
-                where the eight chips need 796px in a 327px box — two of eight
+                where the eight chips needed 796px in a 327px box — two of eight
                 visible and 470px of them unreachable without a sideways drag
                 nobody knew was there. Smaller padding and type on mobile keep
                 the wrapped rows down to a sensible height. */}
@@ -213,7 +219,7 @@ export function ScreenshotGallery() {
                   every size, and once phones fitted the whole 1920px layout
                   into a ~183px-tall strip they covered about a third of the
                   thing they were meant to help you look at. The chip row above
-                  names all eight views and swipe still works. */}
+                  names all nine views and swipe still works. */}
             </div>
 
             {/* Caption — below the view, swapping with the slide. The title
@@ -223,7 +229,7 @@ export function ScreenshotGallery() {
                 Height is reserved rather than letting the block grow and
                 shrink, because captions wrap to different line counts and the
                 page would jog on every switch. Only the active caption is
-                rendered — stacking all eight in one grid cell would size to
+                rendered — stacking all nine in one grid cell would size to
                 the tallest automatically, but it would also put every caption
                 in the section's textContent at once, and the copy check
                 proves the tabs work by watching that text change per slide. */}

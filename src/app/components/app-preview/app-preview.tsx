@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { DESIGN_HEIGHT, DESIGN_WIDTH, TICK_MS } from "./app-preview-data";
 import { AlertsView } from "./views/alerts-view";
 import { EscalationView } from "./views/escalation-view";
+import { FacilityView } from "./views/facility-view";
 import { IpamView } from "./views/ipam-view";
 import { NocDashboardView } from "./views/noc-dashboard-view";
 import { RackView } from "./views/rack-view";
@@ -19,7 +20,7 @@ import { WorldMapView } from "./views/world-map-view";
  * these against the real app.
  *
  * Animation is gated on `active`: the carousel lays every slide out in one
- * track, so without that gate all eight views would animate at once, off
+ * track, so without that gate all nine views would animate at once, off
  * screen, for the whole life of the page.
  */
 
@@ -31,6 +32,7 @@ export type ViewId =
   | "escalation"
   | "site-overview"
   | "ipam"
+  | "facility"
   | "rack";
 
 export type ViewProps = {
@@ -49,6 +51,7 @@ const VIEWS: Record<ViewId, (props: ViewProps) => JSX.Element> = {
   escalation: EscalationView,
   "site-overview": SiteOverviewView,
   ipam: IpamView,
+  facility: FacilityView,
   rack: RackView,
 };
 

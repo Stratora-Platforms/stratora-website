@@ -29,7 +29,7 @@ const PARAS: Para[] = [
   {
     lead: "Stop paying for four tools that don't talk to each other.",
     body:
-      "Stratora ships dashboards, alerting, topology, IPAM, and SIEM-bound audit forwarding as one platform — installed from a single MSI.",
+      "Stratora ships dashboards, alerting, topology and facility maps, IPAM, and SIEM-bound audit forwarding as one platform — installed from a single MSI.",
   },
   {
     lead: "Runs entirely on your infrastructure.",

@@ -57,7 +57,7 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
             className="mb-6 text-lg md:text-xl text-muted-foreground max-w-4xl mx-auto"
           >
-            Automatically discover your environment, generate dashboards, and start monitoring immediately — with built-in alerting, topology maps, and documentation for IT and OT systems.
+            Automatically discover your environment, generate dashboards, and start monitoring immediately — with built-in alerting, topology and facility maps, and documentation for IT and OT systems.
           </motion.p>
 
           {/* Proof line */}

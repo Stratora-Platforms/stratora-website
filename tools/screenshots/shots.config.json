@@ -8,6 +8,8 @@
     "           exactly `pick`. Use this for anything with a generated UUID in",
     "           its URL (dashboards, maps, sites, racks). Names survive a",
     "           re-seed of the dev box; UUIDs do not.",
+    "  tab      — after opening the page, click the tab with this name (for",
+    "           example a site's Facility tab).",
     "",
     "Timing:",
     "  waitFor  — CSS selector that must appear before capture.",
@@ -72,6 +74,15 @@
       "title": "Built-in IPAM",
       "url": "/ipam",
       "settleMs": 2000
+    },
+    {
+      "file": "facility.png",
+      "title": "Facility maps",
+      "index": "/sites",
+      "pick": "New York HQ",
+      "indexWaitFor": "table td",
+      "tab": "Facility",
+      "settleMs": 3000
     },
     {
       "file": "rack.png",

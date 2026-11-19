@@ -1,6 +1,6 @@
 # Carousel screenshots
 
-Recaptures the eight app screenshots behind **See Stratora in action** on the
+Recaptures the nine app screenshots behind **See Stratora in action** on the
 homepage, at 1920×1080, into `tools/screenshots/out/` (gitignored). The site
 no longer ships these PNGs — the carousel renders recreated HTML views — so the
 output is local reference material only.
@@ -20,7 +20,7 @@ cp .env.example .env   # then fill in STRATORA_PASS
 ## Run
 
 ```bash
-npm run capture                              # all eight
+npm run capture                              # all nine
 node capture.mjs --only alerts.png,ipam.png  # just those
 node capture.mjs --dry-run                   # print the plan, write nothing
 node capture.mjs --headed                    # watch it drive the browser
@@ -31,14 +31,16 @@ root. Don't commit the PNGs: `tools/screenshots/out/` is gitignored.
 
 ## What it shoots
 
-Driven entirely by `shots.config.json`. The eight files map 1:1 onto the
+Driven entirely by `shots.config.json`. The nine files map 1:1 onto the
 `SCREENSHOTS` array in `src/app/components/screenshot-gallery.tsx` — if you add
 a slide there, add an entry here with the same filename.
 
 Pages are targeted **by name**, not by UUID: dashboards, maps, sites and racks
 all have generated IDs in their URLs, so the script opens the index page and
 clicks the card whose heading matches `pick`. Re-seeding the dev box changes the
-IDs but not the names.
+IDs but not the names. A shot with `tab` then clicks that tab on the opened
+page: the facility shot opens New York HQ and then its **Facility** tab, so the
+site needs a floor plan uploaded and laid out first.
 
 When a name changes, the run fails with the list of headings it actually found
 on that index page — paste the right one into `pick`.

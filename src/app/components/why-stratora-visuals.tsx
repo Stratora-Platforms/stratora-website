@@ -182,7 +182,7 @@ function OnePlatform() {
         <div style={{ display: "flex", height: "100%" }}>
           <div style={{ width: 106, borderRight: "1px solid var(--st-line)", padding: "8px 7px", display: "flex", flexDirection: "column", gap: 2 }}>
             <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: ".22em", color: "var(--st-ink)", padding: "0 5px 7px 5px" }}>STRATORA</div>
-            {["Dashboards", "Alerting", "Topology", "IPAM", "Audit forwarding"].map((item, i) => (
+            {["Dashboards", "Alerting", "Topology", "Facility maps", "IPAM", "Audit forwarding"].map((item, i) => (
               <span
                 key={item}
                 className="st-row"

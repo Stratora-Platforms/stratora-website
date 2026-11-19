@@ -4,7 +4,7 @@
  * carousel, at 1920x1080, into tools/screenshots/out/ (gitignored).
  *
  *   npm run setup     # once — installs Playwright and its Chromium
- *   npm run capture   # all eight shots
+ *   npm run capture   # all nine shots
  *
  *   node capture.mjs --only alerts.png,ipam.png   # just those two
  *   node capture.mjs --out tools/screenshots/reference  # somewhere other than the default outDir
@@ -190,6 +190,13 @@ async function openTarget(page, shot, baseUrl) {
   await target.click();
   await page.waitForURL((url) => url.toString() !== before, { timeout: 30_000 }).catch(() => {});
   assertSignedIn(page, shot.pick || shot.index);
+
+  // A tab on the opened page, such as a site's Facility tab.
+  if (shot.tab) {
+    const tab = page.getByRole("tab", { name: shot.tab }).or(page.getByRole("button", { name: shot.tab, exact: true })).first();
+    await tab.click({ timeout: 30_000 });
+    await page.waitForLoadState("networkidle", { timeout: 30_000 }).catch(() => {});
+  }
 }
 
 /* ------------------------------------------------------------------ main -- */
@@ -214,7 +221,7 @@ async function main() {
 
   if (DRY_RUN) {
     for (const shot of shots) {
-      const where = shot.url ? shot.url : `${shot.index} → "${shot.pickFirstCard ? "(first card)" : shot.pick}"`;
+      const where = (shot.url ? shot.url : `${shot.index} → "${shot.pickFirstCard ? "(first card)" : shot.pick}"`) + (shot.tab ? ` → ${shot.tab} tab` : "");
       log(`  · ${shot.file.padEnd(20)} ${where}`);
     }
     log("\n  --dry-run: nothing captured.\n");
